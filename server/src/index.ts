@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 const { Client } = require("pg");
 import { initTables } from "../db/initTable";
-import { insertPerson } from "../db/insertPerson";
+// import { insertPerson } from "../db/insertPerson";
 
 export const client = new Client({
   user: "postgres",
@@ -27,7 +27,7 @@ export const client = new Client({
   });
 
   await initTables();
-  await insertPerson();
+  // await insertPerson();
 
   function deleteNathan(req: any, res: any) {
     return res.status(300).json({
