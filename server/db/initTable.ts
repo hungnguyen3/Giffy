@@ -11,10 +11,10 @@ const initCollections = async () => {
   await client
     .query(
       `
-          CREATE TABLE IF NOT EXISTS collections (
-            "collectionId" SERIAL PRIMARY KEY,
-            "collectionName" varchar(255) NOT NULL,
-            private boolean NOT NULL
+        CREATE TABLE IF NOT EXISTS collections (
+          "collectionId" SERIAL PRIMARY KEY,
+           "collectionName" varchar(255) NOT NULL,
+           "private" boolean NOT NULL
         );
       `
     )
@@ -45,12 +45,12 @@ const initUsers = async () => {
   await client
     .query(
       `
-      CREATE TABLE IF NOT EXISTS users (
-        "userId" SERIAL PRIMARY KEY,
-        "userName" varchar(255) NOT NULL,
-        "firebaseAuthId" varchar(255) NOT NULL,
-        "profileImgUrl" varchar(255)
-      );
+        CREATE TABLE IF NOT EXISTS users (
+          "userId" SERIAL PRIMARY KEY,
+          "userName" varchar(255) NOT NULL,
+          "firebaseAuthId" varchar(255) NOT NULL,
+          "profileImgUrl" varchar(255)
+        );
       `
     )
     .then((res: any) => console.log("successfully created users table"))
@@ -64,17 +64,17 @@ const initCollections_Users = async () => {
         DO $$ BEGIN
         CREATE TYPE permissions_t AS ENUM('read', 'write', 'admin');
         EXCEPTION
-            WHEN duplicate_object THEN null;
+          WHEN duplicate_object THEN null;
         END $$;
 
         CREATE TABLE IF NOT EXISTS collections_users (
-                    "collectionId" int NOT NULL,
-                    "userId" int NOT NULL,
-                    "permissions" permissions_t NOT NULL,
-              
-              FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId"),
-              FOREIGN KEY ("userId") REFERENCES "users"("userId")
-          )
+          "collectionId" int NOT NULL,
+          "userId" int NOT NULL,
+          "permissions" permissions_t NOT NULL,
+    
+          FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId"),
+          FOREIGN KEY ("userId") REFERENCES "users"("userId")
+        );
       `
     )
     .then((res: any) => console.log("successfully created collections_users table"))
