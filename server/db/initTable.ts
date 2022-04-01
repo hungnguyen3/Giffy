@@ -1,31 +1,31 @@
-import { client } from "../src/index";
+import { client } from '../src/index';
 
 export const initTables = async () => {
-  await initCollections();
-  await initGiffies();
-  await initUsers();
-  await initCollections_Users();
+	await initCollections();
+	await initGiffies();
+	await initUsers();
+	await initCollections_Users();
 };
 
 const initCollections = async () => {
-  await client
-    .query(
-      `
+	await client
+		.query(
+			`
         CREATE TABLE IF NOT EXISTS collections (
           "collectionId" SERIAL PRIMARY KEY,
-           "collectionName" varchar(255) NOT NULL,
-           "private" boolean NOT NULL
+          "collectionName" varchar(255) NOT NULL,
+          "private" boolean NOT NULL
         );
       `
-    )
-    .then((res: any) => console.log("successfully created collection table"))
-    .catch((e: any) => console.error(e.stack));
-}
+		)
+		.then(() => console.log('successfully created collection table'))
+		.catch((e: any) => console.error(e.stack));
+};
 
 const initGiffies = async () => {
-  await client
-    .query(
-      `
+	await client
+		.query(
+			`
         CREATE TABLE IF NOT EXISTS giffies (
           "giffyId" SERIAL PRIMARY KEY,
           "collectionId" int NOT NULL,
@@ -36,15 +36,15 @@ const initGiffies = async () => {
           FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId")         
         );
       `
-    )
-    .then((res: any) => console.log("successfully created giffy table"))
-    .catch((e: any) => console.error(e.stack));
-}
+		)
+		.then(() => console.log('successfully created giffy table'))
+		.catch((e: any) => console.error(e.stack));
+};
 
 const initUsers = async () => {
-  await client
-    .query(
-      `
+	await client
+		.query(
+			`
         CREATE TABLE IF NOT EXISTS users (
           "userId" SERIAL PRIMARY KEY,
           "userName" varchar(255) NOT NULL,
@@ -52,15 +52,15 @@ const initUsers = async () => {
           "profileImgUrl" varchar(255)
         );
       `
-    )
-    .then((res: any) => console.log("successfully created users table"))
-    .catch((e: any) => console.error(e.stack));
-}
+		)
+		.then(() => console.log('successfully created users table'))
+		.catch((e: any) => console.error(e.stack));
+};
 
 const initCollections_Users = async () => {
-  await client
-    .query(
-      `
+	await client
+		.query(
+			`
         DO $$ BEGIN
         CREATE TYPE permissions_t AS ENUM('read', 'write', 'admin');
         EXCEPTION
@@ -68,6 +68,7 @@ const initCollections_Users = async () => {
         END $$;
 
         CREATE TABLE IF NOT EXISTS collections_users (
+          "id" SERIAL PRIMARY KEY,
           "collectionId" int NOT NULL,
           "userId" int NOT NULL,
           "permissions" permissions_t NOT NULL,
@@ -76,7 +77,7 @@ const initCollections_Users = async () => {
           FOREIGN KEY ("userId") REFERENCES "users"("userId")
         );
       `
-    )
-    .then((res: any) => console.log("successfully created collections_users table"))
-    .catch((e: any) => console.error(e.stack));
-}
+		)
+		.then(() => console.log('successfully created collections_users table'))
+		.catch((e: any) => console.error(e.stack));
+};
