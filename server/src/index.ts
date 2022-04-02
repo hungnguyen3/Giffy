@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 const { Client } = require('pg');
 import { initTables } from '../db/initTable';
+const userRoute = require('../routes/users');
 
 export const client = new Client({
 	user: 'postgres',
@@ -27,13 +28,10 @@ export const client = new Client({
 
 	await initTables();
 
-	function deleteNathan(req: any, res: any) {
-		return res.status(300).json({
-			a: req.body.a + 10,
-		});
-	}
-
-	app.delete('/nathan/:a&:b', deleteNathan);
+	app.use('/users', userRoute);
+	app.use('/collections', userRoute);
+	app.use('/giffies', userRoute);
+	app.use('/collections_users', userRoute);
 
 	app.listen(4000, () => {
 		console.log('server running on port 4000');
