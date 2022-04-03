@@ -12,6 +12,17 @@ export const createUser = async (req: any, res: any) => {
     .catch((e: any) => res.json({ error: e }));
 };
 
+export const getUser = async (req: any, res: any) => {
+  await client
+    .query(
+      `
+		  SELECT* FROM users WHERE userID = '${req.params.userID}';
+		`
+    )
+    .then(() => res.json())
+    .catch((e: any) => res.json({ error: e }));
+};
+
 export const deleteUser = async (req: any, res: any) => {
   await client
     .query(
