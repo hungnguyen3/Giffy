@@ -60,27 +60,3 @@ export const updateUserById = async (req: any, res: any) => {
       res.json({ error: e });
     });
 };
-
-export const getUserById123 = async (req: any, res: any) => {
-  try {
-    const dbRes = await client.query(
-      `
-        SELECT* FROM users WHERE "userId" = '${req.params.userId}';
-      `
-    );
-
-    if (dbRes.rowCount === 0) {
-      res.send("There is no such user");
-    }
-
-    if (dbRes.rowCount === 1) {
-      res.send(dbRes.rows[0]);
-    }
-
-    if (dbRes.rowCount > 1) {
-      res.send("error occurred, more than one user with the same id");
-    }
-  } catch (e) {
-    res.send(e);
-  }
-};
