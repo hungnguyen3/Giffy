@@ -5,19 +5,23 @@ export const createUser = async (req: any, res: any) => {
     .query(
       `
         INSERT INTO users ("userName", "firebaseAuthId", "profileImgUrl")
-        VALUES ('${req.body.userName}', '${req.body.firebaseAuthId}', '${req.body.profileImgUrl}');
+        VALUES ($1, $2, $3);
       `
+      , [ req.body.userName, req.body.firebaseAuthId, req.body.profileImgUrl ]
     )
     .then(() => res.status(200).send("you have successfully created a user"))
-    .catch((e: any) => res.status(400).json({ error: e }));
+    .catch((e: any) => {
+      res.status(404).json({ error: e });
+    });
 };
 
 export const deleteUserById = async (req: any, res: any) => {
   await client
     .query(
       `
-			DELETE FROM users WHERE "userId" = '${req.params.userId}';
-		`
+			DELETE FROM users WHERE "userId" = $1;
+		  `
+      , [ req.params.userId ]
     )
     .then((dbRes: any) => {
       if (dbRes.rowCount === 0) res.status(404).send("There is no such user");
@@ -37,15 +41,16 @@ export const deleteUserById = async (req: any, res: any) => {
       }
     })
 
-    .catch((e: any) => res.status(400).json({ error: e }));
+    .catch((e: any) => res.status(404).json({ error: e }));
 };
 
 export const getUserById = async (req: any, res: any) => {
   await client
     .query(
       `
-		    SELECT* FROM users WHERE "userId" = '${req.params.userId}';
+		    SELECT* FROM users WHERE "userId" = $1;
 		  `
+      , [ req.params.userId ]
     )
     .then((dbRes: any) => {
       if (dbRes.rowCount === 0) res.status(404).send("There is no such user");
@@ -57,7 +62,7 @@ export const getUserById = async (req: any, res: any) => {
           .status(404)
           .send("error occurred, more than one user with the same id");
     })
-    .catch((e: any) => res.status(400).json({ error: e }));
+    .catch((e: any) => res.status(404).json({ error: e }));
 };
 
 export const updateUserById = async (req: any, res: any) => {
@@ -88,6 +93,6 @@ export const updateUserById = async (req: any, res: any) => {
       }
     })
     .catch((e: any) => {
-      res.status(400).json({ error: e });
+      res.status(404).json({ error: e });
     });
 };
