@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 const { Client } = require('pg');
 import { initTables } from '../db/initTable';
 const userRoute = require('../routes/users');
+const collectionRoute = require('../routes/collections');
 
 export const client = new Client({
 	user: 'postgres',
@@ -29,9 +30,9 @@ export const client = new Client({
 	await initTables();
 
 	app.use('/users', userRoute);
-	app.use('/collections', userRoute);
-	app.use('/giffies', userRoute);
-	app.use('/collections_users', userRoute);
+	app.use('/collections', collectionRoute);
+	// app.use('/giffies', userRoute);
+	// app.use('/collection_user_relationships', userRoute);
 
 	app.listen(4000, () => {
 		console.log('server running on port 4000');
