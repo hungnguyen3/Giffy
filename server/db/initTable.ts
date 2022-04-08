@@ -73,8 +73,8 @@ const initCollection_User_Relationships = async () => {
           "permission" permission_t NOT NULL,
     
           CONSTRAINT "collectionUserConstraint" PRIMARY KEY ("collectionId", "userId"),
-          FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId"),
-          FOREIGN KEY ("userId") REFERENCES "users"("userId")
+          FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId") ON DELETE CASCADE,
+          FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE CASCADE
         );
       `
 		)
