@@ -10,8 +10,12 @@ export const createUser = async (req: any, res: any) => {
 			[req.body.userName, req.body.firebaseAuthId, req.body.profileImgUrl]
 		);
 
-		if (insertUserRes)
+		if (insertUserRes.rowCount === 1) {
 			return res.status(200).send('you have successfully created a user');
+    }
+
+	  return res.status(404).json({ error: 'db error' });
+
 	} catch (err) {
 		return res.status(404).json({ error: err });
 	}
@@ -26,7 +30,7 @@ export const deleteUserById = async (req: any, res: any) => {
 			[req.params.userId]
 		);
 
-		if (deleteUserRes.rowCount === 0)
+		if (deleteUserRes.rowCount <= 0)
 			return res.status(404).send('There is no such user');
 
 		if (deleteUserRes.rowCount === 1)
@@ -52,7 +56,7 @@ export const getUserById = async (req: any, res: any) => {
 			[req.params.userId]
 		);
 
-		if (getUserRes.rowCount === 0)
+		if (getUserRes.rowCount <= 0)
 			return res.status(404).send('There is no such user');
 
 		if (getUserRes.rowCount === 1)
@@ -77,7 +81,7 @@ export const updateUserById = async (req: any, res: any) => {
       `,
 			[req.body.userName, req.body.profileImgUrl, req.params.userId]
 		);
-		if (updateUserRes.rowCount === 0)
+		if (updateUserRes.rowCount <= 0)
 			return res.status(404).send('There is no such user');
 
 		if (updateUserRes.rowCount === 1)

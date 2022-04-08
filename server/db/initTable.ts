@@ -68,11 +68,11 @@ const initCollection_User_Relationships = async () => {
         END $$;
 
         CREATE TABLE IF NOT EXISTS collection_user_relationships (
-          "id" SERIAL PRIMARY KEY,
           "collectionId" int NOT NULL,
           "userId" int NOT NULL,
           "permission" permission_t NOT NULL,
     
+          CONSTRAINT "collectionUserConstraint" PRIMARY KEY ("collectionId", "userId"),
           FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId"),
           FOREIGN KEY ("userId") REFERENCES "users"("userId")
         );
