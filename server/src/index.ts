@@ -4,6 +4,7 @@ const { Client } = require('pg');
 import { initTables } from '../db/initTable';
 const userRoute = require('../routes/users');
 const collectionRoute = require('../routes/collections');
+const giffyRoute = require('../routes/giffies');
 
 export const client = new Client({
 	user: 'postgres',
@@ -31,7 +32,7 @@ export const client = new Client({
 
 	app.use('/users', userRoute);
 	app.use('/collections', collectionRoute);
-	// app.use('/giffies', userRoute);
+	app.use('/giffies', giffyRoute);
 	// app.use('/collection_user_relationships', userRoute);
 
 	app.listen(4000, () => {

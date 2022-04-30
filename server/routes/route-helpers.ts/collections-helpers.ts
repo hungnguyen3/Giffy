@@ -1,4 +1,3 @@
-import internal from 'stream';
 import { client } from '../../src/index';
 
 export const createCollection = async (req: any, res: any) => {
