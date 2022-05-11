@@ -5,11 +5,11 @@ export const createGiffy = async (req: any, res: any) => {
 	try {
 		const createGiffy = await client.query(
 			`
-      INSERT INTO giffies ("collectionId", "firebaseUrl", "likes")
+      INSERT INTO giffies ("giffyId", "firebaseUrl", "likes")
       VALUES ($1, $2)
       RETURNING *;
       `,
-			[req.body.collectionId, req.body.firebaseUrl, 0]
+			[req.body.giffyId, req.body.firebaseUrl, 0]
 		);
 
 		if (createGiffy.rowCount === 1) {
@@ -22,9 +22,31 @@ export const createGiffy = async (req: any, res: any) => {
 	}
 };
 
-const deleteGiffyUtil = async (collectionId: number, res: any) => {};
+export const deleteGiffyById = async (req: any, res: any) => {
+	try {
+		const deleteGiffyRes = await client.query(
+			`
+			  DELETE FROM giffies WHERE "giffyId" = $1;
+		  `,
+			[req.body.giffyId]
+		);
 
-export const deleteGiffyById = async (req: any, res: any) => {};
+		if (deleteGiffyRes.rowCount <= 0)
+			return res.status(404).send('There is no such giffy');
+
+		if (deleteGiffyRes.rowCount === 1)
+			return res
+				.status(200)
+				.send('you have successfully deleted a giffy uid: ' + req.body.giffyId);
+
+		if (deleteGiffyRes.rowCount > 1)
+			return res
+				.status(404)
+				.send('error occurred, more than one giffy with the same id');
+	} catch (err) {
+		return res.status(404).json({ error: err });
+	}
+};
 
 export const getGiffyById = async (req: any, res: any) => {};
 
