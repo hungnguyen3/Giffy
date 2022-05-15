@@ -92,57 +92,68 @@ export const deleteCollectionById = async (req: any, res: any) => {
 };
 
 export const getCollectionById = async (req: any, res: any) => {
-	await client
-		.query(
+	try {
+		if (!req.params.collectionId)
+			return res.status(400).send('missing required parameter(s)');
+
+		const getCollectionRes = await client.query(
 			`
 		    SELECT* FROM collections WHERE "collectionId" = $1;
 		  `,
 			[req.params.collectionId]
-		)
-		.then((dbRes: any) => {
-			if (dbRes.rowCount === 0)
-				res.status(404).send('There is no such collection');
+		);
 
-			if (dbRes.rowCount === 1) res.status(200).send(dbRes.rows[0]);
+		if (getCollectionRes.rowCount === 0)
+			res.status(404).send('There is no such collection');
 
-			if (dbRes.rowCount > 1)
-				res
-					.status(404)
-					.send('error occurred, more than one collection with the same id');
-		})
-		.catch((e: any) => res.status(404).json({ error: e }));
+		if (getCollectionRes.rowCount === 1)
+			res.status(200).send(getCollectionRes.rows[0]);
+
+		if (getCollectionRes.rowCount > 1)
+			res
+				.status(404)
+				.send('error occurred, more than one collection with the same id');
+	} catch (err) {
+		res.status(404).json({ error: err });
+	}
 };
 
 export const updateCollectionById = async (req: any, res: any) => {
-	await client
-		.query(
+	try {
+		if (
+			!req.params.collectionId ||
+			!req.body.collectionName ||
+			!req.body.profileImgUrl ||
+			!req.params.collectionId
+		)
+			return res.status(400).send('missing required parameter(s)');
+
+		const updateCollectionRes = await client.query(
 			`
         UPDATE collections
         SET "collectionName" = COALESCE($1, "collectionName"), "profileImgUrl"= COALESCE($2, "profileImgUrl")
         WHERE "collectionId" = $3;
       `,
 			[req.body.collectionName, req.body.profileImgUrl, req.params.collectionId]
-		)
-		.then((dbRes: any) => {
-			if (dbRes.rowCount === 0)
-				res.status(404).send('There is no such collection');
+		);
+		if (updateCollectionRes.rowCount === 0)
+			res.status(404).send('There is no such collection');
 
-			if (dbRes.rowCount === 1) {
-				res
-					.status(200)
-					.send(
-						'you have successfully update a collection uid: ' +
-							req.params.collectionId
-					);
-			}
+		if (updateCollectionRes.rowCount === 1) {
+			res
+				.status(200)
+				.send(
+					'you have successfully update a collection uid: ' +
+						req.params.collectionId
+				);
+		}
 
-			if (dbRes.rowCount > 1) {
-				res
-					.status(404)
-					.send('error occurred, more than one collection with the same id');
-			}
-		})
-		.catch((e: any) => {
-			res.status(404).json({ error: e });
-		});
+		if (updateCollectionRes.rowCount > 1) {
+			res
+				.status(404)
+				.send('error occurred, more than one collection with the same id');
+		}
+	} catch (err) {
+		res.status(404).json({ error: err });
+	}
 };

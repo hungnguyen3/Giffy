@@ -2,6 +2,13 @@ import { client } from '../../src/index';
 
 export const createUser = async (req: any, res: any) => {
 	try {
+		if (
+			!req.body.userName ||
+			!req.body.firebaseAuthId ||
+			!req.body.profileImgUrl
+		)
+			return res.status(400).send('missing required parameter(s)');
+
 		const insertUserRes = await client.query(
 			`
         INSERT INTO users ("userName", "firebaseAuthId", "profileImgUrl")
@@ -22,6 +29,9 @@ export const createUser = async (req: any, res: any) => {
 
 export const deleteUserById = async (req: any, res: any) => {
 	try {
+		if (!req.params.userId)
+			return res.status(400).send('missing required parameter(s)');
+
 		const deleteUserRes = await client.query(
 			`
 			  DELETE FROM users WHERE "userId" = $1;
@@ -48,6 +58,9 @@ export const deleteUserById = async (req: any, res: any) => {
 
 export const getUserById = async (req: any, res: any) => {
 	try {
+		if (!req.params.userId)
+			return res.status(400).send('missing required parameter(s)');
+
 		const getUserRes = await client.query(
 			`
 		      SELECT* FROM users WHERE "userId" = $1;
@@ -72,6 +85,9 @@ export const getUserById = async (req: any, res: any) => {
 
 export const updateUserById = async (req: any, res: any) => {
 	try {
+		if (!req.params.userId || !req.body.userName || !req.body.profileImgUrl)
+			return res.status(400).send('missing required parameter(s)');
+
 		const updateUserRes = await client.query(
 			`
         UPDATE users
