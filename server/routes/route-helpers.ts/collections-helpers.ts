@@ -4,6 +4,9 @@ export const createCollection = async (req: any, res: any) => {
 	let collectionId = -1;
 	let collection_userId = -1;
 	try {
+		if (!req.body.collectionName || !req.body.privacy || !req.body.userId)
+			return res.status(400).send('missing required parameter(s)');
+
 		const createCollectionRes = await client.query(
 			`
         INSERT INTO collections ("collectionName", "privacy")
@@ -55,6 +58,9 @@ export const createCollection = async (req: any, res: any) => {
 
 const deleteCollectionUtil = async (collectionId: number, res: any) => {
 	try {
+		if (!collectionId)
+			return res.status(400).send('missing required parameter(s)');
+
 		const deleteCollectionRes = await client.query(
 			`
 			  DELETE FROM collections WHERE "collectionId" = $1;
