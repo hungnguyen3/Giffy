@@ -4,7 +4,7 @@ export const initTables = async () => {
 	await initCollections();
 	await initGiffies();
 	await initUsers();
-	await initCollections_Users();
+	await initCollection_User_Relationships();
 };
 
 const initCollections = async () => {
@@ -14,7 +14,7 @@ const initCollections = async () => {
         CREATE TABLE IF NOT EXISTS collections (
           "collectionId" SERIAL PRIMARY KEY,
           "collectionName" varchar(255) NOT NULL,
-          "private" boolean NOT NULL
+          "privacy" boolean NOT NULL
         );
       `
 		)
@@ -57,24 +57,24 @@ const initUsers = async () => {
 		.catch((e: any) => console.error(e.stack));
 };
 
-const initCollections_Users = async () => {
+const initCollection_User_Relationships = async () => {
 	await client
 		.query(
 			`
         DO $$ BEGIN
-        CREATE TYPE permissions_t AS ENUM('read', 'write', 'admin');
+        CREATE TYPE permission_t AS ENUM('read', 'write', 'admin');
         EXCEPTION
           WHEN duplicate_object THEN null;
         END $$;
 
-        CREATE TABLE IF NOT EXISTS collections_users (
-          "id" SERIAL PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS collection_user_relationships (
           "collectionId" int NOT NULL,
           "userId" int NOT NULL,
-          "permissions" permissions_t NOT NULL,
+          "permission" permission_t NOT NULL,
     
-          FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId"),
-          FOREIGN KEY ("userId") REFERENCES "users"("userId")
+          CONSTRAINT "collectionUserConstraint" PRIMARY KEY ("collectionId", "userId"),
+          FOREIGN KEY ("collectionId") REFERENCES "collections"("collectionId") ON DELETE CASCADE,
+          FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE CASCADE
         );
       `
 		)
