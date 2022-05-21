@@ -15,6 +15,13 @@
 
 	a {
 		color: white;
+		width: 100%;
+		justify-content: center;
+		padding: 0.5em;
+		text-align: center;
+		&:hover {
+			background-color: #2f2e2e;
+		}
 	}
 
 	.btn {
@@ -35,12 +42,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+		&:hover {
+			background-color: RoyalBlue;
+		}
 	}
 
-	.btn:hover {
-		background-color: RoyalBlue;
-	}
-
+	// to clear the bullet point before link
 	ul {
 		list-style-type: none;
 	}
