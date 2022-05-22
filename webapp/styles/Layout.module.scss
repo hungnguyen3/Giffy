@@ -1,3 +1,14 @@
 .background {
 	z-index: 0;
+	height: 100%;
+	.navBars {
+		display: flex;
+		align-items: flex-start;
+		flex-direction: row;
+		margin: 0 auto;
+	}
+
+	html {
+		height: 100%;
+	}
 }
