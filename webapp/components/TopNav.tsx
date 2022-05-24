@@ -12,7 +12,9 @@ const TopNav = () => {
 				<div className={styles.leftPart}>
 					<div className={styles.mainTitle}>
 						<Link href="/">
-							<h1>Giffy</h1>
+							<a>
+								<h1>Giffy</h1>
+							</a>
 						</Link>
 					</div>
 

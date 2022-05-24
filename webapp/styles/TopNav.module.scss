@@ -12,6 +12,12 @@
 		align-items: center;
 		.mainTitle {
 			margin: 0 3vw;
+
+			a:hover {
+				h1 {
+					text-decoration: underline;
+				}
+			}
 		}
 
 		.searchContainer {
@@ -45,6 +51,7 @@
 		justify-content: flex-end;
 
 		.userButton {
+			margin-right: 1vw;
 			padding: 0;
 			width: 50px;
 			border: 0;
