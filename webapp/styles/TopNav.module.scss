@@ -1,37 +1,40 @@
 .TopNav {
-	position: relative;
-	width: 100vw;
 	padding: 1vh;
-	overflow: auto;
 	background-color: #e9e9e9;
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	z-index: 1;
+	flex-grow: 1;
 
-	.mainTitle {
-		margin: 0 3vw;
-	}
-
-	.searchContainer {
-		float: left;
-		margin: 0 3vw;
-		padding: 1vh 0;
-
-		input[type='text'] {
-			padding: 6px;
-			font-size: 17px;
-			border: none;
+	.leftPart {
+		display: flex;
+		align-items: center;
+		.mainTitle {
+			margin: 0 3vw;
 		}
 
-		button {
-			float: right;
-			padding: 6px 10px;
-			background: #ddd;
-			font-size: 17px;
-			border: none;
-			cursor: pointer;
+		.searchContainer {
+			margin: 0 3vw;
+			padding: 1vh 0;
 
-			&:hover {
-				background: #ccc;
+			input[type='text'] {
+				padding: 6px;
+				font-size: 17px;
+				border: none;
+			}
+
+			button {
+				float: right;
+				padding: 6px 10px;
+				background: #ddd;
+				font-size: 17px;
+				border: none;
+				cursor: pointer;
+
+				&:hover {
+					background: #ccc;
+				}
 			}
 		}
 	}
@@ -54,11 +57,12 @@
 		.dropdown {
 			position: absolute;
 			top: 100%;
-			left: 0;
+			right: 0;
 			width: 300px;
 			z-index: 2;
 			border: 1px solid rgba(0, 0, 0, 0.04);
 			box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14);
+			background-color: white;
 
 			ul {
 				list-style: none;

@@ -6,19 +6,21 @@ const TopNav = () => {
 	return (
 		<nav>
 			<div className={styles.TopNav}>
-				<div className={styles.mainTitle}>
-					<Link href="/">
-						<h1>Giffy</h1>
-					</Link>
-				</div>
+				<div className={styles.leftPart}>
+					<div className={styles.mainTitle}>
+						<Link href="/">
+							<h1>Giffy</h1>
+						</Link>
+					</div>
 
-				<div className={styles.searchContainer}>
-					<form action="/action_page.php">
-						<input type="text" placeholder="Search.." name="search" />
-						<button type="submit">
-							<FcSearch></FcSearch>
-						</button>
-					</form>
+					<div className={styles.searchContainer}>
+						<form action="/action_page.php">
+							<input type="text" placeholder="Search.." name="search" />
+							<button type="submit">
+								<FcSearch></FcSearch>
+							</button>
+						</form>
+					</div>
 				</div>
 				<div className={styles.menuContainer}>
 					<button type="button" className={styles.userButton}>

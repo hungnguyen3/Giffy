@@ -9,11 +9,11 @@ interface LayoutProps {
 const Layout = (props: LayoutProps) => {
 	return (
 		<div className={styles.background}>
-			<div className={styles.navBars}>
-				<SideNav width={'20%'} />
+			<SideNav width={'20%'} />
+			<div className={styles.flexView}>
 				<TopNav />
+				{props.children}
 			</div>
-			{props.children}
 		</div>
 	);
 };
