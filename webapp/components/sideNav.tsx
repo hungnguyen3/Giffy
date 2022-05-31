@@ -20,25 +20,18 @@ const SideNav = (props: SideNavProps) => {
 	return (
 		<div className={styles.sideNav} style={{ width: width }}>
 			<div>
-				{width >= props.width ? (
-					<button
-						className={styles.btn}
-						onClick={() => {
+				<button
+					className={styles.btn}
+					onClick={() => {
+						if (width >= props.width) {
 							closeNav();
-						}}
-					>
-						<BiLeftArrow></BiLeftArrow>
-					</button>
-				) : (
-					<button
-						className={styles.btn}
-						onClick={() => {
+						} else {
 							openNav();
-						}}
-					>
-						<BiRightArrow></BiRightArrow>
-					</button>
-				)}
+						}
+					}}
+				>
+					{width >= props.width ? <BiLeftArrow /> : <BiRightArrow />}
+				</button>
 			</div>
 
 			<Link href="/collections">

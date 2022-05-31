@@ -4,8 +4,8 @@ import { FiUser } from 'react-icons/fi';
 import Link from 'next/link';
 import { useState } from 'react';
 
-const TopNav = () => {
-	const [open, setOpen] = useState(false);
+const Header = () => {
+	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 	return (
 		<nav>
 			<div className={styles.TopNav}>
@@ -32,12 +32,12 @@ const TopNav = () => {
 						type="button"
 						className={styles.userButton}
 						onClick={() => {
-							setOpen(!open);
+							setIsUserMenuOpen(!open);
 						}}
 					>
 						<FiUser />
 					</button>
-					{open ? (
+					{isUserMenuOpen ? (
 						<div className={styles.dropdown}>
 							<ul>
 								<li>Option 1</li>
@@ -55,4 +55,4 @@ const TopNav = () => {
 	);
 };
 
-export default TopNav;
+export default Header;

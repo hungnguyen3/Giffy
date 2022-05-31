@@ -1,6 +1,6 @@
 import styles from '../styles/Layout.module.scss';
-import SideNav from './sideNav';
-import TopNav from './TopNav';
+import SideNav from './SideNav';
+import Header from './Header';
 
 interface LayoutProps {
 	children: JSX.Element[] | JSX.Element;
@@ -11,7 +11,7 @@ const Layout = (props: LayoutProps) => {
 		<div className={styles.background}>
 			<SideNav width={'20%'} />
 			<div className={styles.flexView}>
-				<TopNav />
+				<Header />
 				{props.children}
 			</div>
 		</div>
