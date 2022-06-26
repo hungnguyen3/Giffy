@@ -32,7 +32,7 @@ const Header = () => {
 						type="button"
 						className={styles.userButton}
 						onClick={() => {
-							setIsUserMenuOpen(!open);
+							setIsUserMenuOpen(!isUserMenuOpen);
 						}}
 					>
 						<FiUser />
@@ -40,10 +40,8 @@ const Header = () => {
 					{isUserMenuOpen ? (
 						<div className={styles.dropdown}>
 							<ul>
-								<li>Option 1</li>
-								<li>Option 2</li>
-								<li>Option 3</li>
-								<li>Option 4</li>
+								<li>Login</li>
+								<li>Settings</li>
 							</ul>
 						</div>
 					) : (
