@@ -3,13 +3,14 @@ import { FcSearch } from 'react-icons/fc';
 import { FiUser } from 'react-icons/fi';
 import Link from 'next/link';
 import { useState } from 'react';
+import { googleSignIn } from './Firebase/FirebaseInit';
 
 const Header = () => {
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 	return (
 		<nav>
 			<div className={styles.TopNav}>
-				<div className={styles.leftPart}>
+					<div className={styles.leftPart}>
 					<div className={styles.mainTitle}>
 						<Link href="/">
 							<a>
@@ -40,7 +41,7 @@ const Header = () => {
 					{isUserMenuOpen ? (
 						<div className={styles.dropdown}>
 							<ul>
-								<li>Login</li>
+								<button onClick={googleSignIn}>Login</button>
 								<li>Settings</li>
 							</ul>
 						</div>
