@@ -6,6 +6,7 @@ import {
 	Auth,
 	AuthProvider,
 } from 'firebase/auth';
+import { getStorage, ref } from 'firebase/storage';
 
 const firebaseConfig = {
 	apiKey: process.env.NEXT_PUBLIC_APIKEY,
@@ -38,3 +39,7 @@ export const googleSignIn = () => {
 			const credential = GoogleAuthProvider.credentialFromError(error);
 		});
 };
+
+export const storage = getStorage(app);
+
+const storageRef = ref(storage);
