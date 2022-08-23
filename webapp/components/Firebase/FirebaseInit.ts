@@ -3,10 +3,9 @@ import {
 	getAuth,
 	signInWithPopup,
 	GoogleAuthProvider,
-	Auth,
-	AuthProvider,
+	signOut,
 } from 'firebase/auth';
-import { getStorage, ref } from 'firebase/storage';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
 	apiKey: process.env.NEXT_PUBLIC_APIKEY,
@@ -27,10 +26,10 @@ const provider = new GoogleAuthProvider();
 export const googleSignIn = () => {
 	signInWithPopup(auth, provider)
 		.then(result => {
+			alert('Successfully signed in');
 			const credential = GoogleAuthProvider.credentialFromResult(result);
 			const token = credential?.accessToken;
 			const user = result.user;
-			// ...
 		})
 		.catch(error => {
 			const errorCode = error.code;
@@ -40,6 +39,14 @@ export const googleSignIn = () => {
 		});
 };
 
-export const storage = getStorage(app);
+export const logOut = () => {
+	signOut(auth)
+		.then(() => {
+			alert('Successfully signed out');
+		})
+		.catch(error => {
+			alert('Encountered an error while signing out');
+		});
+};
 
-const storageRef = ref(storage);
+export const storage = getStorage(app);

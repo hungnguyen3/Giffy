@@ -1,28 +1,36 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { User } from 'firebase/auth';
 
-const auth = getAuth();
-onAuthStateChanged(auth, user => {
-	if (user) {
-		// User is signed in, see docs for a list of available properties
-		// https://firebase.google.com/docs/reference/js/firebase.User
-		const uid = user.uid;
-		// ...
-	} else {
-		// User is signed out
-		// ...
-	}
-});
+export type UserAuth = Pick<User, 'uid' | 'email' | 'displayName' | 'photoURL'>;
+
+interface UserAuthState {
+	value: UserAuth | null;
+}
+
+const initialState: UserAuthState = {
+	value: null,
+};
 
 export const userAuthSlice = createSlice({
 	name: 'userAuth',
-	initialState: {
-		value: 0,
+	initialState,
+	reducers: {
+		logIn: (
+			state,
+			action: {
+				payload: UserAuth | null;
+				type: string;
+			}
+		) => {
+			const userAuthValue: UserAuth | null = action.payload;
+			state.value = userAuthValue;
+		},
+		logOut: state => {
+			state.value = null;
+		},
 	},
-	reducers: {},
 });
 
-// Action creators are generated for each case reducer function
-export const {} = userAuthSlice.actions;
+export const { logIn, logOut } = userAuthSlice.actions;
 
 export default userAuthSlice.reducer;
