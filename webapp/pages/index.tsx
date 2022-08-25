@@ -8,6 +8,9 @@ const Home: NextPage = () => {
 	const count = useSelector((state: RootState) => state.counter.value);
 	const dispatch = useDispatch();
 
+	// how to return different layout based on the state of userAuth?
+	// return <Layout>{userAuth ? <FileUploadBox /> : <div></div>}</Layout>;
+
 	return (
 		<Layout>
 			<div></div>
