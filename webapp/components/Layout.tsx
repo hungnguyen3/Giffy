@@ -4,6 +4,7 @@ import Header from './Header';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { logIn, logOut } from '../slices/UserAuthSlice';
+import { useState } from 'react';
 
 interface LayoutProps {
 	children: JSX.Element[] | JSX.Element;
@@ -12,6 +13,7 @@ interface LayoutProps {
 const Layout = (props: LayoutProps) => {
 	const auth = getAuth();
 	const dispatch = useDispatch();
+	const [loggedIn, setLoggedIn] = useState(false);
 
 	onAuthStateChanged(auth, user => {
 		if (user) {
@@ -22,8 +24,10 @@ const Layout = (props: LayoutProps) => {
 				photoURL: user.uid,
 			};
 			dispatch(logIn(userAuth));
+			setLoggedIn(true);
 		} else {
 			dispatch(logOut());
+			setLoggedIn(false);
 		}
 	});
 
@@ -32,7 +36,7 @@ const Layout = (props: LayoutProps) => {
 			<SideNav width={'20%'} />
 			<div className={styles.flexView}>
 				<Header />
-				{props.children}
+				{loggedIn ? props.children : <div>You're not signed in yet!</div>}
 			</div>
 		</div>
 	);
