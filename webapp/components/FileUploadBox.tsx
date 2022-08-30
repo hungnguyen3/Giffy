@@ -89,31 +89,35 @@ const FileUploadBox = () => {
 							accept="image/*"
 						/>
 						<div className={styles.dragText}>
-							<h3>Drag and drop a file or select add Image</h3>
+							<h3>Drag and drop a file or click here</h3>
 						</div>
 					</div>
 				)}
 
-				<button
-					className={styles.fileUploadBtn}
-					onClick={() => {
-						if (selectedFile) {
-							const storageRef = ref(storage, `images/${selectedFile.name}`);
+				<div className={styles.buttonContainer}>
+					<button
+						className={styles.fileUploadBtn}
+						onClick={() => {
+							if (selectedFile) {
+								const storageRef = ref(storage, `images/${selectedFile.name}`);
 
-							uploadBytes(storageRef, selectedFile)
-								.then(snapshot => {
-									setSelectedFile(null);
-									setSelectedImgURL(null);
-									alert('Upload successfully.');
-								})
-								.catch(() => {
-									alert('Upload Failed.');
-								});
-						}
-					}}
-				>
-					Add Image
-				</button>
+								uploadBytes(storageRef, selectedFile)
+									.then(snapshot => {
+										setSelectedFile(null);
+										setSelectedImgURL(null);
+										alert('Upload successfully.');
+									})
+									.catch(() => {
+										alert('Upload Failed.');
+									});
+							} else {
+								alert('add a file first.');
+							}
+						}}
+					>
+						Add Image
+					</button>
+				</div>
 			</div>
 		</div>
 	);
