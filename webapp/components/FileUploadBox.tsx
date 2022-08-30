@@ -59,7 +59,7 @@ const FileUploadBox = () => {
 								}
 							}}
 						>
-							Remove <span className={styles.imageTitle}>Uploaded Image</span>
+							Remove
 						</button>
 					</div>
 				</div>
@@ -115,7 +115,7 @@ const FileUploadBox = () => {
 							}
 						}}
 					>
-						Add Image
+						Upload
 					</button>
 				</div>
 			</div>
