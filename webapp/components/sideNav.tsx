@@ -34,13 +34,9 @@ const SideNav = (props: SideNavProps) => {
 				</button>
 			</div>
 
-			<Link href="/collections">
-				<a>Collections</a>
-			</Link>
+			<a href="/collections">Collections</a>
 
-			<Link href="/discovery">
-				<a>Discovery</a>
-			</Link>
+			<a href="/discovery">Discovery</a>
 		</div>
 	);
 };

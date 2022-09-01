@@ -111,7 +111,7 @@ const FileUploadBox = () => {
 										alert('Upload Failed.');
 									});
 							} else {
-								alert('add a file first.');
+								alert('Select a file first.');
 							}
 						}}
 					>

@@ -1,11 +1,10 @@
 import type { NextPage } from 'next';
-import FileUploadBox from '../components/FileUploadBox';
 import Layout from '../components/Layout';
 
 const Home: NextPage = () => {
 	return (
 		<Layout>
-			<FileUploadBox />
+			<div>Home Page</div>
 		</Layout>
 	);
 };

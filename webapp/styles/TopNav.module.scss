@@ -6,6 +6,9 @@
 	justify-content: space-between;
 	z-index: 1;
 	flex-grow: 1;
+	border-bottom: 4px;
+    border-bottom-color: #c7c7c7;
+    border-bottom-style: dashed;
 
 	.leftPart {
 		display: flex;
@@ -45,17 +48,18 @@
 		}
 	}
 
-	.menuContainer {
+	.rightPart {
+		display: flex;
 		position: relative;
 		float: right;
 		justify-content: flex-end;
 
 		.userButton {
 			margin-right: 1vw;
-			padding: 0;
-			width: 50px;
-			border: 0;
-			border-radius: 50%;
+			padding: 9px 0 0 0;
+			width: 70px;
+			border: 10px;
+			border-radius: 35%;
 			background-color: #fff;
 			color: #333;
 			cursor: pointer;
@@ -66,7 +70,7 @@
 			position: absolute;
 			top: 100%;
 			right: 0;
-			width: 300px;
+			width: 170px;
 			z-index: 2;
 			border: 1px solid rgba(0, 0, 0, 0.04);
 			box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14);
@@ -78,6 +82,7 @@
 				margin: 0;
 
 				li {
+					height: 35px;
 					padding: 8px 12px;
 					&:hover {
 						background-color: rgba(0, 0, 0, 0.14);

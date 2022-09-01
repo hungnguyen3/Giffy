@@ -1,0 +1,19 @@
+.dropdown {
+    background-color: #fff;
+    width: 100%;
+    
+    
+    .iconContainer {
+        display: inline-block;
+
+        .icon {
+            height: 13px;
+        }
+    }
+    
+    .textContainer {
+        display: inline-block;
+        font-size: 13px;
+        padding-left: 10px;
+    }
+}
