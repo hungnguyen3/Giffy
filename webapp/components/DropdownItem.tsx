@@ -1,6 +1,5 @@
 import { IconType } from 'react-icons';
 import styles from '../styles/DropdownItem.module.scss';
-import { BiLogOut } from 'react-icons/bi';
 
 interface dropdownItemProps {
 	icon: IconType;

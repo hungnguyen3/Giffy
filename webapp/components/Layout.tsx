@@ -2,9 +2,11 @@ import styles from '../styles/Layout.module.scss';
 import SideNav from './SideNav';
 import Header from './Header';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logIn, logOut } from '../slices/UserAuthSlice';
 import { useState } from 'react';
+import { RootState } from '../store';
+import AccountSetting from './AccountSetting';
 
 interface LayoutProps {
 	children: JSX.Element[] | JSX.Element;
@@ -14,6 +16,9 @@ const Layout = (props: LayoutProps) => {
 	const auth = getAuth();
 	const dispatch = useDispatch();
 	const [loggedIn, setLoggedIn] = useState(false);
+	const isAccountSettingOpen = useSelector(
+		(state: RootState) => state.accountSetting.isAccountSettingOpen
+	);
 
 	onAuthStateChanged(auth, user => {
 		if (user) {
@@ -38,6 +43,11 @@ const Layout = (props: LayoutProps) => {
 				<Header />
 				{loggedIn ? props.children : <div>You're not signed in yet!</div>}
 			</div>
+			{isAccountSettingOpen ? (
+				<div className={styles.settingWindow}>
+					<AccountSetting />
+				</div>
+			) : null}
 		</div>
 	);
 };

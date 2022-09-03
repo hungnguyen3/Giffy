@@ -1,17 +1,22 @@
-import styles from '../styles/TopNav.module.scss';
+import styles from '../styles/Header.module.scss';
 import { FcSearch } from 'react-icons/fc';
 import { useEffect, useRef, useState } from 'react';
 import { googleSignIn, logOut } from './Firebase/FirebaseInit';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { VscAccount } from 'react-icons/vsc';
 import { BiLogIn, BiLogOut } from 'react-icons/bi';
 import { FiSettings } from 'react-icons/fi';
 import DropdownItem from './DropdownItem';
+import {
+	open as openAccountSetting,
+	close as closeAccountSetting,
+} from '../slices/AccountSettingSlice';
 
 const Header = () => {
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 	const userAuth = useSelector((state: RootState) => state.userAuth.value);
+	const dispatch = useDispatch();
 
 	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
 
@@ -37,7 +42,7 @@ const Header = () => {
 
 	return (
 		<nav>
-			<div className={styles.TopNav}>
+			<div className={styles.header}>
 				<div className={styles.leftPart}>
 					<div className={styles.mainTitle}>
 						<a href="/">
@@ -54,17 +59,17 @@ const Header = () => {
 						</form>
 					</div>
 				</div>
-				<div className={styles.rightPart}>
-					<div className={styles.dropdownBlock} ref={dropdownBlockRef}>
-						<button
-							type="button"
-							className={styles.userButton}
-							onClick={() => {
-								setIsUserMenuOpen(!isUserMenuOpen);
-							}}
-						>
+
+				<div
+					className={styles.rightPart}
+					onClick={() => {
+						setIsUserMenuOpen(!isUserMenuOpen);
+					}}
+				>
+					<div className={styles.dropdownContainer} ref={dropdownBlockRef}>
+						<div className={styles.userButton}>
 							<VscAccount />
-						</button>
+						</div>
 						{isUserMenuOpen ? (
 							<div className={styles.dropdown}>
 								<ul>
@@ -79,7 +84,11 @@ const Header = () => {
 											<DropdownItem icon={BiLogIn} text={'Log in'} />
 										</li>
 									)}
-									<li>
+									<li
+										onClick={() => {
+											// dispatch(openAccountSetting());
+										}}
+									>
 										<DropdownItem icon={FiSettings} text={'Setting'} />
 									</li>
 								</ul>
@@ -88,10 +97,21 @@ const Header = () => {
 							<div></div>
 						)}
 					</div>
+
+					<div className={styles.userMenuTextContainer}>
+						<ul className={styles.userMenuText}>
+							<li className={styles.userID}>userID#721712817921727139</li>
+							<li className={styles.secondaryText}>secondary text</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</nav>
 	);
 };
+
+// TODO: style userMenuText
+// TODO: style userMenuText
+// TODO: style userMenuText
 
 export default Header;
