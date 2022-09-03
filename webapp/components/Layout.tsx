@@ -2,39 +2,42 @@ import styles from '../styles/Layout.module.scss';
 import SideNav from './SideNav';
 import Header from './Header';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useDispatch, useSelector } from 'react-redux';
-import { logIn, logOut } from '../slices/UserAuthSlice';
-import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { useEffect, useState } from 'react';
 import { RootState } from '../store';
-import AccountSetting from './AccountSetting';
+import AccountSettings from './AccountSettings';
+import { app } from './Firebase/FirebaseInit';
+import { logIn, logOut } from '../slices/UserAuthSlice';
 
 interface LayoutProps {
 	children: JSX.Element[] | JSX.Element;
 }
 
 const Layout = (props: LayoutProps) => {
-	const auth = getAuth();
-	const dispatch = useDispatch();
+	const auth = getAuth(app);
 	const [loggedIn, setLoggedIn] = useState(false);
-	const isAccountSettingOpen = useSelector(
+	const dispatch = useAppDispatch();
+	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
 	);
 
-	onAuthStateChanged(auth, user => {
-		if (user) {
-			const userAuth = {
-				uid: user.uid,
-				email: user.uid,
-				displayName: user.uid,
-				photoURL: user.uid,
-			};
-			dispatch(logIn(userAuth));
-			setLoggedIn(true);
-		} else {
-			dispatch(logOut());
-			setLoggedIn(false);
-		}
-	});
+	useEffect(() => {
+		onAuthStateChanged(auth, user => {
+			if (user) {
+				const userAuth = {
+					uid: user.uid,
+					email: user.uid,
+					displayName: user.uid,
+					photoURL: user.uid,
+				};
+				dispatch(logIn(userAuth));
+				setLoggedIn(true);
+			} else {
+				dispatch(logOut());
+				setLoggedIn(false);
+			}
+		});
+	}, []);
 
 	return (
 		<div className={styles.background}>
@@ -45,7 +48,7 @@ const Layout = (props: LayoutProps) => {
 			</div>
 			{isAccountSettingOpen ? (
 				<div className={styles.settingWindow}>
-					<AccountSetting />
+					<AccountSettings />
 				</div>
 			) : null}
 		</div>

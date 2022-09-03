@@ -1,5 +1,4 @@
 import styles from '../styles/SideNav.module.scss';
-import Link from 'next/link';
 import { useState } from 'react';
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
 

@@ -2,23 +2,19 @@ import styles from '../styles/Header.module.scss';
 import { FcSearch } from 'react-icons/fc';
 import { useEffect, useRef, useState } from 'react';
 import { googleSignIn, logOut } from './Firebase/FirebaseInit';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
 import { VscAccount } from 'react-icons/vsc';
 import { BiLogIn, BiLogOut } from 'react-icons/bi';
 import { FiSettings } from 'react-icons/fi';
 import DropdownItem from './DropdownItem';
-import {
-	open as openAccountSetting,
-	close as closeAccountSetting,
-} from '../slices/AccountSettingSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { open as openAccountSetting } from '../slices/AccountSettingSlice';
+import { RootState } from '../store';
 
 const Header = () => {
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-	const userAuth = useSelector((state: RootState) => state.userAuth.value);
-	const dispatch = useDispatch();
-
 	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
+	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
+	const dispatch = useAppDispatch();
 
 	// Track events outside scope
 	const clickOutside = (event: TouchEvent | MouseEvent) => {
@@ -76,8 +72,6 @@ const Header = () => {
 									{userAuth ? (
 										<li onClick={logOut} className={styles.login}>
 											<DropdownItem icon={BiLogOut} text={'Log out'} />
-											{/* <BiLogOut />
-										Log out */}
 										</li>
 									) : (
 										<li onClick={googleSignIn} className={styles.login}>
@@ -86,7 +80,7 @@ const Header = () => {
 									)}
 									<li
 										onClick={() => {
-											// dispatch(openAccountSetting());
+											dispatch(openAccountSetting());
 										}}
 									>
 										<DropdownItem icon={FiSettings} text={'Setting'} />
