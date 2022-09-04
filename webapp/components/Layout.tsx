@@ -1,4 +1,4 @@
-import styles from '../styles/Layout.module.scss';
+import layoutStyles from '../styles/Layout.module.scss';
 import SideNav from './SideNav';
 import Header from './Header';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -40,14 +40,14 @@ const Layout = (props: LayoutProps) => {
 	}, []);
 
 	return (
-		<div className={styles.background}>
+		<div className={layoutStyles.background}>
 			<SideNav width={'20%'} />
-			<div className={styles.flexView}>
+			<div className={layoutStyles.flexView}>
 				<Header />
 				{loggedIn ? props.children : <div>You're not signed in yet!</div>}
 			</div>
 			{isAccountSettingOpen ? (
-				<div className={styles.settingWindow}>
+				<div className={layoutStyles.settingWindow}>
 					<AccountSettings />
 				</div>
 			) : null}

@@ -1,4 +1,4 @@
-import styles from '../styles/AccountSetting.module.scss';
+import accountSettingsStyles from '../styles/AccountSettings.module.scss';
 import { close as closeAccountSetting } from '../slices/AccountSettingSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
@@ -8,18 +8,16 @@ const AccountSettings = () => {
 	const dispatch = useAppDispatch();
 
 	return (
-		<div className={styles.accountSettingWindow}>
-			<div className={styles.accountSetting}>
-				<span
-					className={styles.closeIcon}
-					onClick={() => {
-						dispatch(closeAccountSetting());
-					}}
-				>
-					x
-				</span>
-				{userAuth?.displayName}
-			</div>
+		<div className={accountSettingsStyles.accountSettingsWindow}>
+			<span
+				className={accountSettingsStyles.closeIcon}
+				onClick={() => {
+					dispatch(closeAccountSetting());
+				}}
+			>
+				x
+			</span>
+			{userAuth?.displayName}
 		</div>
 	);
 };

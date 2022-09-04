@@ -10,9 +10,6 @@ const Home: NextPage = () => {
 	return (
 		<Layout>
 			<div>Home Page</div>
-			<div>{count}</div>
-			<button onClick={() => dispatch(increment())}>+</button>
-			<button onClick={() => dispatch(decrement())}>-</button>
 		</Layout>
 	);
 };
