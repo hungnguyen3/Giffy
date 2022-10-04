@@ -1,0 +1,148 @@
+.fileUploadBody {
+    font-family: sans-serif;
+    background-color: #e9e9e9;
+	border: 37px solid #e9e9e9;
+	border-bottom-left-radius: 17px;
+	border-bottom-right-radius: 17px;
+	
+	.fileUploadContent {
+
+		background-color: #ffffff;
+		margin: 0 auto;
+		padding-top: 10px;
+		padding-left: 10px;
+		padding-right: 10px;
+		border-top-left-radius: 17px;
+		border-top-right-radius: 17px;
+
+		.imgPreviewWrapper {
+			background-color: #ffffff;
+			// width: 700px;
+			// height: 90px;
+			margin: 0 auto;
+			padding-top: 10px;
+			padding-left: 10px;
+			padding-right: 10px;
+			text-align: center;
+			border-top-left-radius: 17px;
+			border-top-right-radius: 17px;
+			// border-bottom: 17px;
+	
+			.previewImg {
+				max-height: 170px;
+				max-width: 500px;
+				margin: auto;
+				padding: 10px;
+			}
+		}
+
+		.imageTitleWrap {
+			padding-top: 10px;
+			padding-left: 10px;
+			padding-right: 10px;
+			color: #222;
+			text-align: center;
+
+			.removeImage {
+				width: 70%;
+				margin: 0;
+				color: #fff;
+				background: #cd4535;
+				border: none;
+				padding: 10px;
+				border-radius: 11px;
+				border-bottom: 4px solid #b02818;
+				transition: all .2s ease;
+				outline: none;
+				text-transform: uppercase;
+				font-weight: 700;
+			}
+			
+			.removeImage:hover {
+				background: #c13b2a;
+				color: #ffffff;
+				transition: all .2s ease;
+				cursor: pointer;
+			}
+			
+			.removeImage:active {
+				border: 0;
+				transition: all .2s ease;
+			}
+		}
+	}
+	
+
+	.fileUpload {
+		background-color: #ffffff;
+		// width: 700px;
+		// height: 170px;
+		margin: 0 auto;
+		padding: 15px;
+		border-bottom-left-radius: 17px;
+		border-bottom-right-radius: 17px;
+		// text-align: center;
+		// border-radius: 17px;
+		
+		.imageUploadWrap {
+			margin-top: 10px;
+			margin-bottom: 17px;
+			border: 4px dashed #1FB264;
+			position: relative;
+
+			.fileUploadInput {
+				position: absolute;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				outline: none;
+				opacity: 0;
+				cursor: pointer;
+			}
+
+			.dragText {
+				text-align: center;
+				font-weight: 100;
+				text-transform: uppercase;
+				color: #15824B;
+				padding: 60px 0;
+			}
+		}
+		
+		.imageUploadWrap:hover {
+			background-color: #1FB264;
+			border: 4px dashed #ffffff;
+		}
+		
+		.buttonContainer {
+			text-align: center;
+
+			.fileUploadBtn {
+				width: 70%;
+				margin: 0;
+				color: #fff;
+				background: #1FB264;
+				border: none;
+				padding: 10px;
+				border-radius: 11px;
+				border-bottom: 4px solid #15824B;
+				transition: all .2s ease;
+				outline: none;
+				text-transform: uppercase;
+				font-weight: 700;
+			}
+			.fileUploadBtn:hover {
+				background: #1AA059;
+				color: #ffffff;
+				transition: all .2s ease;
+				cursor: pointer;
+			}
+		
+			.fileUploadBtn:active {
+				border: 0;
+				transition: all .2s ease;
+			}
+		}
+	}
+}

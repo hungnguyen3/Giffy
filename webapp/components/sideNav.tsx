@@ -1,5 +1,4 @@
 import styles from '../styles/SideNav.module.scss';
-import Link from 'next/link';
 import { useState } from 'react';
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
 
@@ -34,13 +33,9 @@ const SideNav = (props: SideNavProps) => {
 				</button>
 			</div>
 
-			<Link href="/collections">
-				<a>Collections</a>
-			</Link>
+			<a href="/collections">Collections</a>
 
-			<Link href="/discovery">
-				<a>Discovery</a>
-			</Link>
+			<a href="/discovery">Discovery</a>
 		</div>
 	);
 };
