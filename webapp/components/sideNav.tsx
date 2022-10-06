@@ -33,8 +33,8 @@ const SideNav = (props: SideNavProps) => {
 				</button>
 			</div>
 
+			<a href="/collections/uploadGiffy">Upload</a>
 			<a href="/collections">Collections</a>
-
 			<a href="/discovery">Discovery</a>
 		</div>
 	);
