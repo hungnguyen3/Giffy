@@ -1,23 +1,33 @@
 import type { NextPage } from 'next';
 import { useState } from 'react';
+import Collections from '.';
 import FileUploadBox from '../../components/FileUploadBox';
 import Layout from '../../components/Layout';
 import styles from '../../styles/uploadGiffy.module.scss';
 
+interface GiffyInfo {
+	collectionName: string;
+	giffyName: string;
+}
+
 const UploadGiffy: NextPage = () => {
 	const [isInputMenuOpen, setIsInputMenuOpen] = useState<boolean>(false);
+	const [giffyInfo, setGiffyInfo] = useState<GiffyInfo>(); // TODO
 	return (
 		<Layout>
 			<div className={styles.uploadBox}>
-				Collection: &nbsp;
 				<div className={styles.collections}>
+					Collection: &nbsp;
 					<input
 						type="text"
-						onClick={() => {
+						onFocus={() => {
 							setIsInputMenuOpen(!isInputMenuOpen);
 						}}
 						onBlur={() => {
 							setIsInputMenuOpen(false);
+						}}
+						onChange={event => {
+							setCollectionName(event.target.value);
 						}}
 					></input>
 					{isInputMenuOpen ? (
@@ -32,7 +42,16 @@ const UploadGiffy: NextPage = () => {
 						<div></div>
 					)}
 				</div>
-				<div></div>
+
+				<div className={styles.name}>
+					Giffy name (Optional): &nbsp;
+					<input
+						type="text"
+						onChange={event => {
+							setGiffyName(event.target.value);
+						}}
+					></input>
+				</div>
 				<FileUploadBox />
 			</div>
 		</Layout>
