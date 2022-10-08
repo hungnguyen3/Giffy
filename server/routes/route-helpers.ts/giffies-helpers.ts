@@ -2,16 +2,16 @@ import { client } from '../../src/index';
 
 export const createGiffy = async (req: any, res: any) => {
 	try {
-		if (!req.body.firebaseUrl)
+		if (!(req.body.collectionId && req.body.firebaseUrl && req.body.giffyName))
 			return res.status(400).send('missing required parameter(s)');
 
 		const createGiffy = await client.query(
 			`
-      INSERT INTO giffies ("firebaseUrl", "likes")
-      VALUES ($1, $2)
+      INSERT INTO giffies ("collectionId", "firebaseUrl", "giffyName", "likes")
+      VALUES ($1, $2, $3, $4)
       RETURNING *;
       `,
-			[req.body.firebaseUrl, 0]
+			[req.body.collectionId, req.body.firebaseUrl, req.body.giffyName, 0]
 		);
 
 		if (createGiffy.rowCount === 1) {
@@ -20,6 +20,7 @@ export const createGiffy = async (req: any, res: any) => {
 
 		return res.status(404).json({ error: 'db error' });
 	} catch (err) {
+		console.log(err);
 		return res.status(404).json({ error: err });
 	}
 };

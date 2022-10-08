@@ -4,16 +4,22 @@ export const createCollection = async (req: any, res: any) => {
 	let collectionId = -1;
 	let collection_userId = -1;
 	try {
-		if (!req.body.collectionName || !req.body.privacy || !req.body.userId)
-			return res.status(400).send('missing required parameter(s)');
+		if (
+			!(
+				req.body.collectionName &&
+				req.body.private !== undefined &&
+				req.body.userId
+			)
+		)
+			return res.status(400).send('missing required parameter(s) !!!');
 
 		const createCollectionRes = await client.query(
 			`
-        INSERT INTO collections ("collectionName", "privacy")
+        INSERT INTO collections ("collectionName", "private")
         VALUES ($1, $2)
         RETURNING *;
       `,
-			[req.body.collectionName, req.body.privacy]
+			[req.body.collectionName, req.body.private]
 		);
 
 		collectionId = createCollectionRes.rows[0].collectionId;
@@ -153,6 +159,23 @@ export const updateCollectionById = async (req: any, res: any) => {
 				.status(404)
 				.send('error occurred, more than one collection with the same id');
 		}
+	} catch (err) {
+		res.status(404).json({ error: err });
+	}
+};
+
+export const getCollectionsByUserId = async (req: any, res: any) => {
+	try {
+		if (!req.params.userId) {
+			return res.status(400).send('missing required parameter(s)');
+		}
+
+		let collectionIds = await client.query(
+			`
+		    SELECT* FROM collection_user_relationships WHERE "userId" = $1 AND ( permission = "admin"  OR permission = "write" );
+		  `,
+			[req.params.userId]
+		);
 	} catch (err) {
 		res.status(404).json({ error: err });
 	}
