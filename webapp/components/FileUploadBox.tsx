@@ -1,9 +1,12 @@
 import styles from '../styles/FileUploadBox.module.scss';
-import { ref, uploadBytes } from 'firebase/storage';
-import { useEffect, useState } from 'react';
-import { storage } from './Firebase/FirebaseInit';
 
-const FileUploadBox = () => {
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+
+interface FileUploadBoxProps {
+	setFileHolderForParent: Dispatch<SetStateAction<File | null>>;
+}
+
+const FileUploadBox = (props: FileUploadBoxProps) => {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [selectedImgURL, setSelectedImgURL] = useState<string | null>(null);
 
@@ -12,7 +15,10 @@ const FileUploadBox = () => {
 	useEffect(() => {
 		let fileReader: FileReader,
 			isCancel = false;
+
+		props.setFileHolderForParent(selectedFile);
 		if (selectedFile) {
+			// put the selectedFile into the holder of the parent
 			fileReader = new FileReader();
 			fileReader.onload = e => {
 				if (e.target) {
@@ -66,9 +72,7 @@ const FileUploadBox = () => {
 			) : null}
 
 			<div className={styles.fileUpload}>
-				{selectedFile ? (
-					console.log(selectedFile)
-				) : (
+				{selectedFile ? null : (
 					<div className={styles.imageUploadWrap}>
 						<input
 							type="file"
@@ -93,31 +97,6 @@ const FileUploadBox = () => {
 						</div>
 					</div>
 				)}
-
-				<div className={styles.buttonContainer}>
-					<button
-						className={styles.fileUploadBtn}
-						onClick={() => {
-							if (selectedFile) {
-								const storageRef = ref(storage, `images/${selectedFile.name}`);
-
-								uploadBytes(storageRef, selectedFile)
-									.then(snapshot => {
-										setSelectedFile(null);
-										setSelectedImgURL(null);
-										alert('Upload successfully.');
-									})
-									.catch(() => {
-										alert('Upload Failed.');
-									});
-							} else {
-								alert('Select a file first.');
-							}
-						}}
-					>
-						Upload
-					</button>
-				</div>
 			</div>
 		</div>
 	);
