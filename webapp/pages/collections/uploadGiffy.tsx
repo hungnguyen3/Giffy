@@ -4,24 +4,25 @@ import FileUploadBox from '../../components/FileUploadBox';
 import Layout from '../../components/Layout';
 import styles from '../../styles/uploadGiffy.module.scss';
 import { storage } from '../../components/Firebase/FirebaseInit';
-import { ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { collectionDTO } from '../../API/DTO';
-import { getCollectionsByUserId } from '../../API/serverHooks';
+import { createGiffy, getCollectionsByUserId } from '../../API/serverHooks';
 import Select from 'react-select';
+import { useAppSelector } from '../../hooks';
+import { RootState } from '../../store';
 
 interface GiffyInfo {
 	collectionId: number | null;
-	giffyName: string | null;
-	giffy: string | null;
+	giffyName: string;
 }
 
 const UploadGiffy: NextPage = () => {
 	const [giffy, setGiffy] = useState<File | null>(null);
 	const [collectionOptions, setCollectionOptions] = useState<any[]>([]);
+	const userId = useAppSelector((state: RootState) => state.user.value?.userId);
 	const [giffyInfo, setGiffyInfo] = useState<GiffyInfo>({
 		collectionId: null,
-		giffyName: null,
-		giffy: null,
+		giffyName: '',
 	});
 
 	const setCollectionIdForGiffyInfo = (selectInput: any) => {
@@ -32,20 +33,18 @@ const UploadGiffy: NextPage = () => {
 	};
 
 	useEffect(() => {
-		getCollectionsByUserId(
-			`${
-				process.env.NEXT_PUBLIC_SERVER_URL
-			}/collections/getCollectionsByUserId/${3}`
-		).then((collections: collectionDTO[]) => {
-			setCollectionOptions(
-				collections.map((collection: collectionDTO) => {
-					return {
-						value: collection.collectionId.toString(),
-						label: collection.collectionName,
-					};
-				})
-			);
-		});
+		if (userId) {
+			getCollectionsByUserId(userId).then((collections: collectionDTO[]) => {
+				setCollectionOptions(
+					collections.map((collection: collectionDTO) => {
+						return {
+							value: collection.collectionId.toString(),
+							label: collection.collectionName,
+						};
+					})
+				);
+			});
+		}
 	}, []);
 
 	return (
@@ -69,24 +68,45 @@ const UploadGiffy: NextPage = () => {
 						}}
 					></input>
 				</div>
-				<FileUploadBox setFileHolderForParent={setGiffy} />
+				<FileUploadBox
+					setFileHolderForParent={setGiffy}
+					displayText={'Drag and drop an img/gif or click here'}
+				/>
 				<div className={styles.buttonContainer}>
 					<button
 						className={styles.fileUploadBtn}
-						onClick={() => {
-							if (giffy) {
-								const storageRef = ref(storage, `images/${giffy.name}`);
+						onClick={async () => {
+							if (!giffyInfo.collectionId) {
+								alert('Choose a collection!');
+							} else if (giffy) {
+								try {
+									const storageRef = ref(storage, `images/${giffy.name}`);
+									const snapshot = await uploadBytes(storageRef, giffy);
+									const downloadURL = await getDownloadURL(snapshot.ref);
 
-								uploadBytes(storageRef, giffy)
-									.then(snapshot => {
-										console.log(snapshot);
-										alert('Upload successfully.');
-									})
-									.catch(() => {
-										alert('Upload Failed.');
-									});
+									if (!downloadURL) {
+										alert(
+											'Failed to save image to firebase therefore failed to create a new giffy 1'
+										);
+									} else {
+										const createGiffyRes = await createGiffy({
+											collectionId: Number(giffyInfo.collectionId),
+											firebaseUrl: downloadURL,
+											giffyName: giffyInfo.giffyName,
+										});
+
+										if (createGiffyRes.status === 200) {
+											alert('Upload successfully');
+										} else {
+											// TODO: error handling
+										}
+									}
+								} catch (err) {
+									console.log(err);
+									alert('Upload unsuccessfully');
+								}
 							} else {
-								alert('Select a file first.');
+								alert('Select a file first');
 							}
 						}}
 					>

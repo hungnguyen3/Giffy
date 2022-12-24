@@ -8,6 +8,8 @@ import { RootState } from '../store';
 import AccountSettings from './AccountSettings';
 import { app } from './Firebase/FirebaseInit';
 import { logIn, logOut } from '../slices/UserAuthSlice';
+import { getUserByFirebaseAuthId } from '../API/serverHooks';
+import { clearUser, populateUser } from '../slices/UserSlice';
 
 interface LayoutProps {
 	children: JSX.Element[] | JSX.Element;
@@ -30,10 +32,22 @@ const Layout = (props: LayoutProps) => {
 					displayName: user.uid,
 					photoURL: user.uid,
 				};
+
+				getUserByFirebaseAuthId(userAuth.uid).then(user => {
+					const userInfo = {
+						userId: user.userId,
+						username: user.username,
+						profileImgUrl: user.profileImgUrl,
+					};
+
+					dispatch(populateUser(userInfo));
+				});
+
 				dispatch(logIn(userAuth));
 				setLoggedIn(true);
 			} else {
 				dispatch(logOut());
+				dispatch(clearUser());
 				setLoggedIn(false);
 			}
 		});

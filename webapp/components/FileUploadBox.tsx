@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 interface FileUploadBoxProps {
 	setFileHolderForParent: Dispatch<SetStateAction<File | null>>;
+	displayText: string | null;
 }
 
 const FileUploadBox = (props: FileUploadBoxProps) => {
@@ -93,7 +94,11 @@ const FileUploadBox = (props: FileUploadBoxProps) => {
 							accept="image/*"
 						/>
 						<div className={styles.dragText}>
-							<h3>Drag and drop a file or click here</h3>
+							<h3>
+								{props.displayText
+									? props.displayText
+									: 'Drag and drop a file or click here'}
+							</h3>
 						</div>
 					</div>
 				)}
