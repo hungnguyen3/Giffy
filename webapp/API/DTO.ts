@@ -3,5 +3,13 @@ export interface collectionDTO {
 	userId: number;
 	permission: string;
 	collectionName: string;
-	private: false;
+	private: boolean;
+}
+
+export interface giffyDTO {
+	giffyId: number;
+	collectionId: number;
+	firebaseUrl: string;
+	giffyName: string;
+	likes: number;
 }

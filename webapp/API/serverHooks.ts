@@ -53,3 +53,42 @@ export async function getUserByFirebaseAuthId(firebaseAuthId: string) {
 
 	return response.json();
 }
+
+export async function createCollection(data: {
+	collectionName: string;
+	private: boolean;
+	userId: number;
+}) {
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/createCollection`,
+		{
+			method: 'POST',
+			mode: 'cors',
+			cache: 'no-cache',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		}
+	);
+
+	return response.json();
+}
+
+export async function getGiffiesByCollectionId(collectionId: number) {
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/getGiffiesByCollectionId/${collectionId}`,
+		{
+			mode: 'cors',
+			cache: 'no-cache',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			method: 'GET',
+		}
+	);
+
+	return response.json();
+}

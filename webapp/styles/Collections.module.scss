@@ -1,0 +1,20 @@
+.newGiffyButton {
+	position: absolute;
+	right: 20px;
+	bottom: 10px;
+	background-color: rgb(5, 142, 78);
+	border: none;
+	color: white;
+	padding: 10px 25px 10px 25px;
+	text-align: center;
+	font-size: 50px;
+	border-radius: 50%;
+
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+	transition: 0.3s;
+
+	&:hover {
+		background-color: RoyalBlue;
+		box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5);
+	}
+}

@@ -83,6 +83,27 @@ export const getGiffyById = async (req: any, res: any) => {
 	}
 };
 
+export const getGiffiesByCollectionId = async (req: any, res: any) => {
+	try {
+		if (!req.params.collectionId)
+			return res.status(400).send('missing required parameter(s)');
+
+		const getGiffiesRes = await client.query(
+			`
+		    SELECT* FROM giffies WHERE "collectionId" = $1;
+		  `,
+			[req.params.collectionId]
+		);
+
+		if (getGiffiesRes.rowCount <= 0) return res.status(404).send([]);
+
+		if (getGiffiesRes.rowCount >= 1)
+			return res.status(200).send(getGiffiesRes.rows);
+	} catch (err) {
+		return res.status(404).json({ error: err });
+	}
+};
+
 export const updateGiffyById = async (req: any, res: any) => {
 	try {
 		if (!req.params.giffyId)

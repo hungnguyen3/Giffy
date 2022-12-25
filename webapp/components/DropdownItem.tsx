@@ -1,12 +1,12 @@
 import { IconType } from 'react-icons';
 import styles from '../styles/DropdownItem.module.scss';
 
-interface dropdownItemProps {
+interface DropdownItemProps {
 	icon: IconType;
 	text: string;
 }
 
-const dropdownItem = (props: dropdownItemProps) => {
+const DropdownItem = (props: DropdownItemProps) => {
 	return (
 		<div className={styles.dropdown}>
 			<div className={styles.icon}></div>
@@ -17,4 +17,4 @@ const dropdownItem = (props: dropdownItemProps) => {
 	);
 };
 
-export default dropdownItem;
+export default DropdownItem;

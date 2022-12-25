@@ -1,5 +1,5 @@
 import layoutStyles from '../styles/Layout.module.scss';
-import SideNav from './SideNav';
+import SidePanel from './SidePanel';
 import Header from './Header';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -8,11 +8,19 @@ import { RootState } from '../store';
 import AccountSettings from './AccountSettings';
 import { app } from './Firebase/FirebaseInit';
 import { logIn, logOut } from '../slices/UserAuthSlice';
-import { getUserByFirebaseAuthId } from '../API/serverHooks';
+import {
+	getCollectionsByUserId,
+	getUserByFirebaseAuthId,
+} from '../API/serverHooks';
 import { clearUser, populateUser } from '../slices/UserSlice';
+import { collectionDTO } from '../API/DTO';
+import {
+	clearCollections,
+	populateCollections,
+} from '../slices/CollectionsSlice';
 
 interface LayoutProps {
-	children: JSX.Element[] | JSX.Element;
+	children: (JSX.Element | null)[] | JSX.Element;
 }
 
 const Layout = (props: LayoutProps) => {
@@ -33,21 +41,41 @@ const Layout = (props: LayoutProps) => {
 					photoURL: user.uid,
 				};
 
-				getUserByFirebaseAuthId(userAuth.uid).then(user => {
-					const userInfo = {
-						userId: user.userId,
-						username: user.username,
-						profileImgUrl: user.profileImgUrl,
-					};
+				getUserByFirebaseAuthId(userAuth.uid)
+					.then(user => {
+						const userInfo = {
+							userId: user.userId,
+							username: user.username,
+							profileImgUrl: user.profileImgUrl,
+						};
 
-					dispatch(populateUser(userInfo));
-				});
+						dispatch(populateUser(userInfo));
+						return userInfo;
+					})
+					.then(userInfo => {
+						getCollectionsByUserId(userInfo.userId).then(
+							(collections: collectionDTO[]) => {
+								dispatch(
+									populateCollections(
+										collections.map((collection: collectionDTO) => {
+											return {
+												collectionId: collection.collectionId,
+												collectionName: collection.collectionName,
+												private: collection.private,
+											};
+										})
+									)
+								);
+							}
+						);
+					});
 
 				dispatch(logIn(userAuth));
 				setLoggedIn(true);
 			} else {
 				dispatch(logOut());
 				dispatch(clearUser());
+				dispatch(clearCollections());
 				setLoggedIn(false);
 			}
 		});
@@ -55,10 +83,13 @@ const Layout = (props: LayoutProps) => {
 
 	return (
 		<div className={layoutStyles.background}>
-			<SideNav width={'20%'} />
+			{/* if change the value 20%, change the width of flexView class too*/}
+			<SidePanel width={'20%'} />
 			<div className={layoutStyles.flexView}>
 				<Header />
-				{loggedIn ? props.children : <div>You're not signed in yet!</div>}
+				<div className={layoutStyles.pageContent}>
+					{loggedIn ? props.children : <div>You're not signed in yet!</div>}
+				</div>
 			</div>
 			{isAccountSettingOpen ? (
 				<div className={layoutStyles.settingWindow}>

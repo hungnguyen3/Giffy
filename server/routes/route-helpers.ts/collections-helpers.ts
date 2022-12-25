@@ -53,7 +53,7 @@ export const createCollection = async (req: any, res: any) => {
 			});
 		}
 
-		return res.status(200).json('successfully created a collection');
+		return res.status(200).json(createCollectionRes.rows[0]);
 	} catch (e: any) {
 		if (collection_userId == -1 && collectionId !== -1) {
 			deleteCollectionUtil(collectionId, res);

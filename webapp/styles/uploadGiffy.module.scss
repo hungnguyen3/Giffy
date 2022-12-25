@@ -1,36 +1,23 @@
-.uploadGiffyBody {
-	.name {
-		// float: left;
-		clear: left;
-	}
+.uploadGiffyWindow {
+	width: 100%;
+	height: 100%;
+	background-color: #f0f2f3;
+	padding: 17px;
+	overflow: auto;
 
-	.buttonContainer {
+	.closeIcon {
+		content: 'x';
+		cursor: pointer;
+		position: absolute;
+		top: 11px;
+		right: 11px;
+		background: #ededed;
+		width: 25px;
+		height: 25px;
+		border-radius: 70%;
+		line-height: 20px;
 		text-align: center;
-
-		.fileUploadBtn {
-			width: 70%;
-			margin: 0;
-			color: #fff;
-			background: #1fb264;
-			border: none;
-			padding: 10px;
-			border-radius: 11px;
-			border-bottom: 4px solid #15824b;
-			transition: all 0.2s ease;
-			outline: none;
-			text-transform: uppercase;
-			font-weight: 700;
-		}
-		.fileUploadBtn:hover {
-			background: #1aa059;
-			color: #ffffff;
-			transition: all 0.2s ease;
-			cursor: pointer;
-		}
-
-		.fileUploadBtn:active {
-			border: 0;
-			transition: all 0.2s ease;
-		}
+		border: 1px solid #999;
+		font-size: 20px;
 	}
 }
