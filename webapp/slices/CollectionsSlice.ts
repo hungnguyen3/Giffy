@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { giffyDTO } from '../API/DTO';
 
 export interface Collection {
 	collectionId: number;
 	collectionName: string;
 	private: boolean;
+	giffies: giffyDTO[];
 }
 
 interface CollectionsState {
@@ -39,6 +41,20 @@ export const collectionsSlice = createSlice({
 		closeUploadGiffyWindow: state => {
 			state.isUploadGiffyWindowOpen = false;
 		},
+		addGiffyToACollection: (
+			state,
+			action: {
+				payload: giffyDTO;
+			}
+		) => {
+			if (state.value) {
+				for (let i = 0; i < state.value.length; i++) {
+					if (state.value[i].collectionId === action.payload.collectionId) {
+						state.value[i].giffies.push(action.payload);
+					}
+				}
+			}
+		},
 	},
 });
 
@@ -47,6 +63,7 @@ export const {
 	clearCollections,
 	openUploadGiffyWindow,
 	closeUploadGiffyWindow,
+	addGiffyToACollection,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

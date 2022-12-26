@@ -9,6 +9,7 @@ import DropdownItem from './DropdownItem';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { open as openAccountSetting } from '../slices/AccountSettingSlice';
 import { RootState } from '../store';
+import Link from 'next/link';
 
 const Header = () => {
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
@@ -41,9 +42,9 @@ const Header = () => {
 			<div className={styles.header}>
 				<div className={styles.leftPart}>
 					<div className={styles.mainTitle}>
-						<a href="/">
+						<Link href="/">
 							<h1>Giffy</h1>
-						</a>
+						</Link>
 					</div>
 
 					<div className={styles.searchContainer}>

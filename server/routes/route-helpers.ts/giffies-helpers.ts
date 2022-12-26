@@ -15,7 +15,7 @@ export const createGiffy = async (req: any, res: any) => {
 		);
 
 		if (createGiffy.rowCount === 1) {
-			return res.status(200).send('you have successfully created a giffy');
+			return res.status(200).send(createGiffy.rows[0]);
 		}
 
 		return res.status(404).json({ error: 'db error' });

@@ -1,5 +1,8 @@
 import styles from '../styles/UploadGiffy.module.scss';
-import { closeUploadGiffyWindow } from '../slices/CollectionsSlice';
+import {
+	addGiffyToACollection,
+	closeUploadGiffyWindow,
+} from '../slices/CollectionsSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import { useEffect, useState } from 'react';
@@ -8,6 +11,7 @@ import { createCollection, createGiffy } from '../API/serverHooks';
 import { storage } from './Firebase/FirebaseInit';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import FileUploadBox from './FileUploadBox';
+import { giffyDTO } from '../API/DTO';
 
 interface GiffyInfo {
 	collectionId: number | null;
@@ -38,8 +42,8 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 			currentCollectionOptionIndex = index;
 		});
 
-		console.log(currentCollectionOptionIndex);
-		console.log(collectionOptions[0]);
+		// console.log(currentCollectionOptionIndex);
+		// console.log(collectionOptions[0]);
 		return currentCollectionOptionIndex;
 	};
 
@@ -91,13 +95,15 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 						'Failed to save image to firebase therefore failed to create a new giffy 1'
 					);
 				} else {
-					const createGiffyRes = await createGiffy({
+					const createGiffyRes: giffyDTO = await createGiffy({
 						collectionId: Number(giffyInfo.collectionId),
 						firebaseUrl: downloadURL,
 						giffyName: giffyInfo.giffyName,
 					});
 
-					if (createGiffyRes.status === 200) {
+					console.log(createGiffyRes);
+					if (createGiffyRes) {
+						dispatch(addGiffyToACollection(createGiffyRes));
 						alert('Upload successfully');
 					} else {
 						// TODO: error handling

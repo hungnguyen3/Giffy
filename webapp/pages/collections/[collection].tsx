@@ -22,25 +22,27 @@ const Collections: NextPage = () => {
 	const isUploadGiffyWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isUploadGiffyWindowOpen
 	);
+	const giffies = useAppSelector((state: RootState) => {
+		return state.collections.value?.filter(
+			curCollection => curCollection.collectionId === Number(collection)
+		)[0]?.giffies;
+	});
 
 	useEffect(() => {
 		if (collection && !Number.isNaN(Number(collection))) {
-			getGiffiesByCollectionId(Number(collection)).then(
-				(giffies: giffyDTO[]) => {
-					setCards(
-						giffies.map((giffy: giffyDTO) => {
-							return Card({
-								img: giffy.firebaseUrl,
-								name: giffy.giffyName,
-								likeCount: giffy.likes,
-							});
-						})
-					);
-				}
-			);
-			console.log(cards);
+			if (giffies) {
+				setCards(
+					giffies.map((giffy: giffyDTO) => {
+						return Card({
+							img: giffy.firebaseUrl,
+							name: giffy.giffyName,
+							likeCount: giffy.likes,
+						});
+					})
+				);
+			}
 		}
-	}, [collection]);
+	}, [collection, giffies]);
 
 	return (
 		<Layout>
@@ -50,7 +52,7 @@ const Collections: NextPage = () => {
 					dispatch(openUploadGiffyWindow());
 				}}
 			>
-				<a>+</a>
+				+
 			</button>
 			{cards && cards.length > 0 ? (
 				<CardDistributor cards={cards} />

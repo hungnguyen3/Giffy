@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
 import { useAppSelector } from '../hooks';
 import { RootState } from '../store';
+import Link from 'next/link';
 
 interface SidePanelProps {
 	width: string;
@@ -38,16 +39,14 @@ const SidePanel = (props: SidePanelProps) => {
 				</button>
 			</div>
 
-			<a href="/collections/uploadGiffy">Upload</a>
-			<a href="/collections">Collections</a>
+			<h1>Collections</h1>
 			{collections?.map(collection => {
 				return (
-					<a href={`/collections/${collection.collectionId}`}>
+					<Link href={`/collections/${collection.collectionId}`}>
 						{collection.collectionName}
-					</a>
+					</Link>
 				);
 			})}
-			<a href="/discovery">Discovery</a>
 		</div>
 	);
 };

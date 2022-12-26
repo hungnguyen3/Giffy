@@ -10,12 +10,14 @@ import { app } from './Firebase/FirebaseInit';
 import { logIn, logOut } from '../slices/UserAuthSlice';
 import {
 	getCollectionsByUserId,
+	getGiffiesByCollectionId,
 	getUserByFirebaseAuthId,
 } from '../API/serverHooks';
 import { clearUser, populateUser } from '../slices/UserSlice';
-import { collectionDTO } from '../API/DTO';
+import { collectionDTO, giffyDTO } from '../API/DTO';
 import {
 	clearCollections,
+	Collection,
 	populateCollections,
 } from '../slices/CollectionsSlice';
 
@@ -55,17 +57,24 @@ const Layout = (props: LayoutProps) => {
 					.then(userInfo => {
 						getCollectionsByUserId(userInfo.userId).then(
 							(collections: collectionDTO[]) => {
-								dispatch(
-									populateCollections(
-										collections.map((collection: collectionDTO) => {
-											return {
+								var toStoreCollections: Collection[] = [];
+
+								collections.map((collection: collectionDTO) => {
+									getGiffiesByCollectionId(
+										Number(collection.collectionId)
+									).then((giffies: giffyDTO[]) => {
+										toStoreCollections = [
+											...toStoreCollections,
+											{
 												collectionId: collection.collectionId,
 												collectionName: collection.collectionName,
 												private: collection.private,
-											};
-										})
-									)
-								);
+												giffies: giffies,
+											},
+										];
+										dispatch(populateCollections(toStoreCollections));
+									});
+								});
 							}
 						);
 					});
