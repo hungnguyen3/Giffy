@@ -2,24 +2,25 @@ import { client } from '../../src/index';
 
 export const createGiffy = async (req: any, res: any) => {
 	try {
-		if (!req.body.firebaseUrl)
+		if (!(req.body.collectionId && req.body.firebaseUrl && req.body.giffyName))
 			return res.status(400).send('missing required parameter(s)');
 
 		const createGiffy = await client.query(
 			`
-      INSERT INTO giffies ("firebaseUrl", "likes")
-      VALUES ($1, $2)
+      INSERT INTO giffies ("collectionId", "firebaseUrl", "giffyName", "likes")
+      VALUES ($1, $2, $3, $4)
       RETURNING *;
       `,
-			[req.body.firebaseUrl, 0]
+			[req.body.collectionId, req.body.firebaseUrl, req.body.giffyName, 0]
 		);
 
 		if (createGiffy.rowCount === 1) {
-			return res.status(200).send('you have successfully created a giffy');
+			return res.status(200).send(createGiffy.rows[0]);
 		}
 
 		return res.status(404).json({ error: 'db error' });
 	} catch (err) {
+		console.log(err);
 		return res.status(404).json({ error: err });
 	}
 };
@@ -77,6 +78,27 @@ export const getGiffyById = async (req: any, res: any) => {
 			return res
 				.status(404)
 				.send('error occurred, more than one giffy with the same id');
+	} catch (err) {
+		return res.status(404).json({ error: err });
+	}
+};
+
+export const getGiffiesByCollectionId = async (req: any, res: any) => {
+	try {
+		if (!req.params.collectionId)
+			return res.status(400).send('missing required parameter(s)');
+
+		const getGiffiesRes = await client.query(
+			`
+		    SELECT* FROM giffies WHERE "collectionId" = $1;
+		  `,
+			[req.params.collectionId]
+		);
+
+		if (getGiffiesRes.rowCount <= 0) return res.status(404).send([]);
+
+		if (getGiffiesRes.rowCount >= 1)
+			return res.status(200).send(getGiffiesRes.rows);
 	} catch (err) {
 		return res.status(404).json({ error: err });
 	}

@@ -7,8 +7,8 @@
 	z-index: 1;
 	flex-grow: 1;
 	border-bottom: 4px;
-    border-bottom-color: #c7c7c7;
-    border-bottom-style: dashed;
+	border-bottom-color: #c7c7c7;
+	border-bottom-style: dashed;
 
 	.leftPart {
 		display: flex;
@@ -19,33 +19,6 @@
 			a:hover {
 				h1 {
 					text-decoration: underline;
-				}
-			}
-		}
-
-		.searchContainer {
-			margin: 0 3vw;
-			padding: 1px 0;
-			&:hover {
-				filter: brightness(90%);
-			}
-
-			input[type='text'] {
-				padding: 6px;
-				font-size: 17px;
-				border: none;
-			}
-
-			button {
-				float: right;
-				padding: 6px 10px;
-				background: #ddd;
-				font-size: 17px;
-				border: none;
-				cursor: pointer;
-
-				&:hover {
-					background: #ccc;
 				}
 			}
 		}
@@ -68,20 +41,25 @@
 			padding: 9px 0 0 0;
 
 			.userButton {
-			// margin-right: 1vw;
-			padding: 5px 0 0px 0;
-			border: none;
-			width: 50px;
-			height: 50px;
-			// border: 5px;
-			border-radius: 50%;
-			background-color: #f9f9f9;
-			color: #333;
-			cursor: pointer;
-			outline: 0;
-			font-size: 40px;
-		}
-		
+				// margin-right: 1vw;
+				border: none;
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+				background-color: #f9f9f9;
+				color: #333;
+				cursor: pointer;
+				outline: 0;
+				font-size: 40px;
+
+				img {
+					width: 50px;
+					height: 50px;
+					border-radius: 50%;
+					overflow: hidden;
+				}
+			}
+
 			.dropdown {
 				position: absolute;
 				top: 100%;
@@ -118,16 +96,8 @@
 				padding: 19px 0 0 1px;
 				margin: 0;
 
-				.userID {
-					font-size: small;
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					
-				}
-
-				.secondaryText {
-					font-size: smaller;
+				.userName {
+					font-size: 20px;
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;

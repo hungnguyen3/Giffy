@@ -4,16 +4,22 @@ export const createCollection = async (req: any, res: any) => {
 	let collectionId = -1;
 	let collection_userId = -1;
 	try {
-		if (!req.body.collectionName || !req.body.privacy || !req.body.userId)
-			return res.status(400).send('missing required parameter(s)');
+		if (
+			!(
+				req.body.collectionName &&
+				req.body.private !== undefined &&
+				req.body.userId
+			)
+		)
+			return res.status(400).send('missing required parameter(s) !!!');
 
 		const createCollectionRes = await client.query(
 			`
-        INSERT INTO collections ("collectionName", "privacy")
+        INSERT INTO collections ("collectionName", "private")
         VALUES ($1, $2)
         RETURNING *;
       `,
-			[req.body.collectionName, req.body.privacy]
+			[req.body.collectionName, req.body.private]
 		);
 
 		collectionId = createCollectionRes.rows[0].collectionId;
@@ -47,7 +53,7 @@ export const createCollection = async (req: any, res: any) => {
 			});
 		}
 
-		return res.status(200).json('successfully created a collection');
+		return res.status(200).json(createCollectionRes.rows[0]);
 	} catch (e: any) {
 		if (collection_userId == -1 && collectionId !== -1) {
 			deleteCollectionUtil(collectionId, res);
@@ -153,6 +159,32 @@ export const updateCollectionById = async (req: any, res: any) => {
 				.status(404)
 				.send('error occurred, more than one collection with the same id');
 		}
+	} catch (err) {
+		res.status(404).json({ error: err });
+	}
+};
+
+export const getCollectionsByUserId = async (req: any, res: any) => {
+	try {
+		if (!req.params.userId) {
+			return res.status(400).send('missing required parameter(s)');
+		}
+
+		let getCollectionsRes = await client.query(
+			`
+		    SELECT *
+				FROM collection_user_relationships as cur
+				RIGHT JOIN collections ON cur."collectionId" = collections."collectionId"
+				WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
+		  `,
+			[req.params.userId]
+		);
+
+		if (getCollectionsRes.rowCount === 0)
+			res.status(404).send('There is no such collection');
+
+		if (getCollectionsRes.rowCount >= 1)
+			res.status(200).send(getCollectionsRes.rows);
 	} catch (err) {
 		res.status(404).json({ error: err });
 	}

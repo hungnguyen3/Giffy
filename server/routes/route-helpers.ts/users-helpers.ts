@@ -83,6 +83,33 @@ export const getUserById = async (req: any, res: any) => {
 	}
 };
 
+export const getUserByFirebaseAuthId = async (req: any, res: any) => {
+	try {
+		if (!req.params.firebaseAuthId)
+			return res.status(400).send('missing required parameter(s)');
+
+		const getUserRes = await client.query(
+			`
+		      SELECT* FROM users WHERE "firebaseAuthId" = $1;
+		    `,
+			[req.params.firebaseAuthId]
+		);
+
+		if (getUserRes.rowCount <= 0)
+			return res.status(404).send('There is no such user');
+
+		if (getUserRes.rowCount === 1)
+			return res.status(200).send(getUserRes.rows[0]);
+
+		if (getUserRes.rowCount > 1)
+			return res
+				.status(404)
+				.send('error occurred, more than one user with the same id');
+	} catch (err) {
+		return res.status(404).json({ error: err });
+	}
+};
+
 export const updateUserById = async (req: any, res: any) => {
 	try {
 		if (!req.params.userId || !req.body.userName || !req.body.profileImgUrl)

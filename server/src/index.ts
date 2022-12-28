@@ -5,6 +5,7 @@ import { initTables } from '../db/initTable';
 const userRoute = require('../routes/users');
 const collectionRoute = require('../routes/collections');
 const giffyRoute = require('../routes/giffies');
+import cors from 'cors';
 
 export const client = new Client({
 	user: 'postgres',
@@ -15,6 +16,26 @@ export const client = new Client({
 
 (async () => {
 	const app = express();
+
+	// enable this if you run behind a proxy (e.g. nginx)
+	app.set('trust proxy', 1);
+
+	// cors;
+	var whitelist;
+	if ((process.env.PROD as string) !== 'true') {
+		whitelist = 'http://localhost:3000';
+	} else {
+		whitelist = process.env.CORS_ORIGIN!;
+	}
+
+	app.use(
+		cors({
+			origin: whitelist,
+			credentials: true,
+			methods: ['GET', 'POST'],
+		})
+	);
+
 	// parse application/x-www-form-urlencoded
 	app.use(bodyParser.urlencoded({ extended: false }));
 	// parse application/json

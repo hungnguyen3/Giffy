@@ -1,5 +1,5 @@
 import layoutStyles from '../styles/Layout.module.scss';
-import SideNav from './SideNav';
+import SidePanel from './SidePanel';
 import Header from './Header';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -8,17 +8,37 @@ import { RootState } from '../store';
 import AccountSettings from './AccountSettings';
 import { app } from './Firebase/FirebaseInit';
 import { logIn, logOut } from '../slices/UserAuthSlice';
+import {
+	getCollectionsByUserId,
+	getGiffiesByCollectionId,
+	getUserByFirebaseAuthId,
+} from '../API/serverHooks';
+import { clearUser, populateUser } from '../slices/UserSlice';
+import { collectionDTO, giffyDTO } from '../API/DTO';
+import {
+	clearCollections,
+	Collection,
+	populateCollections,
+} from '../slices/CollectionsSlice';
+import UploadGiffy from '../components/UploadGiffy';
+import { useRouter } from 'next/router';
+import Modal from './Modal';
 
 interface LayoutProps {
-	children: JSX.Element[] | JSX.Element;
+	children: (JSX.Element | null)[] | JSX.Element;
 }
 
 const Layout = (props: LayoutProps) => {
 	const auth = getAuth(app);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const { collection } = router.query;
 	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
+	);
+	const isUploadGiffyWindowOpen = useAppSelector(
+		(state: RootState) => state.collections.isUploadGiffyWindowOpen
 	);
 
 	useEffect(() => {
@@ -30,10 +50,49 @@ const Layout = (props: LayoutProps) => {
 					displayName: user.uid,
 					photoURL: user.uid,
 				};
+
+				getUserByFirebaseAuthId(userAuth.uid)
+					.then(user => {
+						const userInfo = {
+							userId: user.userId,
+							username: user.userName,
+							profileImgUrl: user.profileImgUrl,
+						};
+
+						dispatch(populateUser(userInfo));
+						return userInfo;
+					})
+					.then(userInfo => {
+						getCollectionsByUserId(userInfo.userId).then(
+							(collections: collectionDTO[]) => {
+								var toStoreCollections: Collection[] = [];
+
+								collections.map((collection: collectionDTO) => {
+									getGiffiesByCollectionId(
+										Number(collection.collectionId)
+									).then((giffies: giffyDTO[]) => {
+										toStoreCollections = [
+											...toStoreCollections,
+											{
+												collectionId: collection.collectionId,
+												collectionName: collection.collectionName,
+												private: collection.private,
+												giffies: giffies,
+											},
+										];
+										dispatch(populateCollections(toStoreCollections));
+									});
+								});
+							}
+						);
+					});
+
 				dispatch(logIn(userAuth));
 				setLoggedIn(true);
 			} else {
 				dispatch(logOut());
+				dispatch(clearUser());
+				dispatch(clearCollections());
 				setLoggedIn(false);
 			}
 		});
@@ -41,15 +100,23 @@ const Layout = (props: LayoutProps) => {
 
 	return (
 		<div className={layoutStyles.background}>
-			<SideNav width={'20%'} />
+			{/* if change the value 20%, change the width of flexView class too*/}
+			<SidePanel width={'20%'} />
 			<div className={layoutStyles.flexView}>
 				<Header />
-				{loggedIn ? props.children : <div>You're not signed in yet!</div>}
+				<div className={layoutStyles.pageContent}>
+					{loggedIn ? props.children : <div>You're not signed in yet!</div>}
+				</div>
 			</div>
 			{isAccountSettingOpen ? (
-				<div className={layoutStyles.settingWindow}>
+				<Modal>
 					<AccountSettings />
-				</div>
+				</Modal>
+			) : null}
+			{isUploadGiffyWindowOpen ? (
+				<Modal>
+					<UploadGiffy currentCollectionId={Number(collection)} />
+				</Modal>
 			) : null}
 		</div>
 	);
