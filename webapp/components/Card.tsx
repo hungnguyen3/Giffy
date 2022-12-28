@@ -9,12 +9,13 @@ interface CardProps {
 const Card = (props: CardProps) => {
 	return (
 		<div className={styles.card}>
-			<img src={props.img} alt="Avatar" />
-			<div className={styles.container}>
-				<h4>
-					<b>{props.name}</b>
-				</h4>
-				<p>{props.likeCount}</p>
+			<div className={styles.cardImage}>
+				<img src={props.img} alt="Avatar" />
+			</div>
+
+			<div className={styles.cardTitle}>
+				<p>{props.name}</p>
+				{/* <p>{props.likeCount}</p> */}
 			</div>
 		</div>
 	);

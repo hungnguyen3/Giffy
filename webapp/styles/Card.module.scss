@@ -1,30 +1,61 @@
-.cardsContainer {
-	height: 100%;
-	overflow-y: auto;
+.cardsList {
+	z-index: 0;
+	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
 }
 
-.cardsContainer > * {
-	flex: 0 0 15%;
-}
-
 .card {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
-	transition: 0.3s;
-	border-radius: 5px;
 	margin: 2%;
+	width: 200px;
+	height: 200px;
+	border-radius: 40px;
+	box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
+		-5px -5px 30px 7px rgba(0, 0, 0, 0.22);
+	cursor: pointer;
+	transition: 0.4s;
 
-	img {
-		width: 100%;
-		border-radius: 5px 5px 0 0;
+	.cardImage {
+		width: inherit;
+		height: inherit;
+		border-radius: 40px;
+
+		img {
+			width: inherit;
+			height: inherit;
+			border-radius: 40px;
+			object-fit: cover;
+		}
 	}
 
-	.container {
-		padding: 2px 16px;
+	.cardTitle {
+		text-align: center;
+		border-radius: 0px 0px 40px 40px;
+		font-family: sans-serif;
+		font-weight: bold;
+		font-size: 20px;
+		margin-top: -20px;
+		height: 40px;
 	}
 }
 
 .card:hover {
-	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+	transform: scale(0.9, 0.9);
+	box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25),
+		-5px -5px 30px 15px rgba(0, 0, 0, 0.22);
+}
+
+.titleWhite {
+	color: white;
+}
+
+.titleBlack {
+	color: black;
+}
+
+@media all and (max-width: 500px) {
+	.card-list {
+		/* On small screens, we are no longer using row direction but column */
+		flex-direction: column;
+	}
 }

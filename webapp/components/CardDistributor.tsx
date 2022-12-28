@@ -5,7 +5,7 @@ interface CardDistributorProps {
 }
 
 const CardDistributor = (props: CardDistributorProps) => {
-	return <div className={styles.cardsContainer}>{props.cards}</div>;
+	return <div className={styles.cardsList}>{props.cards}</div>;
 };
 
 export default CardDistributor;

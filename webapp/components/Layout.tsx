@@ -55,7 +55,7 @@ const Layout = (props: LayoutProps) => {
 					.then(user => {
 						const userInfo = {
 							userId: user.userId,
-							username: user.username,
+							username: user.userName,
 							profileImgUrl: user.profileImgUrl,
 						};
 
