@@ -11,8 +11,9 @@ interface SidePanelProps {
 
 const SidePanel = (props: SidePanelProps) => {
 	const [width, setWidth] = useState(props.width);
+
 	const closePanel = () => {
-		setWidth('10%');
+		setWidth('0%');
 	};
 	const collections = useAppSelector(
 		(state: RootState) => state.collections.value
@@ -24,29 +25,29 @@ const SidePanel = (props: SidePanelProps) => {
 
 	return (
 		<div className={styles.sidePanel} style={{ width: width }}>
-			<div>
-				<button
-					className={styles.btn}
-					onClick={() => {
-						if (width >= props.width) {
-							closePanel();
-						} else {
-							openPanel();
-						}
-					}}
-				>
-					{width >= props.width ? <BiLeftArrow /> : <BiRightArrow />}
-				</button>
-			</div>
+			<button
+				className={styles.btn}
+				onClick={() => {
+					if (width >= props.width) {
+						closePanel();
+					} else {
+						openPanel();
+					}
+				}}
+			>
+				{width >= props.width ? <BiLeftArrow /> : <BiRightArrow />}
+			</button>
 
-			<h1>Collections</h1>
-			{collections?.map(collection => {
-				return (
-					<Link href={`/collections/${collection.collectionId}`}>
-						{collection.collectionName}
-					</Link>
-				);
-			})}
+			<div className={styles.sidePanelContent}>
+				<h1>Collections</h1>
+				{collections?.map(collection => {
+					return (
+						<Link href={`/collections/${collection.collectionId}`}>
+							{collection.collectionName}
+						</Link>
+					);
+				})}
+			</div>
 		</div>
 	);
 };

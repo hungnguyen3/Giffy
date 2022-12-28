@@ -41,9 +41,6 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 			collectionOption.value == props.currentCollectionId.toString();
 			currentCollectionOptionIndex = index;
 		});
-
-		// console.log(currentCollectionOptionIndex);
-		// console.log(collectionOptions[0]);
 		return currentCollectionOptionIndex;
 	};
 
@@ -132,44 +129,34 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 	}, [collections]);
 
 	return (
-		<div className={styles.uploadGiffyWindow}>
-			<span
-				className={styles.closeIcon}
-				onClick={() => {
-					dispatch(closeUploadGiffyWindow());
-				}}
-			>
-				x
-			</span>
-			<div className={styles.uploadGiffyBody}>
-				<CreatableSelect
-					isClearable
-					defaultValue={collectionOptions[findCurrentCollection()]}
-					onChange={creatableSelectHandler}
-					options={collectionOptions}
-				/>
+		<div>
+			<CreatableSelect
+				isClearable
+				defaultValue={collectionOptions[findCurrentCollection()]}
+				onChange={creatableSelectHandler}
+				options={collectionOptions}
+			/>
 
-				<div className={styles.name}>
-					Giffy name (Optional): &nbsp;
-					<input
-						type="text"
-						onChange={event => {
-							setGiffyInfo({
-								...giffyInfo,
-								giffyName: event.target.value,
-							});
-						}}
-					></input>
-				</div>
-				<FileUploadBox
-					setFileHolderForParent={setGiffy}
-					displayText={'Drag and drop an img/gif or click here'}
-				/>
-				<div className={styles.buttonContainer}>
-					<button className={styles.fileUploadBtn} onClick={uploadHandler}>
-						Upload
-					</button>
-				</div>
+			<div className={styles.name}>
+				Giffy name (Optional): &nbsp;
+				<input
+					type="text"
+					onChange={event => {
+						setGiffyInfo({
+							...giffyInfo,
+							giffyName: event.target.value,
+						});
+					}}
+				></input>
+			</div>
+			<FileUploadBox
+				setFileHolderForParent={setGiffy}
+				displayText={'Drag and drop an img/gif or click here'}
+			/>
+			<div className={styles.buttonContainer}>
+				<button className={styles.fileUploadBtn} onClick={uploadHandler}>
+					Upload
+				</button>
 			</div>
 		</div>
 	);

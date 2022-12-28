@@ -20,6 +20,9 @@ import {
 	Collection,
 	populateCollections,
 } from '../slices/CollectionsSlice';
+import UploadGiffy from '../components/UploadGiffy';
+import { useRouter } from 'next/router';
+import Modal from './Modal';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -29,8 +32,13 @@ const Layout = (props: LayoutProps) => {
 	const auth = getAuth(app);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const { collection } = router.query;
 	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
+	);
+	const isUploadGiffyWindowOpen = useAppSelector(
+		(state: RootState) => state.collections.isUploadGiffyWindowOpen
 	);
 
 	useEffect(() => {
@@ -101,9 +109,14 @@ const Layout = (props: LayoutProps) => {
 				</div>
 			</div>
 			{isAccountSettingOpen ? (
-				<div className={layoutStyles.settingWindow}>
+				<Modal>
 					<AccountSettings />
-				</div>
+				</Modal>
+			) : null}
+			{isUploadGiffyWindowOpen ? (
+				<Modal>
+					<UploadGiffy currentCollectionId={Number(collection)} />
+				</Modal>
 			) : null}
 		</div>
 	);
