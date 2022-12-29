@@ -13,7 +13,6 @@ import { useRouter } from 'next/router';
 const Header = () => {
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
-	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const { collection } = router.query;
@@ -91,7 +90,7 @@ const Header = () => {
 
 					<div className={styles.userMenuTextContainer}>
 						<ul className={styles.userMenuText}>
-							<li className={styles.userName}>{userInfo?.username}</li>
+							<b className={styles.userName}>{userInfo?.userName}</b>
 						</ul>
 					</div>
 				</div>

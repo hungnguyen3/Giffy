@@ -57,24 +57,37 @@ const Layout = (props: LayoutProps) => {
 
 				getUserByFirebaseAuthId(userAuth.uid)
 					.then(user => {
+						if (user.error) {
+							return null;
+						}
 						const userInfo = {
 							userId: user.userId,
 							userName: user.userName,
 							profileImgUrl: user.profileImgUrl,
 						};
 
-						dispatch(populateUser(userInfo));
+						if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName)
+							dispatch(populateUser(userInfo));
 						return userInfo;
 					})
 					.then(userInfo => {
+						if (!userInfo) {
+							return null;
+						}
 						getCollectionsByUserId(userInfo.userId)
-							.then((collections: collectionDTO[]) => {
+							.then((collections: collectionDTO[] | any) => {
+								if (collections.error) {
+									return null;
+								}
 								var toStoreCollections: Collection[] = [];
 
 								collections.map((collection: collectionDTO) => {
 									getGiffiesByCollectionId(
 										Number(collection.collectionId)
-									).then((giffies: giffyDTO[]) => {
+									).then((giffies: giffyDTO[] | any) => {
+										if (giffies.error) {
+											return null;
+										}
 										toStoreCollections = [
 											...toStoreCollections,
 											{
@@ -89,13 +102,18 @@ const Layout = (props: LayoutProps) => {
 								});
 
 								const collectionIds = collections.map(
-									collection => collection.collectionId
+									(collection: collectionDTO) => collection.collectionId
 								);
 								return collectionIds.length > 0
 									? Math.min(...collectionIds)
 									: 0;
 							})
 							.then(firstCollectionId => {
+								if (
+									firstCollectionId !== null &&
+									firstCollectionId !== undefined
+								) {
+								}
 								router.push(`/collections/${firstCollectionId}`);
 							});
 					});

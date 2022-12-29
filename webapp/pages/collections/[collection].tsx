@@ -41,7 +41,9 @@ const Collections: NextPage = () => {
 	if (Number(collection) == 0) {
 		return (
 			<Layout>
-				<h1>Create a collection to get started</h1>
+				<div className={styles.centeredBox}>
+					<h1>Create a collection to get started</h1>
+				</div>
 			</Layout>
 		);
 	}

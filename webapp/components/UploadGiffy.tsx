@@ -42,17 +42,17 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 						'Failed to save image to firebase therefore failed to create a new giffy 1'
 					);
 				} else {
-					const createGiffyRes: giffyDTO = await createGiffy({
+					const createGiffyRes: giffyDTO | any = await createGiffy({
 						collectionId: Number(giffyInfo.collectionId),
 						firebaseUrl: downloadURL,
 						giffyName: giffyInfo.giffyName,
 					});
 
-					if (createGiffyRes) {
+					if (createGiffyRes.error) {
+						// TODO: error handling
+					} else {
 						dispatch(addGiffyToACollection(createGiffyRes));
 						alert('Upload successfully');
-					} else {
-						// TODO: error handling
 					}
 				}
 			} catch (err) {

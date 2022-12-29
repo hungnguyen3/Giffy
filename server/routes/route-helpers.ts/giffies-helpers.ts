@@ -3,7 +3,9 @@ import { client } from '../../src/index';
 export const createGiffy = async (req: any, res: any) => {
 	try {
 		if (!(req.body.collectionId && req.body.firebaseUrl && req.body.giffyName))
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const createGiffy = await client.query(
 			`
@@ -18,17 +20,19 @@ export const createGiffy = async (req: any, res: any) => {
 			return res.status(200).send(createGiffy.rows[0]);
 		}
 
-		return res.status(404).json({ error: 'db error' });
+		return res.status(500).json({ error: 'db error' });
 	} catch (err) {
 		console.log(err);
-		return res.status(404).json({ error: err });
+		return res.status(500).json({ error: err });
 	}
 };
 
 export const deleteGiffyById = async (req: any, res: any) => {
 	try {
 		if (!req.params.giffyId)
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const deleteGiffyRes = await client.query(
 			`
@@ -38,7 +42,7 @@ export const deleteGiffyById = async (req: any, res: any) => {
 		);
 
 		if (deleteGiffyRes.rowCount <= 0)
-			return res.status(404).send('There is no such giffy');
+			return res.status(500).send({ error: 'There is no such giffy' });
 
 		if (deleteGiffyRes.rowCount === 1)
 			return res
@@ -49,17 +53,19 @@ export const deleteGiffyById = async (req: any, res: any) => {
 
 		if (deleteGiffyRes.rowCount > 1)
 			return res
-				.status(404)
+				.status(500)
 				.send('error occurred, more than one giffy with the same id');
 	} catch (err) {
-		return res.status(404).json({ error: err });
+		return res.status(500).json({ error: err });
 	}
 };
 
 export const getGiffyById = async (req: any, res: any) => {
 	try {
 		if (!req.params.giffyId)
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const getGiffyRes = await client.query(
 			`
@@ -69,24 +75,26 @@ export const getGiffyById = async (req: any, res: any) => {
 		);
 
 		if (getGiffyRes.rowCount <= 0)
-			return res.status(404).send('There is no such giffy');
+			return res.status(500).send({ error: 'There is no such giffy' });
 
 		if (getGiffyRes.rowCount === 1)
 			return res.status(200).send(getGiffyRes.rows[0]);
 
 		if (getGiffyRes.rowCount > 1)
 			return res
-				.status(404)
+				.status(500)
 				.send('error occurred, more than one giffy with the same id');
 	} catch (err) {
-		return res.status(404).json({ error: err });
+		return res.status(500).json({ error: err });
 	}
 };
 
 export const getGiffiesByCollectionId = async (req: any, res: any) => {
 	try {
 		if (!req.params.collectionId)
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const getGiffiesRes = await client.query(
 			`
@@ -95,19 +103,21 @@ export const getGiffiesByCollectionId = async (req: any, res: any) => {
 			[req.params.collectionId]
 		);
 
-		if (getGiffiesRes.rowCount <= 0) return res.status(404).send([]);
+		if (getGiffiesRes.rowCount <= 0) return res.status(500).send([]);
 
 		if (getGiffiesRes.rowCount >= 1)
 			return res.status(200).send(getGiffiesRes.rows);
 	} catch (err) {
-		return res.status(404).json({ error: err });
+		return res.status(500).json({ error: err });
 	}
 };
 
 export const updateGiffyById = async (req: any, res: any) => {
 	try {
 		if (!req.params.giffyId)
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const updateGiffyRes = await client.query(
 			`
@@ -126,7 +136,7 @@ export const updateGiffyById = async (req: any, res: any) => {
 			]
 		);
 		if (updateGiffyRes.rowCount <= 0)
-			return res.status(404).send('There is no such giffy');
+			return res.status(500).send({ error: 'There is no such giffy' });
 
 		if (updateGiffyRes.rowCount === 1)
 			return res
@@ -137,9 +147,9 @@ export const updateGiffyById = async (req: any, res: any) => {
 
 		if (updateGiffyRes.rowCount > 1)
 			return res
-				.status(404)
+				.status(500)
 				.send('error occurred, more than one giffy with the same id');
 	} catch (err) {
-		return res.status(404).json({ error: err });
+		return res.status(500).json({ error: err });
 	}
 };

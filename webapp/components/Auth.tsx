@@ -1,5 +1,5 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { userDTO } from '../API/DTO';
 import { createUser } from '../API/serverHooks';
@@ -21,13 +21,15 @@ const Auth = () => {
 	// TODO: firebaseAuthID might be null
 	const [userInfo, setUserInfo] = useState<UserInfo>({
 		userName: '',
-		firebaseAuthId: useAppSelector((state: RootState) =>
-			state.userAuth.value ? state.userAuth.value.uid : ''
-		),
+		firebaseAuthId: '',
 		profileImgUrl:
 			'https://raw.githubusercontent.com/hungnguyen3/Giffy/main/webapp/public/userProfile.png',
 	});
 	const [userImg, setUserImg] = useState<File | null>(null);
+
+	const firebaseAuthId = useAppSelector((state: RootState) =>
+		state.userAuth.value ? state.userAuth.value.uid : ''
+	);
 
 	const isLoggedIn = useAppSelector((state: RootState) =>
 		state.userAuth.value ? true : false
@@ -36,6 +38,13 @@ const Auth = () => {
 	const hasAnAccount = useAppSelector((state: RootState) =>
 		state.user.value ? true : false
 	);
+
+	useEffect(() => {
+		setUserInfo({
+			...userInfo,
+			firebaseAuthId: firebaseAuthId,
+		});
+	}, [firebaseAuthId]);
 
 	const uploadHandler = async () => {
 		if (userImg) {
@@ -52,14 +61,21 @@ const Auth = () => {
 						'Failed to save image to firebase therefore failed to create a new user'
 					);
 				} else {
-					const createUserRes: userDTO = await createUser({
+					console.log({
 						userName: userInfo.userName,
 						firebaseAuthId: userInfo.firebaseAuthId,
 						profileImgUrl: userInfo.profileImgUrl,
 					});
+					const createUserRes = await createUser({
+						userName: userInfo.userName,
+						firebaseAuthId: userInfo.firebaseAuthId,
+						profileImgUrl: downloadURL,
+					});
 
-					console.log(createUserRes);
-					if (createUserRes) {
+					if (createUserRes.error) {
+						alert('Upload unsuccessfully');
+						// TODO: error handling
+					} else {
 						dispatch(
 							populateUser({
 								userId: createUserRes.userId,
@@ -68,8 +84,6 @@ const Auth = () => {
 							})
 						);
 						alert('Created a new user successfully');
-					} else {
-						// TODO: error handling
 					}
 				}
 			} catch (err) {

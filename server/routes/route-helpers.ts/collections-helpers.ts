@@ -11,7 +11,9 @@ export const createCollection = async (req: any, res: any) => {
 				req.body.userId
 			)
 		)
-			return res.status(400).send('missing required parameter(s) !!!');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const createCollectionRes = await client.query(
 			`
@@ -25,7 +27,7 @@ export const createCollection = async (req: any, res: any) => {
 		collectionId = createCollectionRes.rows[0].collectionId;
 
 		if (createCollectionRes.rowCount !== 1) {
-			return res.status(404).json({ error: "couldn't create a collection" });
+			return res.status(500).json({ error: "couldn't create a collection" });
 		}
 
 		const createCollectionsUsersRes = await client.query(
@@ -48,7 +50,7 @@ export const createCollection = async (req: any, res: any) => {
 					[collectionId]
 				);
 			}
-			return res.status(404).json({
+			return res.status(500).json({
 				error: "couldn't create a relationship between collection & user",
 			});
 		}
@@ -58,14 +60,16 @@ export const createCollection = async (req: any, res: any) => {
 		if (collection_userId == -1 && collectionId !== -1) {
 			deleteCollectionUtil(collectionId, res);
 		}
-		res.status(404).json({ error: e });
+		res.status(500).json({ error: e });
 	}
 };
 
 const deleteCollectionUtil = async (collectionId: number, res: any) => {
 	try {
 		if (!collectionId)
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const deleteCollectionRes = await client.query(
 			`
@@ -75,7 +79,7 @@ const deleteCollectionUtil = async (collectionId: number, res: any) => {
 		);
 
 		if (deleteCollectionRes.rowCount <= 0)
-			return res.status(404).send('There is no such collection');
+			return res.status(500).send({ error: 'There is no such collection' });
 
 		if (deleteCollectionRes.rowCount === 1)
 			return res
@@ -85,11 +89,11 @@ const deleteCollectionUtil = async (collectionId: number, res: any) => {
 				);
 
 		if (deleteCollectionRes.rowCount > 1)
-			return res
-				.status(404)
-				.send('error occurred, more than one collection with the same id');
+			return res.status(500).send({
+				error: 'error occurred, more than one collection with the same id',
+			});
 	} catch (err) {
-		return res.status(404).json({ error: err });
+		return res.status(500).json({ error: err });
 	}
 };
 
@@ -100,7 +104,9 @@ export const deleteCollectionById = async (req: any, res: any) => {
 export const getCollectionById = async (req: any, res: any) => {
 	try {
 		if (!req.params.collectionId)
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const getCollectionRes = await client.query(
 			`
@@ -110,17 +116,17 @@ export const getCollectionById = async (req: any, res: any) => {
 		);
 
 		if (getCollectionRes.rowCount === 0)
-			res.status(404).send('There is no such collection');
+			res.status(500).send({ error: 'There is no such collection' });
 
 		if (getCollectionRes.rowCount === 1)
 			res.status(200).send(getCollectionRes.rows[0]);
 
 		if (getCollectionRes.rowCount > 1)
-			res
-				.status(404)
-				.send('error occurred, more than one collection with the same id');
+			res.status(500).send({
+				error: 'error occurred, more than one collection with the same id',
+			});
 	} catch (err) {
-		res.status(404).json({ error: err });
+		res.status(500).json({ error: err });
 	}
 };
 
@@ -132,7 +138,9 @@ export const updateCollectionById = async (req: any, res: any) => {
 			!req.body.profileImgUrl ||
 			!req.params.collectionId
 		)
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 
 		const updateCollectionRes = await client.query(
 			`
@@ -143,7 +151,7 @@ export const updateCollectionById = async (req: any, res: any) => {
 			[req.body.collectionName, req.body.profileImgUrl, req.params.collectionId]
 		);
 		if (updateCollectionRes.rowCount === 0)
-			res.status(404).send('There is no such collection');
+			res.status(500).send({ error: 'There is no such collection' });
 
 		if (updateCollectionRes.rowCount === 1) {
 			res
@@ -155,19 +163,21 @@ export const updateCollectionById = async (req: any, res: any) => {
 		}
 
 		if (updateCollectionRes.rowCount > 1) {
-			res
-				.status(404)
-				.send('error occurred, more than one collection with the same id');
+			res.status(500).send({
+				error: 'error occurred, more than one collection with the same id',
+			});
 		}
 	} catch (err) {
-		res.status(404).json({ error: err });
+		res.status(500).json({ error: err });
 	}
 };
 
 export const getCollectionsByUserId = async (req: any, res: any) => {
 	try {
 		if (!req.params.userId) {
-			return res.status(400).send('missing required parameter(s)');
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
 		}
 
 		let getCollectionsRes = await client.query(
@@ -181,11 +191,11 @@ export const getCollectionsByUserId = async (req: any, res: any) => {
 		);
 
 		if (getCollectionsRes.rowCount === 0)
-			res.status(404).send('There is no such collection');
+			res.status(500).send(getCollectionsRes.rows);
 
 		if (getCollectionsRes.rowCount >= 1)
 			res.status(200).send(getCollectionsRes.rows);
 	} catch (err) {
-		res.status(404).json({ error: err });
+		res.status(500).json({ error: err });
 	}
 };
