@@ -1,12 +1,13 @@
 import styles from '../styles/UploadGiffy.module.scss';
 import { addGiffyToACollection } from '../slices/CollectionsSlice';
-import { useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState } from 'react';
 import { createGiffy } from '../API/serverHooks';
 import { storage } from './Firebase/FirebaseInit';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import FileUploadBox from './FileUploadBox';
 import { giffyDTO } from '../API/DTO';
+import { RootState } from '../store';
 
 interface GiffyInfo {
 	collectionId: number | null;
@@ -24,13 +25,15 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 		collectionId: props.currentCollectionId,
 		giffyName: '',
 	});
+	const user = useAppSelector((state: RootState) => state.user.value);
 
 	const uploadHandler = async () => {
-		if (!giffyInfo.collectionId) {
-			alert('Choose a collection!');
-		} else if (giffy) {
+		if (giffy) {
 			try {
-				const storageRef = ref(storage, `images/${giffy.name}`);
+				const storageRef = ref(
+					storage,
+					`giffies/${user?.userName}/${giffy.name}${new Date().getTime()}`
+				);
 				const snapshot = await uploadBytes(storageRef, giffy);
 				const downloadURL = await getDownloadURL(snapshot.ref);
 
@@ -45,7 +48,6 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 						giffyName: giffyInfo.giffyName,
 					});
 
-					console.log(createGiffyRes);
 					if (createGiffyRes) {
 						dispatch(addGiffyToACollection(createGiffyRes));
 						alert('Upload successfully');

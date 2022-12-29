@@ -26,7 +26,6 @@ const provider = new GoogleAuthProvider();
 export const googleSignIn = () => {
 	signInWithPopup(auth, provider)
 		.then(result => {
-			alert('Successfully signed in');
 			const credential = GoogleAuthProvider.credentialFromResult(result);
 			const token = credential?.accessToken;
 			const user = result.user;
@@ -41,12 +40,8 @@ export const googleSignIn = () => {
 
 export const logOut = () => {
 	signOut(auth)
-		.then(() => {
-			alert('Successfully signed out');
-		})
-		.catch(error => {
-			alert('Encountered an error while signing out');
-		});
+		.then(() => {})
+		.catch(error => {});
 };
 
 export const storage = getStorage(app);

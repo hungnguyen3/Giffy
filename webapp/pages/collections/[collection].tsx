@@ -38,6 +38,14 @@ const Collections: NextPage = () => {
 		}
 	}, [collection, giffies]);
 
+	if (Number(collection) == 0) {
+		return (
+			<Layout>
+				<h1>Create a collection to get started</h1>
+			</Layout>
+		);
+	}
+
 	return (
 		<Layout>
 			<button
@@ -51,7 +59,7 @@ const Collections: NextPage = () => {
 			{cards && cards.length > 0 ? (
 				<CardDistributor cards={cards} />
 			) : (
-				<p>No items yet</p>
+				<h1>No items yet</h1>
 			)}
 		</Layout>
 	);

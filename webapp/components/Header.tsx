@@ -1,5 +1,4 @@
 import styles from '../styles/Header.module.scss';
-import { FcSearch } from 'react-icons/fc';
 import { useEffect, useRef, useState } from 'react';
 import { googleSignIn, logOut } from './Firebase/FirebaseInit';
 import { VscAccount } from 'react-icons/vsc';
@@ -73,15 +72,9 @@ const Header = () => {
 						{isUserMenuOpen ? (
 							<div className={styles.dropdown}>
 								<ul>
-									{userAuth ? (
-										<li onClick={logOut} className={styles.login}>
-											<DropdownItem icon={BiLogOut} text={'Log out'} />
-										</li>
-									) : (
-										<li onClick={googleSignIn} className={styles.login}>
-											<DropdownItem icon={BiLogIn} text={'Log in'} />
-										</li>
-									)}
+									<li onClick={logOut} className={styles.login}>
+										<DropdownItem icon={BiLogOut} text={'Log out'} />
+									</li>
 									<li
 										onClick={() => {
 											dispatch(openAccountSetting());

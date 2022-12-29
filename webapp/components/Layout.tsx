@@ -23,6 +23,7 @@ import {
 import UploadGiffy from '../components/UploadGiffy';
 import { useRouter } from 'next/router';
 import Modal from './Modal';
+import Auth from './Auth';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -40,6 +41,9 @@ const Layout = (props: LayoutProps) => {
 	const isUploadGiffyWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isUploadGiffyWindowOpen
 	);
+	const hasAnAccount = useAppSelector((state: RootState) =>
+		state.user.value ? true : false
+	);
 
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
@@ -55,7 +59,7 @@ const Layout = (props: LayoutProps) => {
 					.then(user => {
 						const userInfo = {
 							userId: user.userId,
-							username: user.userName,
+							userName: user.userName,
 							profileImgUrl: user.profileImgUrl,
 						};
 
@@ -63,8 +67,8 @@ const Layout = (props: LayoutProps) => {
 						return userInfo;
 					})
 					.then(userInfo => {
-						getCollectionsByUserId(userInfo.userId).then(
-							(collections: collectionDTO[]) => {
+						getCollectionsByUserId(userInfo.userId)
+							.then((collections: collectionDTO[]) => {
 								var toStoreCollections: Collection[] = [];
 
 								collections.map((collection: collectionDTO) => {
@@ -83,8 +87,17 @@ const Layout = (props: LayoutProps) => {
 										dispatch(populateCollections(toStoreCollections));
 									});
 								});
-							}
-						);
+
+								const collectionIds = collections.map(
+									collection => collection.collectionId
+								);
+								return collectionIds.length > 0
+									? Math.min(...collectionIds)
+									: 0;
+							})
+							.then(firstCollectionId => {
+								router.push(`/collections/${firstCollectionId}`);
+							});
 					});
 
 				dispatch(logIn(userAuth));
@@ -94,30 +107,38 @@ const Layout = (props: LayoutProps) => {
 				dispatch(clearUser());
 				dispatch(clearCollections());
 				setLoggedIn(false);
+				router.push('/auth');
 			}
 		});
 	}, []);
 
-	return (
-		<div className={layoutStyles.background}>
-			{/* if change the value 20%, change the width of flexView class too*/}
-			<SidePanel width={'20%'} />
-			<div className={layoutStyles.flexView}>
-				<Header />
-				<div className={layoutStyles.pageContent}>
-					{loggedIn ? props.children : <div>You're not signed in yet!</div>}
+	if (loggedIn && hasAnAccount)
+		return (
+			<div className={layoutStyles.background}>
+				{/* if change the value 20%, change the width of flexView class too*/}
+				<SidePanel width={'20%'} />
+				<div className={layoutStyles.flexView}>
+					<Header />
+					<div className={layoutStyles.pageContent}>{props.children}</div>
 				</div>
+				{isAccountSettingOpen ? (
+					<Modal disableCloseButton={false}>
+						<AccountSettings />
+					</Modal>
+				) : null}
+				{isUploadGiffyWindowOpen ? (
+					<Modal disableCloseButton={false}>
+						<UploadGiffy currentCollectionId={Number(collection)} />
+					</Modal>
+				) : null}
 			</div>
-			{isAccountSettingOpen ? (
-				<Modal>
-					<AccountSettings />
-				</Modal>
-			) : null}
-			{isUploadGiffyWindowOpen ? (
-				<Modal>
-					<UploadGiffy currentCollectionId={Number(collection)} />
-				</Modal>
-			) : null}
+		);
+
+	return (
+		<div>
+			<Modal disableCloseButton={true}>
+				<Auth />
+			</Modal>
 		</div>
 	);
 };

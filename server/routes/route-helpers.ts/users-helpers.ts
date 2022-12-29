@@ -18,7 +18,7 @@ export const createUser = async (req: any, res: any) => {
 		);
 
 		if (insertUserRes.rowCount === 1) {
-			return res.status(200).send('you have successfully created a user');
+			return res.status(200).send(insertUserRes.rows[0]);
 		}
 
 		return res.status(404).json({ error: 'db error' });

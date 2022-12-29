@@ -1,5 +1,3 @@
-import { giffyDTO } from './DTO';
-
 export async function getCollectionsByUserId(userId: number) {
 	try {
 		const response = await fetch(
@@ -43,7 +41,7 @@ export async function createGiffy(data: {
 
 		return response.json();
 	} catch (err) {
-		console.log(e);
+		console.log(err);
 	}
 }
 
@@ -112,5 +110,31 @@ export async function getGiffiesByCollectionId(collectionId: number) {
 		return response.json();
 	} catch (e) {
 		console.log(e);
+	}
+}
+
+export async function createUser(data: {
+	userName: string;
+	firebaseAuthId: string;
+	profileImgUrl: string;
+}) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/createUser`,
+			{
+				method: 'POST',
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			}
+		);
+
+		return response.json();
+	} catch (err) {
+		console.log(err);
 	}
 }

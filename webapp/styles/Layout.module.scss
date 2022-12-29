@@ -4,6 +4,7 @@
 	display: flex;
 	flex-flow: row nowrap;
 	overflow: hidden;
+	background-color: #e9e9e9;
 
 	.flexView {
 		width: 80%;
@@ -18,47 +19,47 @@
 			flex-wrap: wrap;
 		}
 	}
+}
 
-	.modal {
-		position: fixed; /* Stay in place */
-		z-index: 1; /* Sit on top */
-		padding-top: 100px; /* Location of the box */
-		left: 0;
-		top: 0;
-		width: 100%; /* Full width */
-		height: 100%; /* Full height */
-		overflow: auto; /* Enable scroll if needed */
-		background-color: rgb(0, 0, 0); /* Fallback color */
-		background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-	}
+.modal {
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
 
-	.modalContent {
-		z-index: 1;
+.modalContent {
+	z-index: 1;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #00000050;
+	width: 50%;
+	height: 75%;
+	background-color: #f0f2f3;
+	padding: 17px;
+	overflow: auto;
+
+	.closeIcon {
+		content: 'x';
+		cursor: pointer;
 		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		background: #00000050;
-		width: 50%;
-		height: 50%;
-		background-color: #f0f2f3;
-		padding: 17px;
-		overflow: auto;
-
-		.closeIcon {
-			content: 'x';
-			cursor: pointer;
-			position: absolute;
-			top: 11px;
-			right: 11px;
-			background: #ededed;
-			width: 25px;
-			height: 25px;
-			border-radius: 70%;
-			line-height: 20px;
-			text-align: center;
-			border: 1px solid #999;
-			font-size: 20px;
-		}
+		top: 11px;
+		right: 11px;
+		background: #ededed;
+		width: 25px;
+		height: 25px;
+		border-radius: 70%;
+		line-height: 20px;
+		text-align: center;
+		border: 1px solid #999;
+		font-size: 20px;
 	}
 }

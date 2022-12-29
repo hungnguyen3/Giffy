@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface User {
 	userId: number;
-	username: string;
+	userName: string;
 	profileImgUrl: string;
 }
 
