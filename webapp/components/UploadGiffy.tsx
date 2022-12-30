@@ -65,7 +65,7 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 	};
 
 	return (
-		<div>
+		<div className={styles.centeredBox}>
 			<div className={styles.name}>
 				Giffy name (Optional): &nbsp;
 				<input
@@ -83,7 +83,7 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 				displayText={'Drag and drop an img/gif or click here'}
 			/>
 			<div className={styles.buttonContainer}>
-				<button className={styles.fileUploadBtn} onClick={uploadHandler}>
+				<button className={styles.createBtn} onClick={uploadHandler}>
 					Upload
 				</button>
 			</div>

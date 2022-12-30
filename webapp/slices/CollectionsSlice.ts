@@ -9,13 +9,15 @@ export interface Collection {
 }
 
 interface CollectionsState {
-	value: Collection[] | null;
+	value: Collection[];
 	isUploadGiffyWindowOpen: boolean;
+	isCreateNewCollectionWindowOpen: boolean;
 }
 
 const initialState: CollectionsState = {
-	value: null,
+	value: [],
 	isUploadGiffyWindowOpen: false,
+	isCreateNewCollectionWindowOpen: false,
 };
 
 export const collectionsSlice = createSlice({
@@ -25,21 +27,27 @@ export const collectionsSlice = createSlice({
 		populateCollections: (
 			state,
 			action: {
-				payload: Collection[] | null;
+				payload: Collection[];
 				type: string;
 			}
 		) => {
-			const collectionsValue: Collection[] | null = action.payload;
+			const collectionsValue: Collection[] = action.payload;
 			state.value = collectionsValue;
 		},
 		clearCollections: state => {
-			state.value = null;
+			state.value = [];
 		},
 		openUploadGiffyWindow: state => {
 			state.isUploadGiffyWindowOpen = true;
 		},
 		closeUploadGiffyWindow: state => {
 			state.isUploadGiffyWindowOpen = false;
+		},
+		openCreateNewCollectionWindow: state => {
+			state.isCreateNewCollectionWindowOpen = true;
+		},
+		closeCreateNewCollectionWindow: state => {
+			state.isCreateNewCollectionWindowOpen = false;
 		},
 		addGiffyToACollection: (
 			state,
@@ -55,6 +63,14 @@ export const collectionsSlice = createSlice({
 				}
 			}
 		},
+		addNewCollection: (
+			state,
+			action: {
+				payload: Collection;
+			}
+		) => {
+			state.value?.push(action.payload);
+		},
 	},
 });
 
@@ -63,7 +79,10 @@ export const {
 	clearCollections,
 	openUploadGiffyWindow,
 	closeUploadGiffyWindow,
+	openCreateNewCollectionWindow,
+	closeCreateNewCollectionWindow,
 	addGiffyToACollection,
+	addNewCollection,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

@@ -116,10 +116,10 @@ const Auth = () => {
 					displayText={'Drag and drop your profile img or click here'}
 				/>
 				<div className={styles.buttonContainer}>
-					<button className={styles.fileUploadBtn} onClick={uploadHandler}>
+					<button className={styles.createBtn} onClick={uploadHandler}>
 						Upload
 					</button>
-					<button className={styles.fileUploadBtn} onClick={logOut}>
+					<button className={styles.createBtn} onClick={logOut}>
 						Cancel
 					</button>
 				</div>

@@ -2,7 +2,14 @@ import { client } from '../../src/index';
 
 export const createGiffy = async (req: any, res: any) => {
 	try {
-		if (!(req.body.collectionId && req.body.firebaseUrl && req.body.giffyName))
+		if (
+			!(
+				req.body.collectionId &&
+				req.body.firebaseUrl &&
+				req.body.giffyName !== undefined &&
+				req.body.giffyName !== null
+			)
+		)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
 			});

@@ -61,7 +61,9 @@ const Collections: NextPage = () => {
 			{cards && cards.length > 0 ? (
 				<CardDistributor cards={cards} />
 			) : (
-				<h1>No items yet</h1>
+				<div className={styles.centeredBox}>
+					<h1>No items yet</h1>
+				</div>
 			)}
 		</Layout>
 	);

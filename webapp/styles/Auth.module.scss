@@ -1,12 +1,5 @@
 // creds: https://codepen.io/mupkoo/pen/YgddgB
-.centeredBox {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	height: 100%;
-}
+@import 'Common.module.scss';
 
 .loginWithGoogleBtn {
 	transition: background-color 0.3s, box-shadow 0.3s;

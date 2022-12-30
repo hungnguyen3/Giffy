@@ -19,32 +19,6 @@ export async function getCollectionsByUserId(userId: number) {
 	}
 }
 
-export async function createGiffy(data: {
-	collectionId: number;
-	firebaseUrl: string;
-	giffyName: string;
-}) {
-	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/createGiffy`,
-			{
-				method: 'POST',
-				mode: 'cors',
-				cache: 'no-cache',
-				credentials: 'same-origin',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(data),
-			}
-		);
-
-		return response.json();
-	} catch (err) {
-		console.log(err);
-	}
-}
-
 export async function getUserByFirebaseAuthId(firebaseAuthId: string) {
 	try {
 		const response = await fetch(
@@ -57,32 +31,6 @@ export async function getUserByFirebaseAuthId(firebaseAuthId: string) {
 					'Content-Type': 'application/json',
 				},
 				method: 'GET',
-			}
-		);
-
-		return response.json();
-	} catch (e) {
-		console.log(e);
-	}
-}
-
-export async function createCollection(data: {
-	collectionName: string;
-	private: boolean;
-	userId: number;
-}) {
-	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/createCollection`,
-			{
-				method: 'POST',
-				mode: 'cors',
-				cache: 'no-cache',
-				credentials: 'same-origin',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(data),
 			}
 		);
 
@@ -121,6 +69,58 @@ export async function createUser(data: {
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/createUser`,
+			{
+				method: 'POST',
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			}
+		);
+
+		return response.json();
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function createCollection(data: {
+	collectionName: string;
+	private: boolean;
+	userId: number;
+}) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/createCollection`,
+			{
+				method: 'POST',
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			}
+		);
+
+		return response.json();
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+export async function createGiffy(data: {
+	collectionId: number;
+	firebaseUrl: string;
+	giffyName: string;
+}) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/createGiffy`,
 			{
 				method: 'POST',
 				mode: 'cors',

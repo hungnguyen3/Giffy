@@ -1,7 +1,10 @@
 import { useAppDispatch } from '../hooks';
 import layoutStyles from '../styles/Layout.module.scss';
 import { close as closeAccountSetting } from '../slices/AccountSettingSlice';
-import { closeUploadGiffyWindow } from '../slices/CollectionsSlice';
+import {
+	closeCreateNewCollectionWindow,
+	closeUploadGiffyWindow,
+} from '../slices/CollectionsSlice';
 
 interface ModalProps {
 	disableCloseButton: boolean;
@@ -20,6 +23,7 @@ const Modal = (props: ModalProps) => {
 						onClick={() => {
 							dispatch(closeAccountSetting());
 							dispatch(closeUploadGiffyWindow());
+							dispatch(closeCreateNewCollectionWindow());
 						}}
 					>
 						x

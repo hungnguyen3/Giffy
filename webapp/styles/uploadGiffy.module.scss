@@ -1,34 +1,6 @@
+@import 'Common.module.scss';
+
 .name {
 	// float: left;
 	clear: left;
-}
-
-.buttonContainer {
-	text-align: center;
-
-	.fileUploadBtn {
-		width: 70%;
-		margin: 0;
-		color: #fff;
-		background: #1fb264;
-		border: none;
-		padding: 10px;
-		border-radius: 11px;
-		border-bottom: 4px solid #15824b;
-		transition: all 0.2s ease;
-		outline: none;
-		text-transform: uppercase;
-		font-weight: 700;
-	}
-	.fileUploadBtn:hover {
-		background: #1aa059;
-		color: #ffffff;
-		transition: all 0.2s ease;
-		cursor: pointer;
-	}
-
-	.fileUploadBtn:active {
-		border: 0;
-		transition: all 0.2s ease;
-	}
 }

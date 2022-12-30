@@ -1,0 +1,39 @@
+.centeredBox {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+}
+
+.buttonContainer {
+	text-align: center;
+	width: 50%;
+
+	.createBtn {
+		width: 70%;
+		margin: 10px;
+		color: #fff;
+		background: #1fb264;
+		border: none;
+		padding: 10px;
+		border-radius: 11px;
+		border-bottom: 4px solid #15824b;
+		transition: all 0.2s ease;
+		outline: none;
+		text-transform: uppercase;
+		font-weight: 700;
+	}
+	.createBtn:hover {
+		background: #1aa059;
+		color: #ffffff;
+		transition: all 0.2s ease;
+		cursor: pointer;
+	}
+
+	.createBtn:active {
+		border: 0;
+		transition: all 0.2s ease;
+	}
+}

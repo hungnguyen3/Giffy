@@ -24,6 +24,7 @@ import UploadGiffy from '../components/UploadGiffy';
 import { useRouter } from 'next/router';
 import Modal from './Modal';
 import Auth from './Auth';
+import CreateNewCollection from './CreateNewCollection';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -43,6 +44,9 @@ const Layout = (props: LayoutProps) => {
 	);
 	const hasAnAccount = useAppSelector((state: RootState) =>
 		state.user.value ? true : false
+	);
+	const isCreateNewCollectionWindowOpen = useAppSelector(
+		(state: RootState) => state.collections.isCreateNewCollectionWindowOpen
 	);
 
 	useEffect(() => {
@@ -147,6 +151,11 @@ const Layout = (props: LayoutProps) => {
 				{isUploadGiffyWindowOpen ? (
 					<Modal disableCloseButton={false}>
 						<UploadGiffy currentCollectionId={Number(collection)} />
+					</Modal>
+				) : null}
+				{isCreateNewCollectionWindowOpen ? (
+					<Modal disableCloseButton={false}>
+						<CreateNewCollection />
 					</Modal>
 				) : null}
 			</div>

@@ -1,9 +1,10 @@
 import styles from '../styles/SidePanel.module.scss';
 import { useState } from 'react';
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import Link from 'next/link';
+import { openCreateNewCollectionWindow } from '../slices/CollectionsSlice';
 
 interface SidePanelProps {
 	width: string;
@@ -11,6 +12,7 @@ interface SidePanelProps {
 
 const SidePanel = (props: SidePanelProps) => {
 	const [width, setWidth] = useState(props.width);
+	const dispatch = useAppDispatch();
 
 	const closePanel = () => {
 		setWidth('0%');
@@ -47,6 +49,16 @@ const SidePanel = (props: SidePanelProps) => {
 						</Link>
 					);
 				})}
+				<div className={styles.buttonContainer}>
+					<button
+						className={styles.createBtn}
+						onClick={() => {
+							dispatch(openCreateNewCollectionWindow());
+						}}
+					>
+						+ Collection
+					</button>
+				</div>
 			</div>
 		</div>
 	);
