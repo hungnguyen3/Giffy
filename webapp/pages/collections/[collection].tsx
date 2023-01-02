@@ -9,7 +9,11 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { RootState } from '../../store';
 import styles from '../../styles/Collections.module.scss';
 
-import { openUploadGiffyWindow } from '../../slices/CollectionsSlice';
+import {
+	openUploadGiffyWindow,
+	removeSelectedGiffy,
+} from '../../slices/CollectionsSlice';
+import { deleteGiffyById } from '../../API/serverHooks';
 
 const Collections: NextPage = () => {
 	const [cards, setCards] = useState<JSX.Element[] | null>(null);
@@ -21,17 +25,27 @@ const Collections: NextPage = () => {
 			curCollection => curCollection.collectionId === Number(collection)
 		)[0]?.giffies;
 	});
+	const selectedGiffies = useAppSelector(
+		// TODO
+		(state: RootState) => state.collections.selectedGiffyId
+	);
 
 	useEffect(() => {
 		if (collection && !Number.isNaN(Number(collection))) {
 			if (giffies) {
 				setCards(
 					giffies.map((giffy: giffyDTO) => {
-						return Card({
-							img: giffy.firebaseUrl,
-							name: giffy.giffyName,
-							likeCount: giffy.likes,
-						});
+						return (
+							// TODO: add key to Card
+							<div key={giffy.giffyId}>
+								<Card
+									img={giffy.firebaseUrl}
+									name={giffy.giffyName}
+									likeCount={giffy.likes}
+									giffyId={giffy.giffyId}
+								></Card>
+							</div>
+						);
 					})
 				);
 			}
@@ -50,6 +64,51 @@ const Collections: NextPage = () => {
 
 	return (
 		<Layout>
+			<button
+				className={styles.deleteGiffyButton}
+				onClick={() => {
+					console.log(selectedGiffies);
+					selectedGiffies.map(async (giffyId: number) => {
+						try {
+							// TODO: delete selected giiffy from Firebase by url
+							if (giffies) {
+								giffies.map((giffy: giffyDTO) => {
+									let giffyUrl = giffy.firebaseUrl;
+									// TODO: get fileRef
+									// let giffyRef: any = '';
+
+									// giffyRef
+									// 	.delete()
+									// 	.then(() => {
+									// 		console.log(`deleted ${giffy.giffyName} from  Firebase`);
+									// 	})
+									// 	.catch((err: any) => {
+									// 		console.log(err);
+									// 	});
+									// TODO: delete from database
+									try {
+										deleteGiffyById(giffy.giffyId);
+										console.log(`deleted ${giffy.giffyId} from database`);
+									} catch (err) {
+										console.log(err);
+									}
+									// TODO: delete from Redux store
+									try {
+										dispatch(removeSelectedGiffy(giffyId));
+										console.log(`deleted ${giffy.giffyId} from Redux store`);
+									} catch (err) {
+										console.log(err);
+									}
+								});
+							}
+						} catch (error) {
+							console.log(error);
+						}
+					});
+				}}
+			>
+				-
+			</button>
 			<button
 				className={styles.newGiffyButton}
 				onClick={() => {

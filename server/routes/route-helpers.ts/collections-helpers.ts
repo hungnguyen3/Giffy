@@ -23,9 +23,10 @@ export const createCollection = async (req: any, res: any) => {
       `,
 			[req.body.collectionName, req.body.private]
 		);
-
+		console.log('here 26');
 		collectionId = createCollectionRes.rows[0].collectionId;
-
+		console.log('28: ' + collectionId);
+		console.log('29: ' + createCollectionRes.rows);
 		if (createCollectionRes.rowCount !== 1) {
 			return res.status(500).json({ error: "couldn't create a collection" });
 		}

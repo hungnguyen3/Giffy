@@ -14,7 +14,7 @@ const initCollections = async () => {
         CREATE TABLE IF NOT EXISTS collections (
           "collectionId" SERIAL PRIMARY KEY,
           "collectionName" varchar(255) NOT NULL,
-          "privacy" boolean NOT NULL
+          "private" boolean NOT NULL
         );
       `
 		)

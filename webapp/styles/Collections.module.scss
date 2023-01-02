@@ -2,7 +2,7 @@
 
 .newGiffyButton {
 	position: absolute;
-	right: 20px;
+	right: 110px;
 	bottom: 10px;
 	background-color: rgb(5, 142, 78);
 	border: none;
@@ -18,5 +18,28 @@
 	&:hover {
 		background-color: RoyalBlue;
 		box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5);
+		cursor: pointer;
+	}
+}
+
+.deleteGiffyButton {
+	position: absolute;
+	right: 20px;
+	bottom: 10px;
+	background-color: rgb(236,94,104);
+	border: none;
+	color: white;
+	padding: 5px 30px 15px 30px;
+	text-align: center;
+	font-size: 50px;
+	border-radius: 90%;
+
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+	transition: 0.3s;
+
+	&:hover {
+		background-color: rgba(255, 60, 0, 0.955);
+		box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5);
+		cursor: pointer;
 	}
 }

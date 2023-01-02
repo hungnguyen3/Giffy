@@ -44,7 +44,10 @@ const SidePanel = (props: SidePanelProps) => {
 				<h1>Collections</h1>
 				{collections?.map(collection => {
 					return (
-						<Link href={`/collections/${collection.collectionId}`}>
+						<Link
+							key={collection.collectionId}
+							href={`/collections/${collection.collectionId}`}
+						>
 							{collection.collectionName}
 						</Link>
 					);
@@ -56,7 +59,7 @@ const SidePanel = (props: SidePanelProps) => {
 							dispatch(openCreateNewCollectionWindow());
 						}}
 					>
-						+ Collection
+						+
 					</button>
 				</div>
 			</div>

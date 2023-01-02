@@ -5,9 +5,9 @@
 }
 
 .card {
-	margin: 2%;
-	width: 200px;
-	height: 200px;
+	margin: 17px;
+	width: 100px;
+	height: 100px;
 	border-radius: 40px;
 	box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
 		-5px -5px 30px 7px rgba(0, 0, 0, 0.22);
@@ -35,6 +35,12 @@
 		font-size: 20px;
 		margin-top: -20px;
 		height: 40px;
+	}
+
+	.cardCheckbox {
+		:hover {
+			cursor: pointer;
+		}
 	}
 }
 

@@ -138,3 +138,23 @@ export async function createGiffy(data: {
 		console.log(err);
 	}
 }
+
+export async function deleteGiffyById(giffyId: number) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/deleteGiffyById/${giffyId}`,
+			{
+				method: 'DELETE',
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		);
+		return response.json();
+	} catch (err) {
+		console.log(err);
+	}
+}

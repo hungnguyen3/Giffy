@@ -10,12 +10,14 @@ export interface Collection {
 
 interface CollectionsState {
 	value: Collection[];
+	selectedGiffyId: number[]; // TODO
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;
 }
 
 const initialState: CollectionsState = {
 	value: [],
+	selectedGiffyId: [], // TODO
 	isUploadGiffyWindowOpen: false,
 	isCreateNewCollectionWindowOpen: false,
 };
@@ -71,6 +73,17 @@ export const collectionsSlice = createSlice({
 		) => {
 			state.value?.push(action.payload);
 		},
+		addSelectedGiffy: (state, action: { payload: number }) => {
+			// TODO
+			state.selectedGiffyId.push(action.payload);
+		},
+		removeSelectedGiffy: (state, action: { payload: number }) => {
+			// TODO
+			const index = state.selectedGiffyId.indexOf(action.payload);
+			if (index !== -1) {
+				state.selectedGiffyId.splice(index, 1);
+			}
+		},
 	},
 });
 
@@ -83,6 +96,8 @@ export const {
 	closeCreateNewCollectionWindow,
 	addGiffyToACollection,
 	addNewCollection,
+	addSelectedGiffy,
+	removeSelectedGiffy,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

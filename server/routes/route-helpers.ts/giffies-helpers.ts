@@ -160,3 +160,11 @@ export const updateGiffyById = async (req: any, res: any) => {
 		return res.status(500).json({ error: err });
 	}
 };
+
+export const getGiffyCloudUrlById = (req: any, res: any) => {
+	if (!req.params.giffyId) {
+		return res.status(400).send({
+			error: 'missing required parameter(s)',
+		});
+	}
+};
