@@ -1,10 +1,16 @@
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
-const Popup = () => {
+const Popup: React.FC = () => {
 	return <div>Popup Page</div>;
 };
 
-export default Popup;
+const root = ReactDOM.createRoot(
+	document.getElementById('popup') as HTMLElement
+);
 
-render(<Popup />, document.getElementById('popup'));
+root.render(
+	<React.StrictMode>
+		<Popup />
+	</React.StrictMode>
+);

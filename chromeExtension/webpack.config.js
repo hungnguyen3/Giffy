@@ -1,4 +1,7 @@
 const { resolve } = require('path');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const tsRule = {
 	test: /\.ts(x?)$/,
@@ -6,8 +9,21 @@ const tsRule = {
 	use: 'ts-loader',
 };
 
+const plugins = [
+	new HTMLWebpackPlugin({
+		template: 'src/popup_page/popup.html',
+		filename: 'popup.html',
+		chunks: ['popup'],
+	}),
+	new CopyWebpackPlugin({
+		patterns: [{ from: 'public', to: '.' }],
+	}),
+	new CleanWebpackPlugin(),
+];
+
 module.exports = {
 	mode: 'development',
+	devtool: 'cheap-module-source-map',
 	entry: {
 		popup: './src/popup_page/popup.tsx',
 	},
@@ -18,4 +34,5 @@ module.exports = {
 	module: {
 		rules: [tsRule],
 	},
+	plugins,
 };
