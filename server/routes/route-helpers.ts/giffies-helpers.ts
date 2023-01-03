@@ -69,10 +69,12 @@ export const deleteGiffyById = async (req: any, res: any) => {
 
 export const getGiffyById = async (req: any, res: any) => {
 	try {
-		if (!req.params.giffyId)
+		if (!req.params.giffyId) {
+			console.log(req.params);
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
 			});
+		}
 
 		const getGiffyRes = await client.query(
 			`

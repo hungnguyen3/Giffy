@@ -67,44 +67,47 @@ const Collections: NextPage = () => {
 			<button
 				className={styles.deleteGiffyButton}
 				onClick={() => {
-					console.log(selectedGiffies);
 					selectedGiffies.map(async (giffyId: number) => {
 						try {
 							// TODO: delete selected giiffy from Firebase by url
 							if (giffies) {
-								giffies.map((giffy: giffyDTO) => {
-									let giffyUrl = giffy.firebaseUrl;
-									// TODO: get fileRef
-									// let giffyRef: any = '';
+								giffies
+									.filter((giffy: giffyDTO) => {
+										return giffy.giffyId === giffyId;
+									})
+									.map((giffy: giffyDTO) => {
+										let giffyUrl = giffy.firebaseUrl;
+										// TODO: get fileRef
+										// let giffyRef: any = '';
 
-									// giffyRef
-									// 	.delete()
-									// 	.then(() => {
-									// 		console.log(`deleted ${giffy.giffyName} from  Firebase`);
-									// 	})
-									// 	.catch((err: any) => {
-									// 		console.log(err);
-									// 	});
-									// TODO: delete from database
-									try {
-										deleteGiffyById(giffy.giffyId);
-										console.log(`deleted ${giffy.giffyId} from database`);
-									} catch (err) {
-										console.log(err);
-									}
-									// TODO: delete from Redux store
-									try {
-										dispatch(removeSelectedGiffy(giffyId));
-										console.log(`deleted ${giffy.giffyId} from Redux store`);
-									} catch (err) {
-										console.log(err);
-									}
-								});
+										// giffyRef
+										// 	.delete()
+										// 	.then(() => {
+										// 		console.log(`deleted ${giffy.giffyName} from  Firebase`);
+										// 	})
+										// 	.catch((err: any) => {
+										// 		console.log(err);
+										// 	});
+										// TODO: delete from database
+
+										deleteGiffyById(giffy.giffyId)
+											.then(() =>
+												console.log(`deleted ${giffy.giffyId} from database`)
+											)
+											.catch(err => console.log(err));
+										// TODO: delete from Redux store
+										try {
+											dispatch(removeSelectedGiffy(giffyId));
+										} catch (err) {
+											console.log(err);
+										}
+									});
 							}
 						} catch (error) {
 							console.log(error);
 						}
 					});
+					console.log(`selected ${selectedGiffies}`);
 				}}
 			>
 				-

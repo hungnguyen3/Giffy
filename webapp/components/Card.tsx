@@ -17,6 +17,7 @@ interface CardProps {
 
 const Card = (props: CardProps) => {
 	const [isChecked, setIsChecked] = useState<boolean>(false);
+	const [isDeleted, setIsDeleted] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
 	useEffect(() => {
 		// TODO
@@ -41,7 +42,9 @@ const Card = (props: CardProps) => {
 		}
 	}, [selectedGiffies]);
 
-	return (
+	return isDeleted ? (
+		<div></div>
+	) : (
 		<div
 			className={styles.card}
 			onClick={() => {

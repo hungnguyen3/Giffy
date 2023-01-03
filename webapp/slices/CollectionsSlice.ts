@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { stat } from 'fs';
 import { giffyDTO } from '../API/DTO';
 
 export interface Collection {
@@ -79,9 +80,21 @@ export const collectionsSlice = createSlice({
 		},
 		removeSelectedGiffy: (state, action: { payload: number }) => {
 			// TODO
+			console.log(`payload: ${action.payload}`);
 			const index = state.selectedGiffyId.indexOf(action.payload);
 			if (index !== -1) {
 				state.selectedGiffyId.splice(index, 1);
+				if (state.value) {
+					for (let i = 0; i < state.value.length; i++) {
+						for (let j = 0; j < state.value[i].giffies.length; i++) {
+							if (state.value[i].giffies[j].giffyId === action.payload) {
+								state.value[i].giffies.splice(j, 1);
+								console.log(`92929299229929deleted ${j}`);
+							}
+						}
+					}
+				}
+				console.log('deleted');
 			}
 		},
 	},

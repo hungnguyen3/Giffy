@@ -142,7 +142,7 @@ export async function createGiffy(data: {
 export async function deleteGiffyById(giffyId: number) {
 	try {
 		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/deleteGiffyById/${giffyId}`,
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/deleteGiffyById/${giffyId}`,
 			{
 				method: 'DELETE',
 				mode: 'cors',

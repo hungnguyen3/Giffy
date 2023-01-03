@@ -98,9 +98,4 @@ const Header = () => {
 		</nav>
 	);
 };
-
-// TODO: style userMenuText
-// TODO: style userMenuText
-// TODO: style userMenuText
-
 export default Header;

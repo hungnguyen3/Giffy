@@ -9,8 +9,8 @@ import {
 const router = express.Router();
 
 router.post('/createGiffy', createGiffy);
-router.delete('/deleteGiffyById/:GiffyId', deleteGiffyById);
-router.get('/getGiffyById/:GiffyId', getGiffyById);
-router.put('/updateGiffyById/:GiffyId', updateGiffyById);
+router.delete('/deleteGiffyById/:giffyId', deleteGiffyById);
+router.get('/getGiffyById/:giffyId', getGiffyById);
+router.put('/updateGiffyById/:giffyId', updateGiffyById);
 router.get('/getGiffiesByCollectionId/:collectionId', getGiffiesByCollectionId);
 module.exports = router;
