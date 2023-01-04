@@ -12,7 +12,7 @@ interface CardProps {
 	img: string;
 	name: string;
 	likeCount: number;
-	giffyId: number; // TODO
+	giffyId: number;
 }
 
 const Card = (props: CardProps) => {
@@ -20,7 +20,6 @@ const Card = (props: CardProps) => {
 	const [isDeleted, setIsDeleted] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
 	useEffect(() => {
-		// TODO
 		if (isChecked) {
 			dispatch(addSelectedGiffy(props.giffyId));
 		} else {

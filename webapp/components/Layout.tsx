@@ -17,6 +17,7 @@ import { clearUser, populateUser } from '../slices/UserSlice';
 import { collectionDTO, giffyDTO } from '../API/DTO';
 import {
 	clearCollections,
+	closeDeleteGiffyConfirmationWindow,
 	Collection,
 	populateCollections,
 } from '../slices/CollectionsSlice';
@@ -25,6 +26,7 @@ import { useRouter } from 'next/router';
 import Modal from './Modal';
 import Auth from './Auth';
 import CreateNewCollection from './CreateNewCollection';
+import { DeleteGiffyConfirmationWindow } from './DeleteGiffyConfirmationWindow';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -47,6 +49,9 @@ const Layout = (props: LayoutProps) => {
 	);
 	const isCreateNewCollectionWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isCreateNewCollectionWindowOpen
+	);
+	const isDeleteGiffyConfirmationWindowOpen = useAppSelector(
+		(state: RootState) => state.collections.isDeleteGiffyConfirmationWindowOpen
 	);
 
 	useEffect(() => {
@@ -134,6 +139,22 @@ const Layout = (props: LayoutProps) => {
 		});
 	}, []);
 
+	const selectedGiffies = useAppSelector(
+		(state: RootState) => state.collections.selectedGiffyId
+	);
+	const [
+		isGiffySelectedAndConfirmationWindowOpen,
+		setIsGiffySelectedAndConfirmationWindowOpen,
+	] = useState<boolean>(false);
+
+	useEffect(() => {
+		if (isDeleteGiffyConfirmationWindowOpen && selectedGiffies.length) {
+			setIsGiffySelectedAndConfirmationWindowOpen(true);
+		} else {
+			setIsGiffySelectedAndConfirmationWindowOpen(false);
+			dispatch(closeDeleteGiffyConfirmationWindow());
+		}
+	}, [isDeleteGiffyConfirmationWindowOpen, selectedGiffies]);
 	if (loggedIn && hasAnAccount)
 		return (
 			<div className={layoutStyles.background}>
@@ -156,6 +177,11 @@ const Layout = (props: LayoutProps) => {
 				{isCreateNewCollectionWindowOpen ? (
 					<Modal disableCloseButton={false}>
 						<CreateNewCollection />
+					</Modal>
+				) : null}
+				{isGiffySelectedAndConfirmationWindowOpen ? (
+					<Modal disableCloseButton={false}>
+						<DeleteGiffyConfirmationWindow />
 					</Modal>
 				) : null}
 			</div>

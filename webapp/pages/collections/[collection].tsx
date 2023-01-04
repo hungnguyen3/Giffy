@@ -10,6 +10,7 @@ import { RootState } from '../../store';
 import styles from '../../styles/Collections.module.scss';
 
 import {
+	openDeleteGiffyConfirmationWindow,
 	openUploadGiffyWindow,
 	removeSelectedGiffy,
 } from '../../slices/CollectionsSlice';
@@ -26,7 +27,6 @@ const Collections: NextPage = () => {
 		)[0]?.giffies;
 	});
 	const selectedGiffies = useAppSelector(
-		// TODO
 		(state: RootState) => state.collections.selectedGiffyId
 	);
 
@@ -36,7 +36,6 @@ const Collections: NextPage = () => {
 				setCards(
 					giffies.map((giffy: giffyDTO) => {
 						return (
-							// TODO: add key to Card
 							<div key={giffy.giffyId}>
 								<Card
 									img={giffy.firebaseUrl}
@@ -67,47 +66,7 @@ const Collections: NextPage = () => {
 			<button
 				className={styles.deleteGiffyButton}
 				onClick={() => {
-					selectedGiffies.map(async (giffyId: number) => {
-						try {
-							// TODO: delete selected giiffy from Firebase by url
-							if (giffies) {
-								giffies
-									.filter((giffy: giffyDTO) => {
-										return giffy.giffyId === giffyId;
-									})
-									.map((giffy: giffyDTO) => {
-										let giffyUrl = giffy.firebaseUrl;
-										// TODO: get fileRef
-										// let giffyRef: any = '';
-
-										// giffyRef
-										// 	.delete()
-										// 	.then(() => {
-										// 		console.log(`deleted ${giffy.giffyName} from  Firebase`);
-										// 	})
-										// 	.catch((err: any) => {
-										// 		console.log(err);
-										// 	});
-										// TODO: delete from database
-
-										deleteGiffyById(giffy.giffyId)
-											.then(() =>
-												console.log(`deleted ${giffy.giffyId} from database`)
-											)
-											.catch(err => console.log(err));
-										// TODO: delete from Redux store
-										try {
-											dispatch(removeSelectedGiffy(giffyId));
-										} catch (err) {
-											console.log(err);
-										}
-									});
-							}
-						} catch (error) {
-							console.log(error);
-						}
-					});
-					console.log(`selected ${selectedGiffies}`);
+					dispatch(openDeleteGiffyConfirmationWindow());
 				}}
 			>
 				-

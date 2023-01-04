@@ -11,16 +11,18 @@ export interface Collection {
 
 interface CollectionsState {
 	value: Collection[];
-	selectedGiffyId: number[]; // TODO
+	selectedGiffyId: number[];
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;
+	isDeleteGiffyConfirmationWindowOpen: boolean;
 }
 
 const initialState: CollectionsState = {
 	value: [],
-	selectedGiffyId: [], // TODO
+	selectedGiffyId: [],
 	isUploadGiffyWindowOpen: false,
 	isCreateNewCollectionWindowOpen: false,
+	isDeleteGiffyConfirmationWindowOpen: false,
 };
 
 export const collectionsSlice = createSlice({
@@ -52,6 +54,12 @@ export const collectionsSlice = createSlice({
 		closeCreateNewCollectionWindow: state => {
 			state.isCreateNewCollectionWindowOpen = false;
 		},
+		openDeleteGiffyConfirmationWindow: state => {
+			state.isDeleteGiffyConfirmationWindowOpen = true;
+		},
+		closeDeleteGiffyConfirmationWindow: state => {
+			state.isDeleteGiffyConfirmationWindowOpen = false;
+		},
 		addGiffyToACollection: (
 			state,
 			action: {
@@ -75,26 +83,13 @@ export const collectionsSlice = createSlice({
 			state.value?.push(action.payload);
 		},
 		addSelectedGiffy: (state, action: { payload: number }) => {
-			// TODO
 			state.selectedGiffyId.push(action.payload);
 		},
 		removeSelectedGiffy: (state, action: { payload: number }) => {
-			// TODO
-			console.log(`payload: ${action.payload}`);
+			// Remove from selectedGiffies, but not from Redux giffies list
 			const index = state.selectedGiffyId.indexOf(action.payload);
 			if (index !== -1) {
 				state.selectedGiffyId.splice(index, 1);
-				if (state.value) {
-					for (let i = 0; i < state.value.length; i++) {
-						for (let j = 0; j < state.value[i].giffies.length; i++) {
-							if (state.value[i].giffies[j].giffyId === action.payload) {
-								state.value[i].giffies.splice(j, 1);
-								console.log(`92929299229929deleted ${j}`);
-							}
-						}
-					}
-				}
-				console.log('deleted');
 			}
 		},
 	},
@@ -111,6 +106,8 @@ export const {
 	addNewCollection,
 	addSelectedGiffy,
 	removeSelectedGiffy,
+	openDeleteGiffyConfirmationWindow,
+	closeDeleteGiffyConfirmationWindow,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;
