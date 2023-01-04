@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 const Popup: React.FC = () => {
-	return <div>Popup Page</div>;
+	return <div>Popup Page!</div>;
 };
 
 const root = ReactDOM.createRoot(

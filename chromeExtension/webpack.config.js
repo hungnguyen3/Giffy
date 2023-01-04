@@ -23,7 +23,6 @@ const plugins = [
 
 module.exports = {
 	mode: 'development',
-	devtool: 'cheap-module-source-map',
 	entry: {
 		popup: './src/popup_page/popup.tsx',
 	},
