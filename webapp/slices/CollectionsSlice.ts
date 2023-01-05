@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { stat } from 'fs';
 import { collectionDTO, giffyDTO } from '../API/DTO';
 
 export interface Collection {
@@ -74,11 +73,12 @@ export const collectionsSlice = createSlice({
 				}
 			}
 		},
-		removeGiffiesFromACollection: (
+		removeGiffyFromACollection: (
 			state,
 			action: {
 				payload: {
 					collectionId: number;
+					giffyId: number;
 				};
 			}
 		) => {
@@ -86,14 +86,12 @@ export const collectionsSlice = createSlice({
 				for (let i = 0; i < state.value.length; i++) {
 					if (state.value[i].collectionId === action.payload.collectionId) {
 						var giffiesClone = [...state.value[i].giffies];
-						var selectedGiffyIdsClone = [...state.selectedGiffyIds];
 
-						var giffiesAfterRemoval = giffiesClone.filter(giffy =>
-							selectedGiffyIdsClone.includes(giffy.giffyId)
+						var giffiesAfterRemoval = giffiesClone.filter(
+							giffy => giffy.giffyId != action.payload.giffyId
 						);
 
 						state.value[i].giffies = giffiesAfterRemoval;
-						state.selectedGiffyIds = [];
 					}
 				}
 			}
@@ -146,7 +144,7 @@ export const {
 	openCreateNewCollectionWindow,
 	closeCreateNewCollectionWindow,
 	addGiffyToACollection,
-	removeGiffiesFromACollection,
+	removeGiffyFromACollection,
 	addNewCollection,
 	addSelectedGiffy,
 	removeSelectedGiffy,

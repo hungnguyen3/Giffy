@@ -16,20 +16,12 @@ interface CardProps {
 
 const Card = (props: CardProps) => {
 	const [isChecked, setIsChecked] = useState<boolean>(false);
-	const [isDeleted, setIsDeleted] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
-	useEffect(() => {
-		if (isChecked) {
-			dispatch(addSelectedGiffy(props.giffyId));
-		} else {
-			dispatch(removeSelectedGiffy(props.giffyId));
-		}
-	}, [isChecked]);
 
 	const selectedGiffies = useAppSelector(
 		(state: RootState) => state.collections.selectedGiffyIds
 	);
-	// TODO: cancel selected ticks when the user cancel delete confirmation modal
+
 	useEffect(() => {
 		if (selectedGiffies) {
 			if (selectedGiffies.includes(props.giffyId)) {
@@ -40,15 +32,18 @@ const Card = (props: CardProps) => {
 		}
 	}, [selectedGiffies]);
 
-	return isDeleted ? (
-		<div></div>
-	) : (
-		<div
-			className={styles.card}
-			onClick={() => {
-				setIsChecked(!isChecked);
-			}}
-		>
+	const onClickHandler = () => {
+		if (isChecked) {
+			setIsChecked(!isChecked);
+			dispatch(removeSelectedGiffy(props.giffyId));
+		} else {
+			setIsChecked(!isChecked);
+			dispatch(addSelectedGiffy(props.giffyId));
+		}
+	};
+
+	return (
+		<div className={styles.card} onClick={onClickHandler}>
 			<div className={styles.cardImage}>
 				<img src={props.img} alt="Avatar" />
 			</div>
@@ -62,9 +57,12 @@ const Card = (props: CardProps) => {
 				<input
 					type="checkbox"
 					checked={isChecked}
-					onChange={() => {
-						setIsChecked(!isChecked);
-					}}
+					style={
+						isChecked
+							? { visibility: isChecked ? 'visible' : 'hidden' }
+							: undefined
+					}
+					onChange={onClickHandler}
 				/>
 			</div>
 		</div>

@@ -5,7 +5,7 @@ import { deleteGiffyById } from '../API/serverHooks';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
 	closeDeleteGiffyConfirmationWindow,
-	removeGiffiesFromACollection,
+	removeGiffyFromACollection,
 	removeSelectedGiffy,
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
@@ -64,8 +64,9 @@ export const DeleteGiffyConfirmationWindow = () => {
 															// not working
 															if (!response.error) {
 																dispatch(
-																	removeGiffiesFromACollection({
+																	removeGiffyFromACollection({
 																		collectionId: Number(collection),
+																		giffyId: giffyId,
 																	})
 																);
 																dispatch(removeSelectedGiffy(giffyId));

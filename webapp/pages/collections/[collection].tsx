@@ -14,7 +14,6 @@ import {
 	openUploadGiffyWindow,
 	removeSelectedGiffy,
 } from '../../slices/CollectionsSlice';
-import { deleteGiffyById } from '../../API/serverHooks';
 
 const Collections: NextPage = () => {
 	const [cards, setCards] = useState<JSX.Element[] | null>(null);
@@ -64,14 +63,6 @@ const Collections: NextPage = () => {
 	return (
 		<Layout>
 			<button
-				className={styles.deleteGiffyButton}
-				onClick={() => {
-					dispatch(openDeleteGiffyConfirmationWindow());
-				}}
-			>
-				-
-			</button>
-			<button
 				className={styles.newGiffyButton}
 				onClick={() => {
 					dispatch(openUploadGiffyWindow());
@@ -79,6 +70,16 @@ const Collections: NextPage = () => {
 			>
 				+
 			</button>
+			{selectedGiffies.length > 0 ? (
+				<button
+					className={styles.deleteGiffyButton}
+					onClick={() => {
+						dispatch(openDeleteGiffyConfirmationWindow());
+					}}
+				>
+					-
+				</button>
+			) : null}
 			{cards && cards.length > 0 ? (
 				<CardDistributor cards={cards} />
 			) : (
