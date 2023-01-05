@@ -30,10 +30,10 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 	const uploadHandler = async () => {
 		if (giffy) {
 			try {
-				const storageRef = ref(
-					storage,
-					`giffies/${user?.userName}/${giffy.name}${new Date().getTime()}`
-				);
+				const giffyFirebaseRef = `giffies/${user?.userName}/${
+					giffy.name
+				}${new Date().getTime()}`;
+				const storageRef = ref(storage, giffyFirebaseRef);
 				const snapshot = await uploadBytes(storageRef, giffy);
 				const downloadURL = await getDownloadURL(snapshot.ref);
 
@@ -45,6 +45,7 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 					const createGiffyRes: giffyDTO | any = await createGiffy({
 						collectionId: Number(giffyInfo.collectionId),
 						firebaseUrl: downloadURL,
+						firebaseRef: giffyFirebaseRef,
 						giffyName: giffyInfo.giffyName,
 					});
 

@@ -1,3 +1,4 @@
+import { deleteObject, ref } from 'firebase/storage';
 import router from 'next/router';
 import { giffyDTO } from '../API/DTO';
 import { deleteGiffyById } from '../API/serverHooks';
@@ -8,6 +9,7 @@ import {
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
 import styles from '../styles/DeleteGiffyConfirmationWindow.module.scss';
+import { storage } from './Firebase/FirebaseInit';
 
 export const DeleteGiffyConfirmationWindow = () => {
 	const selectedGiffies = useAppSelector(
@@ -20,6 +22,10 @@ export const DeleteGiffyConfirmationWindow = () => {
 		)[0]?.giffies;
 	});
 	const dispatch = useAppDispatch();
+
+	function deleteGiffyFromStore(): any {
+		throw new Error('Function not implemented.');
+	}
 
 	return (
 		<div className={styles.centeredBox}>
@@ -46,19 +52,26 @@ export const DeleteGiffyConfirmationWindow = () => {
 											return giffy.giffyId === giffyId;
 										})
 										.map((giffy: giffyDTO) => {
-											// TODO: delete from Firebase
-											console.log(`try to delete ${giffy.giffyId}`);
-											deleteGiffyById(giffy.giffyId)
-												.then(() =>
-													console.log(`deleted ${giffy.giffyId} from database`)
-												)
+											// 1. delete giffy from Firebase
+											const giffyStorageRef = ref(storage, giffy.firebaseRef);
+											deleteObject(giffyStorageRef)
+												.then(() => {
+													// 2. delete giffy from database
+													deleteGiffyById(giffy.giffyId)
+														.then(() => {
+															// 3. delete from Redux store
+															// not working
+															dispatch(removeSelectedGiffy(giffyId));
+															dispatch(
+																deleteGiffyFromStore(
+																	Number(collection),
+																	giffyId
+																)
+															);
+														})
+														.catch(err => console.log(err));
+												})
 												.catch(err => console.log(err));
-											// TODO: delete from Redux store
-											try {
-												dispatch(removeSelectedGiffy(giffyId));
-											} catch (err) {
-												console.log(err);
-											}
 										});
 								}
 							} catch (error) {

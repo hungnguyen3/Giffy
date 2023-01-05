@@ -6,6 +6,7 @@ export const createGiffy = async (req: any, res: any) => {
 			!(
 				req.body.collectionId &&
 				req.body.firebaseUrl &&
+				req.body.firebaseRef &&
 				req.body.giffyName !== undefined &&
 				req.body.giffyName !== null
 			)
@@ -16,11 +17,17 @@ export const createGiffy = async (req: any, res: any) => {
 
 		const createGiffy = await client.query(
 			`
-      INSERT INTO giffies ("collectionId", "firebaseUrl", "giffyName", "likes")
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO giffies ("collectionId", "firebaseUrl", "firebaseRef", "giffyName", "likes")
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
       `,
-			[req.body.collectionId, req.body.firebaseUrl, req.body.giffyName, 0]
+			[
+				req.body.collectionId,
+				req.body.firebaseUrl,
+				req.body.firebaseRef,
+				req.body.giffyName,
+				0,
+			]
 		);
 
 		if (createGiffy.rowCount === 1) {
@@ -133,12 +140,14 @@ export const updateGiffyById = async (req: any, res: any) => {
         UPDATE giffies
         SET 
 				"collectionId" = COALESCE($1, "collectionId"), "firebaseUrl"= COALESCE($2, "firebaseUrl"),
-				"giffyName" = COALESCE($3, "giffyName"), "likes" = COALESCE($4, "likes")
+				"firebaseRef" = COALESCE($3, "firebaseRef"),
+				"giffyName" = COALESCE($4, "giffyName"), "likes" = COALESCE($5, "likes")
         WHERE "giffyId" = $5;
       `,
 			[
 				req.body.collectionId,
 				req.body.firebaseUrl,
+				req.body.firebaseRef,
 				req.body.giffyName,
 				req.body.likes,
 				req.params.giffyId,
