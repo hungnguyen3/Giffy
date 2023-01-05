@@ -1,4 +1,3 @@
-import { is } from 'immer/dist/internal';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
@@ -28,7 +27,7 @@ const Card = (props: CardProps) => {
 	}, [isChecked]);
 
 	const selectedGiffies = useAppSelector(
-		(state: RootState) => state.collections.selectedGiffyId
+		(state: RootState) => state.collections.selectedGiffyIds
 	);
 	// TODO: cancel selected ticks when the user cancel delete confirmation modal
 	useEffect(() => {

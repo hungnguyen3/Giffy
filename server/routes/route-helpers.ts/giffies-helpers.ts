@@ -52,16 +52,17 @@ export const deleteGiffyById = async (req: any, res: any) => {
 			return res.status(500).send({ error: 'There is no such giffy' });
 
 		if (deleteGiffyRes.rowCount === 1)
-			return res
-				.status(200)
-				.send(
-					'you have successfully deleted a giffy uid: ' + req.params.giffyId
-				);
+			return res.status(200).send({
+				successMessage:
+					'you have successfully deleted a giffy uid: ' + req.params.giffyId,
+			});
 
 		if (deleteGiffyRes.rowCount > 1)
 			return res
 				.status(500)
-				.send('error occurred, more than one giffy with the same id');
+				.send({
+					error: 'error occurred, more than one giffy with the same id',
+				});
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}

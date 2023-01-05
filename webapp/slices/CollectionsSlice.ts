@@ -11,7 +11,7 @@ export interface Collection {
 
 interface CollectionsState {
 	value: Collection[];
-	selectedGiffyId: number[];
+	selectedGiffyIds: number[];
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;
 	isDeleteGiffyConfirmationWindowOpen: boolean;
@@ -19,7 +19,7 @@ interface CollectionsState {
 
 const initialState: CollectionsState = {
 	value: [],
-	selectedGiffyId: [],
+	selectedGiffyIds: [],
 	isUploadGiffyWindowOpen: false,
 	isCreateNewCollectionWindowOpen: false,
 	isDeleteGiffyConfirmationWindowOpen: false,
@@ -74,6 +74,30 @@ export const collectionsSlice = createSlice({
 				}
 			}
 		},
+		removeGiffiesFromACollection: (
+			state,
+			action: {
+				payload: {
+					collectionId: number;
+				};
+			}
+		) => {
+			if (state.value) {
+				for (let i = 0; i < state.value.length; i++) {
+					if (state.value[i].collectionId === action.payload.collectionId) {
+						var giffiesClone = [...state.value[i].giffies];
+						var selectedGiffyIdsClone = [...state.selectedGiffyIds];
+
+						var giffiesAfterRemoval = giffiesClone.filter(giffy =>
+							selectedGiffyIdsClone.includes(giffy.giffyId)
+						);
+
+						state.value[i].giffies = giffiesAfterRemoval;
+						state.selectedGiffyIds = [];
+					}
+				}
+			}
+		},
 		addNewCollection: (
 			state,
 			action: {
@@ -83,13 +107,13 @@ export const collectionsSlice = createSlice({
 			state.value?.push(action.payload);
 		},
 		addSelectedGiffy: (state, action: { payload: number }) => {
-			state.selectedGiffyId.push(action.payload);
+			state.selectedGiffyIds.push(action.payload);
 		},
 		removeSelectedGiffy: (state, action: { payload: number }) => {
 			// Remove from selectedGiffies, but not from Redux giffies list
-			const index = state.selectedGiffyId.indexOf(action.payload);
+			const index = state.selectedGiffyIds.indexOf(action.payload);
 			if (index !== -1) {
-				state.selectedGiffyId.splice(index, 1);
+				state.selectedGiffyIds.splice(index, 1);
 			}
 		},
 	},
@@ -103,6 +127,7 @@ export const {
 	openCreateNewCollectionWindow,
 	closeCreateNewCollectionWindow,
 	addGiffyToACollection,
+	removeGiffiesFromACollection,
 	addNewCollection,
 	addSelectedGiffy,
 	removeSelectedGiffy,

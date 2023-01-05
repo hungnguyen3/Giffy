@@ -4,6 +4,7 @@ import { deleteGiffyById } from '../API/serverHooks';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
 	closeDeleteGiffyConfirmationWindow,
+	removeGiffiesFromACollection,
 	removeSelectedGiffy,
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
@@ -11,7 +12,7 @@ import styles from '../styles/DeleteGiffyConfirmationWindow.module.scss';
 
 export const DeleteGiffyConfirmationWindow = () => {
 	const selectedGiffies = useAppSelector(
-		(state: RootState) => state.collections.selectedGiffyId
+		(state: RootState) => state.collections.selectedGiffyIds
 	);
 	const { collection } = router.query;
 	const giffies = useAppSelector((state: RootState) => {
@@ -49,9 +50,16 @@ export const DeleteGiffyConfirmationWindow = () => {
 											// TODO: delete from Firebase
 											console.log(`try to delete ${giffy.giffyId}`);
 											deleteGiffyById(giffy.giffyId)
-												.then(() =>
-													console.log(`deleted ${giffy.giffyId} from database`)
-												)
+												.then(response => {
+													if (!response.error) {
+														dispatch(
+															removeGiffiesFromACollection({
+																collectionId: Number(collection),
+															})
+														);
+													}
+													console.log(`deleted ${giffy.giffyId} from database`);
+												})
 												.catch(err => console.log(err));
 											// TODO: delete from Redux store
 											try {

@@ -27,7 +27,7 @@ const Collections: NextPage = () => {
 		)[0]?.giffies;
 	});
 	const selectedGiffies = useAppSelector(
-		(state: RootState) => state.collections.selectedGiffyId
+		(state: RootState) => state.collections.selectedGiffyIds
 	);
 
 	useEffect(() => {
