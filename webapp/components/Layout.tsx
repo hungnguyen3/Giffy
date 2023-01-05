@@ -36,7 +36,7 @@ const Layout = (props: LayoutProps) => {
 	const [loggedIn, setLoggedIn] = useState(false);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
-	const { collection } = router.query;
+	const { collectionId } = router.query;
 	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
 	);
@@ -121,8 +121,8 @@ const Layout = (props: LayoutProps) => {
 									firstCollectionId !== null &&
 									firstCollectionId !== undefined
 								) {
+									router.push(`/collections/${firstCollectionId}`);
 								}
-								router.push(`/collections/${firstCollectionId}`);
 							});
 					});
 
@@ -136,7 +136,7 @@ const Layout = (props: LayoutProps) => {
 				router.push('/auth');
 			}
 		});
-	}, []);
+	}, [hasAnAccount]); // rerun the entire flow again after account creation
 
 	if (loggedIn && hasAnAccount)
 		return (
@@ -154,7 +154,7 @@ const Layout = (props: LayoutProps) => {
 				) : null}
 				{isUploadGiffyWindowOpen ? (
 					<Modal disableCloseButton={false}>
-						<UploadGiffy currentCollectionId={Number(collection)} />
+						<UploadGiffy currentCollectionId={Number(collectionId)} />
 					</Modal>
 				) : null}
 				{isCreateNewCollectionWindowOpen ? (

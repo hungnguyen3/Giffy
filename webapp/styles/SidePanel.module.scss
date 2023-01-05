@@ -20,7 +20,7 @@
 			padding: 0.5em;
 			text-align: center;
 			&:hover {
-				background-color: #2f2e2e;
+				background-color: #92b3a3;
 			}
 		}
 
@@ -53,10 +53,7 @@
 		}
 	}
 
-	.buttonContainer {
-		.createBtn {
-			width: 100%;
-			font-size: 2.5vw;
-		}
+	.createBtn {
+		font-size: 2vw;
 	}
 }

@@ -16,17 +16,13 @@ export const DeleteGiffyConfirmationWindow = () => {
 	const selectedGiffies = useAppSelector(
 		(state: RootState) => state.collections.selectedGiffyIds
 	);
-	const { collection } = router.query;
+	const { collectionId } = router.query;
 	const giffies = useAppSelector((state: RootState) => {
 		return state.collections.value?.filter(
-			curCollection => curCollection.collectionId === Number(collection)
+			curCollection => curCollection.collectionId === Number(collectionId)
 		)[0]?.giffies;
 	});
 	const dispatch = useAppDispatch();
-
-	function deleteGiffyFromStore(): any {
-		throw new Error('Function not implemented.');
-	}
 
 	return (
 		<div className={styles.centeredBox}>
@@ -65,7 +61,7 @@ export const DeleteGiffyConfirmationWindow = () => {
 															if (!response.error) {
 																dispatch(
 																	removeGiffyFromACollection({
-																		collectionId: Number(collection),
+																		collectionId: Number(collectionId),
 																		giffyId: giffyId,
 																	})
 																);

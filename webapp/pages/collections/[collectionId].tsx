@@ -12,17 +12,16 @@ import styles from '../../styles/Collections.module.scss';
 import {
 	openDeleteGiffyConfirmationWindow,
 	openUploadGiffyWindow,
-	removeSelectedGiffy,
 } from '../../slices/CollectionsSlice';
 
-const Collections: NextPage = () => {
+const Collection: NextPage = () => {
 	const [cards, setCards] = useState<JSX.Element[] | null>(null);
 	const router = useRouter();
-	const { collection } = router.query;
+	const { collectionId } = router.query;
 	const dispatch = useAppDispatch();
 	const giffies = useAppSelector((state: RootState) => {
 		return state.collections.value?.filter(
-			curCollection => curCollection.collectionId === Number(collection)
+			curCollection => curCollection.collectionId === Number(collectionId)
 		)[0]?.giffies;
 	});
 	const selectedGiffies = useAppSelector(
@@ -30,7 +29,7 @@ const Collections: NextPage = () => {
 	);
 
 	useEffect(() => {
-		if (collection && !Number.isNaN(Number(collection))) {
+		if (collectionId && !Number.isNaN(Number(collectionId))) {
 			if (giffies) {
 				setCards(
 					giffies.map((giffy: giffyDTO) => {
@@ -48,9 +47,9 @@ const Collections: NextPage = () => {
 				);
 			}
 		}
-	}, [collection, giffies]);
+	}, [collectionId, giffies]);
 
-	if (Number(collection) == 0) {
+	if (Number(collectionId) == 0) {
 		return (
 			<Layout>
 				<div className={styles.centeredBox}>
@@ -81,7 +80,9 @@ const Collections: NextPage = () => {
 				</button>
 			) : null}
 			{cards && cards.length > 0 ? (
-				<CardDistributor cards={cards} />
+				<div className={styles.centeredBox}>
+					<CardDistributor cards={cards} />
+				</div>
 			) : (
 				<div className={styles.centeredBox}>
 					<h1>No items yet</h1>
@@ -91,4 +92,4 @@ const Collections: NextPage = () => {
 	);
 };
 
-export default Collections;
+export default Collection;

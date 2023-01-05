@@ -1,9 +1,13 @@
 import styles from '../styles/CreateNewCollection.module.scss';
-import { addNewCollection } from '../slices/CollectionsSlice';
+import {
+	addNewCollection,
+	closeCreateNewCollectionWindow,
+} from '../slices/CollectionsSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState } from 'react';
 import { createCollection } from '../API/serverHooks';
 import { RootState } from '../store';
+import { useRouter } from 'next/router';
 
 interface CollectionInfo {
 	collectionName: string;
@@ -11,6 +15,7 @@ interface CollectionInfo {
 }
 
 const CreateNewCollection = () => {
+	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const userId = useAppSelector((state: RootState) => state.user.value?.userId);
 	const [collectionInfo, setCollectionInfo] = useState<CollectionInfo>({
@@ -42,7 +47,9 @@ const CreateNewCollection = () => {
 							giffies: [],
 						})
 					);
+					dispatch(closeCreateNewCollectionWindow());
 					alert('Successful created');
+					router.push(`/collections/${collection.collectionId}`);
 				}
 			} catch (err) {
 				console.log(err);

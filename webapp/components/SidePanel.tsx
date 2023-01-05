@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import Link from 'next/link';
 import { openCreateNewCollectionWindow } from '../slices/CollectionsSlice';
+import { useRouter } from 'next/router';
 
 interface SidePanelProps {
 	width: string;
@@ -13,6 +14,8 @@ interface SidePanelProps {
 const SidePanel = (props: SidePanelProps) => {
 	const [width, setWidth] = useState(props.width);
 	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const { collectionId } = router.query;
 
 	const closePanel = () => {
 		setWidth('0%');
@@ -44,12 +47,20 @@ const SidePanel = (props: SidePanelProps) => {
 				<h1>Collections</h1>
 				{collections?.map(collection => {
 					return (
-						<Link
-							key={collection.collectionId}
-							href={`/collections/${collection.collectionId}`}
+						<a
+							style={
+								collection.collectionId === Number(collectionId)
+									? { backgroundColor: '#7da79d' }
+									: undefined
+							}
 						>
-							{collection.collectionName}
-						</Link>
+							<Link
+								key={collection.collectionId}
+								href={`/collections/${collection.collectionId}`}
+							>
+								{collection.collectionName}
+							</Link>
+						</a>
 					);
 				})}
 				<div className={styles.buttonContainer}>
