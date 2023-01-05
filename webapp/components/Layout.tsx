@@ -58,9 +58,9 @@ const Layout = (props: LayoutProps) => {
 			if (user) {
 				const userAuth = {
 					uid: user.uid,
-					email: user.uid,
-					displayName: user.uid,
-					photoURL: user.uid,
+					email: user.email,
+					displayName: user.displayName,
+					photoURL: user.photoURL,
 				};
 
 				getUserByFirebaseAuthId(userAuth.uid)

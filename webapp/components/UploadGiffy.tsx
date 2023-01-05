@@ -25,12 +25,12 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 		collectionId: props.currentCollectionId,
 		giffyName: '',
 	});
-	const user = useAppSelector((state: RootState) => state.user.value);
+	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
 
 	const uploadHandler = async () => {
 		if (giffy) {
 			try {
-				const giffyFirebaseRef = `giffies/${user?.userName}/${
+				const giffyFirebaseRef = `giffies/${userAuth?.email}/${
 					giffy.name
 				}${new Date().getTime()}`;
 				const storageRef = ref(storage, giffyFirebaseRef);

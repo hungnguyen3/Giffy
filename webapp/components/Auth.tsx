@@ -19,6 +19,7 @@ interface UserInfo {
 const Auth = () => {
 	const dispatch = useDispatch();
 	// TODO: firebaseAuthID might be null
+
 	const [userInfo, setUserInfo] = useState<UserInfo>({
 		userName: '',
 		firebaseAuthId: '',
@@ -39,6 +40,8 @@ const Auth = () => {
 		state.user.value ? true : false
 	);
 
+	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
+
 	useEffect(() => {
 		setUserInfo({
 			...userInfo,
@@ -49,10 +52,7 @@ const Auth = () => {
 	const uploadHandler = async () => {
 		if (userImg) {
 			try {
-				const storageRef = ref(
-					storage,
-					`images/${userInfo?.userName}/${userImg.name}${new Date().getTime()}`
-				);
+				const storageRef = ref(storage, `userProfilePics/${userAuth?.email}`);
 				const snapshot = await uploadBytes(storageRef, userImg);
 				const downloadURL = await getDownloadURL(snapshot.ref);
 

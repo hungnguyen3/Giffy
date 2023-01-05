@@ -81,6 +81,7 @@ export const DeleteGiffyConfirmationWindow = () => {
 								console.log(error);
 							}
 						});
+						dispatch(closeDeleteGiffyConfirmationWindow());
 					}}
 				>
 					Delete
