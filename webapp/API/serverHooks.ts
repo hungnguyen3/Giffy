@@ -116,6 +116,7 @@ export async function createCollection(data: {
 export async function createGiffy(data: {
 	collectionId: number;
 	firebaseUrl: string;
+	firebaseRef: string;
 	giffyName: string;
 }) {
 	try {
