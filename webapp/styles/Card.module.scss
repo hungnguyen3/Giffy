@@ -1,6 +1,6 @@
 .cardsList {
-	width: 50%;
-	height: 90%;
+	width: 90%;
+	height: 300px; // avoid random vertical space between rows of cards
 	display: flex;
 	flex-wrap: wrap;
 }

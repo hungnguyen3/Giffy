@@ -80,7 +80,7 @@ const Collection: NextPage = () => {
 				</button>
 			) : null}
 			{cards && cards.length > 0 ? (
-				<div className={styles.centeredBox}>
+				<div className={styles.centeredBox} style={{ justifyContent: 'start' }}>
 					<CardDistributor cards={cards} />
 				</div>
 			) : (

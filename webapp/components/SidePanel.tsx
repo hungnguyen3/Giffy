@@ -53,6 +53,7 @@ const SidePanel = (props: SidePanelProps) => {
 									? { backgroundColor: '#7da79d' }
 									: undefined
 							}
+							key={collection.collectionId}
 						>
 							<Link
 								key={collection.collectionId}
