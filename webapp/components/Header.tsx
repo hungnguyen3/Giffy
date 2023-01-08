@@ -11,11 +11,11 @@ import { RootState } from '../store';
 import { useRouter } from 'next/router';
 
 const Header = () => {
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
-	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const { collectionId } = router.query;
+	const dispatch = useAppDispatch();
+	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
+	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 	const curCollectionName = useAppSelector((state: RootState) => {
 		return state.collections.value?.filter(
 			curCollection => curCollection.collectionId === Number(collectionId)

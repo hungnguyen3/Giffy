@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { collectionDTO, giffyDTO } from '../API/DTO';
+import { giffyDTO } from '../API/DTO';
 
 export interface Collection {
 	collectionId: number;
@@ -88,7 +88,7 @@ export const collectionsSlice = createSlice({
 						var giffiesClone = [...state.value[i].giffies];
 
 						var giffiesAfterRemoval = giffiesClone.filter(
-							giffy => giffy.giffyId != action.payload.giffyId
+							giffy => giffy.giffyId !== action.payload.giffyId
 						);
 
 						state.value[i].giffies = giffiesAfterRemoval;
@@ -110,28 +110,7 @@ export const collectionsSlice = createSlice({
 		removeSelectedGiffy: (state, action: { payload: number }) => {
 			// Remove from selectedGiffies, but not from Redux giffies list
 			const index = state.selectedGiffyIds.indexOf(action.payload);
-			if (index !== -1) {
-				state.selectedGiffyIds.splice(index, 1);
-			}
-		},
-		deleteGiffyFromStore: (
-			state,
-			action: { payload: { collectionID: number; giffyId: number } }
-		) => {
-			if (state.value) {
-				for (let collection of state.value) {
-					if (collection.collectionId === action.payload.collectionID) {
-						for (let i = 0; i < collection.giffies.length; i++) {
-							if (collection.giffies[i].giffyId === action.payload.giffyId) {
-								collection.giffies.splice(i, 1);
-								i--; // Decrement i to account for the removed element
-								break;
-							}
-						}
-						break;
-					}
-				}
-			}
+			if (index !== -1) state.selectedGiffyIds.splice(index, 1);
 		},
 	},
 });

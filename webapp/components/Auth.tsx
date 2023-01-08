@@ -1,7 +1,6 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { userDTO } from '../API/DTO';
 import { createUser } from '../API/serverHooks';
 import { useAppSelector } from '../hooks';
 import { populateUser } from '../slices/UserSlice';

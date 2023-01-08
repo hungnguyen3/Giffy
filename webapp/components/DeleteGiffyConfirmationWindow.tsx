@@ -13,16 +13,16 @@ import styles from '../styles/DeleteGiffyConfirmationWindow.module.scss';
 import { storage } from './Firebase/FirebaseInit';
 
 export const DeleteGiffyConfirmationWindow = () => {
+	const { collectionId } = router.query;
+	const dispatch = useAppDispatch();
 	const selectedGiffies = useAppSelector(
 		(state: RootState) => state.collections.selectedGiffyIds
 	);
-	const { collectionId } = router.query;
 	const giffies = useAppSelector((state: RootState) => {
 		return state.collections.value?.filter(
 			curCollection => curCollection.collectionId === Number(collectionId)
 		)[0]?.giffies;
 	});
-	const dispatch = useAppDispatch();
 
 	return (
 		<div className={styles.centeredBox}>
@@ -30,10 +30,10 @@ export const DeleteGiffyConfirmationWindow = () => {
 				<button
 					className={styles.cancelButton}
 					onClick={() => {
-						dispatch(closeDeleteGiffyConfirmationWindow());
-						selectedGiffies.map((giffyId: number) => {
+						selectedGiffies.forEach((giffyId: number) => {
 							dispatch(removeSelectedGiffy(giffyId));
 						});
+						dispatch(closeDeleteGiffyConfirmationWindow());
 					}}
 				>
 					Cancel
@@ -41,23 +41,19 @@ export const DeleteGiffyConfirmationWindow = () => {
 				<button
 					className={styles.deleteButton}
 					onClick={() => {
-						selectedGiffies.map(async (giffyId: number) => {
+						selectedGiffies.forEach(async (giffyId: number) => {
 							try {
 								if (giffies) {
 									giffies
-										.filter((giffy: giffyDTO) => {
-											return giffy.giffyId === giffyId;
-										})
-										.map((giffy: giffyDTO) => {
+										.filter((giffy: giffyDTO) => giffy.giffyId === giffyId)
+										.forEach((giffy: giffyDTO) => {
 											// 1. delete giffy from Firebase
-											const giffyStorageRef = ref(storage, giffy.firebaseRef);
-											deleteObject(giffyStorageRef)
+											deleteObject(ref(storage, giffy.firebaseRef))
 												.then(() => {
-													// 2. delete giffy from database
+													// 2. delete giffy pic from database
 													deleteGiffyById(giffy.giffyId)
 														.then(response => {
 															// 3. delete from Redux store
-															// not working
 															if (!response.error) {
 																dispatch(
 																	removeGiffyFromACollection({
