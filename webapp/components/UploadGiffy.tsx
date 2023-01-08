@@ -25,15 +25,16 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 		collectionId: props.currentCollectionId,
 		giffyName: '',
 	});
-	const user = useAppSelector((state: RootState) => state.user.value);
+	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
 
 	const uploadHandler = async () => {
 		if (giffy) {
 			try {
-				const storageRef = ref(
-					storage,
-					`giffies/${user?.userName}/${giffy.name}${new Date().getTime()}`
-				);
+				const giffyFirebaseRef = `giffies/${userAuth?.email}/${
+					giffy.name
+				}${new Date().getTime()}`;
+				console.log(giffy);
+				const storageRef = ref(storage, giffyFirebaseRef);
 				const snapshot = await uploadBytes(storageRef, giffy);
 				const downloadURL = await getDownloadURL(snapshot.ref);
 
@@ -45,6 +46,7 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 					const createGiffyRes: giffyDTO | any = await createGiffy({
 						collectionId: Number(giffyInfo.collectionId),
 						firebaseUrl: downloadURL,
+						firebaseRef: giffyFirebaseRef,
 						giffyName: giffyInfo.giffyName,
 					});
 

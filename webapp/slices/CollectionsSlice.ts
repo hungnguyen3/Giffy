@@ -10,14 +10,18 @@ export interface Collection {
 
 interface CollectionsState {
 	value: Collection[];
+	selectedGiffyIds: number[];
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;
+	isDeleteGiffyConfirmationWindowOpen: boolean;
 }
 
 const initialState: CollectionsState = {
 	value: [],
+	selectedGiffyIds: [],
 	isUploadGiffyWindowOpen: false,
 	isCreateNewCollectionWindowOpen: false,
+	isDeleteGiffyConfirmationWindowOpen: false,
 };
 
 export const collectionsSlice = createSlice({
@@ -49,6 +53,12 @@ export const collectionsSlice = createSlice({
 		closeCreateNewCollectionWindow: state => {
 			state.isCreateNewCollectionWindowOpen = false;
 		},
+		openDeleteGiffyConfirmationWindow: state => {
+			state.isDeleteGiffyConfirmationWindowOpen = true;
+		},
+		closeDeleteGiffyConfirmationWindow: state => {
+			state.isDeleteGiffyConfirmationWindowOpen = false;
+		},
 		addGiffyToACollection: (
 			state,
 			action: {
@@ -63,6 +73,29 @@ export const collectionsSlice = createSlice({
 				}
 			}
 		},
+		removeGiffyFromACollection: (
+			state,
+			action: {
+				payload: {
+					collectionId: number;
+					giffyId: number;
+				};
+			}
+		) => {
+			if (state.value) {
+				for (let i = 0; i < state.value.length; i++) {
+					if (state.value[i].collectionId === action.payload.collectionId) {
+						var giffiesClone = [...state.value[i].giffies];
+
+						var giffiesAfterRemoval = giffiesClone.filter(
+							giffy => giffy.giffyId !== action.payload.giffyId
+						);
+
+						state.value[i].giffies = giffiesAfterRemoval;
+					}
+				}
+			}
+		},
 		addNewCollection: (
 			state,
 			action: {
@@ -70,6 +103,14 @@ export const collectionsSlice = createSlice({
 			}
 		) => {
 			state.value?.push(action.payload);
+		},
+		addSelectedGiffy: (state, action: { payload: number }) => {
+			state.selectedGiffyIds.push(action.payload);
+		},
+		removeSelectedGiffy: (state, action: { payload: number }) => {
+			// Remove from selectedGiffies, but not from Redux giffies list
+			const index = state.selectedGiffyIds.indexOf(action.payload);
+			if (index !== -1) state.selectedGiffyIds.splice(index, 1);
 		},
 	},
 });
@@ -82,7 +123,12 @@ export const {
 	openCreateNewCollectionWindow,
 	closeCreateNewCollectionWindow,
 	addGiffyToACollection,
+	removeGiffyFromACollection,
 	addNewCollection,
+	addSelectedGiffy,
+	removeSelectedGiffy,
+	openDeleteGiffyConfirmationWindow,
+	closeDeleteGiffyConfirmationWindow,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

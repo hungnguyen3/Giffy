@@ -25,6 +25,7 @@ import { useRouter } from 'next/router';
 import Modal from './Modal';
 import Auth from './Auth';
 import CreateNewCollection from './CreateNewCollection';
+import { DeleteGiffyConfirmationWindow } from './DeleteGiffyConfirmationWindow';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -35,7 +36,7 @@ const Layout = (props: LayoutProps) => {
 	const [loggedIn, setLoggedIn] = useState(false);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
-	const { collection } = router.query;
+	const { collectionId } = router.query;
 	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
 	);
@@ -48,15 +49,18 @@ const Layout = (props: LayoutProps) => {
 	const isCreateNewCollectionWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isCreateNewCollectionWindowOpen
 	);
+	const isDeleteGiffyConfirmationWindowOpen = useAppSelector(
+		(state: RootState) => state.collections.isDeleteGiffyConfirmationWindowOpen
+	);
 
 	useEffect(() => {
 		onAuthStateChanged(auth, user => {
 			if (user) {
 				const userAuth = {
 					uid: user.uid,
-					email: user.uid,
-					displayName: user.uid,
-					photoURL: user.uid,
+					email: user.email,
+					displayName: user.displayName,
+					photoURL: user.photoURL,
 				};
 
 				getUserByFirebaseAuthId(userAuth.uid)
@@ -117,8 +121,8 @@ const Layout = (props: LayoutProps) => {
 									firstCollectionId !== null &&
 									firstCollectionId !== undefined
 								) {
+									router.push(`/collections/${firstCollectionId}`);
 								}
-								router.push(`/collections/${firstCollectionId}`);
 							});
 					});
 
@@ -132,7 +136,7 @@ const Layout = (props: LayoutProps) => {
 				router.push('/auth');
 			}
 		});
-	}, []);
+	}, [hasAnAccount]); // rerun the entire flow again after account creation
 
 	if (loggedIn && hasAnAccount)
 		return (
@@ -150,12 +154,17 @@ const Layout = (props: LayoutProps) => {
 				) : null}
 				{isUploadGiffyWindowOpen ? (
 					<Modal disableCloseButton={false}>
-						<UploadGiffy currentCollectionId={Number(collection)} />
+						<UploadGiffy currentCollectionId={Number(collectionId)} />
 					</Modal>
 				) : null}
 				{isCreateNewCollectionWindowOpen ? (
 					<Modal disableCloseButton={false}>
 						<CreateNewCollection />
+					</Modal>
+				) : null}
+				{isDeleteGiffyConfirmationWindowOpen ? (
+					<Modal disableCloseButton={false}>
+						<DeleteGiffyConfirmationWindow />
 					</Modal>
 				) : null}
 			</div>

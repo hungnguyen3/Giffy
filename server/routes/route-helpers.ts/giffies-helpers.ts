@@ -6,6 +6,7 @@ export const createGiffy = async (req: any, res: any) => {
 			!(
 				req.body.collectionId &&
 				req.body.firebaseUrl &&
+				req.body.firebaseRef &&
 				req.body.giffyName !== undefined &&
 				req.body.giffyName !== null
 			)
@@ -16,11 +17,17 @@ export const createGiffy = async (req: any, res: any) => {
 
 		const createGiffy = await client.query(
 			`
-      INSERT INTO giffies ("collectionId", "firebaseUrl", "giffyName", "likes")
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO giffies ("collectionId", "firebaseUrl", "firebaseRef", "giffyName", "likes")
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
       `,
-			[req.body.collectionId, req.body.firebaseUrl, req.body.giffyName, 0]
+			[
+				req.body.collectionId,
+				req.body.firebaseUrl,
+				req.body.firebaseRef,
+				req.body.giffyName,
+				0,
+			]
 		);
 
 		if (createGiffy.rowCount === 1) {
@@ -52,16 +59,17 @@ export const deleteGiffyById = async (req: any, res: any) => {
 			return res.status(500).send({ error: 'There is no such giffy' });
 
 		if (deleteGiffyRes.rowCount === 1)
-			return res
-				.status(200)
-				.send(
-					'you have successfully deleted a giffy uid: ' + req.params.giffyId
-				);
+			return res.status(200).send({
+				successMessage:
+					'you have successfully deleted a giffy uid: ' + req.params.giffyId,
+			});
 
 		if (deleteGiffyRes.rowCount > 1)
 			return res
 				.status(500)
-				.send('error occurred, more than one giffy with the same id');
+				.send({
+					error: 'error occurred, more than one giffy with the same id',
+				});
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
@@ -69,10 +77,12 @@ export const deleteGiffyById = async (req: any, res: any) => {
 
 export const getGiffyById = async (req: any, res: any) => {
 	try {
-		if (!req.params.giffyId)
+		if (!req.params.giffyId) {
+			console.log(req.params);
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
 			});
+		}
 
 		const getGiffyRes = await client.query(
 			`
@@ -131,12 +141,14 @@ export const updateGiffyById = async (req: any, res: any) => {
         UPDATE giffies
         SET 
 				"collectionId" = COALESCE($1, "collectionId"), "firebaseUrl"= COALESCE($2, "firebaseUrl"),
-				"giffyName" = COALESCE($3, "giffyName"), "likes" = COALESCE($4, "likes")
+				"firebaseRef" = COALESCE($3, "firebaseRef"),
+				"giffyName" = COALESCE($4, "giffyName"), "likes" = COALESCE($5, "likes")
         WHERE "giffyId" = $5;
       `,
 			[
 				req.body.collectionId,
 				req.body.firebaseUrl,
+				req.body.firebaseRef,
 				req.body.giffyName,
 				req.body.likes,
 				req.params.giffyId,
@@ -158,5 +170,13 @@ export const updateGiffyById = async (req: any, res: any) => {
 				.send('error occurred, more than one giffy with the same id');
 	} catch (err) {
 		return res.status(500).json({ error: err });
+	}
+};
+
+export const getGiffyCloudUrlById = (req: any, res: any) => {
+	if (!req.params.giffyId) {
+		return res.status(400).send({
+			error: 'missing required parameter(s)',
+		});
 	}
 };

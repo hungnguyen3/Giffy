@@ -14,7 +14,7 @@ const initCollections = async () => {
         CREATE TABLE IF NOT EXISTS collections (
           "collectionId" SERIAL PRIMARY KEY,
           "collectionName" varchar(255) NOT NULL,
-          "privacy" boolean NOT NULL
+          "private" boolean NOT NULL
         );
       `
 		)
@@ -30,6 +30,7 @@ const initGiffies = async () => {
           "giffyId" SERIAL PRIMARY KEY,
           "collectionId" int NOT NULL,
           "firebaseUrl" varchar(255) NOT NULL,
+          "firebaseRef" varchar(255) NOT NULL,
           "giffyName" varchar(255),
           "likes" int NOT NULL,
 

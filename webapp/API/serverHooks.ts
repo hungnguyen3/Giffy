@@ -116,6 +116,7 @@ export async function createCollection(data: {
 export async function createGiffy(data: {
 	collectionId: number;
 	firebaseUrl: string;
+	firebaseRef: string;
 	giffyName: string;
 }) {
 	try {
@@ -133,6 +134,26 @@ export async function createGiffy(data: {
 			}
 		);
 
+		return response.json();
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function deleteGiffyById(giffyId: number) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/deleteGiffyById/${giffyId}`,
+			{
+				method: 'DELETE',
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		);
 		return response.json();
 	} catch (err) {
 		console.log(err);

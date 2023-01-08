@@ -11,14 +11,14 @@ import { RootState } from '../store';
 import { useRouter } from 'next/router';
 
 const Header = () => {
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
-	const dispatch = useAppDispatch();
 	const router = useRouter();
-	const { collection } = router.query;
+	const { collectionId } = router.query;
+	const dispatch = useAppDispatch();
+	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
+	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 	const curCollectionName = useAppSelector((state: RootState) => {
 		return state.collections.value?.filter(
-			curCollection => curCollection.collectionId === Number(collection)
+			curCollection => curCollection.collectionId === Number(collectionId)
 		)[0]?.collectionName;
 	});
 	const userInfo = useAppSelector((state: RootState) => state.user.value);
@@ -98,9 +98,4 @@ const Header = () => {
 		</nav>
 	);
 };
-
-// TODO: style userMenuText
-// TODO: style userMenuText
-// TODO: style userMenuText
-
 export default Header;
