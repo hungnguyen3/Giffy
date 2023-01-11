@@ -1,4 +1,6 @@
 node_modules
 yarn-error.log
 
+
+firebase-config.json
 .DS_Store

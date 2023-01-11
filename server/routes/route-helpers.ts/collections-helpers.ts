@@ -1,4 +1,4 @@
-import { client } from '../../src/index';
+import { client, firebaseStorage } from '../../src/index';
 
 export const createCollection = async (req: any, res: any) => {
 	let collectionId = -1;
@@ -69,29 +69,54 @@ const deleteCollectionUtil = async (collectionId: number, res: any) => {
 				error: 'missing required parameter(s)',
 			});
 
-		const deleteCollectionRes = await client.query(
-			`
-			  DELETE FROM collections WHERE "collectionId" = $1;
-		  `,
+		// Start a transaction
+		await client.query('BEGIN');
+
+		// Delete all giffies associated with this collection
+		const giffiesToDelete = await client.query(
+			`SELECT "firebaseRef" FROM giffies WHERE "collectionId" = $1`,
 			[collectionId]
 		);
 
+		// Delete giffy images from firebase storage
+		const imageDeletionPromises = giffiesToDelete.rows.map(
+			async (giffy: any) => {
+				const ref = firebaseStorage.refFromURL(giffy.firebaseRef);
+				return ref.delete();
+			}
+		);
+		await Promise.all(imageDeletionPromises);
+		await client.query(`DELETE FROM giffies WHERE "collectionId" = $1`, [
+			collectionId,
+		]);
+
+		// Delete the collection
+		const deleteCollectionRes = await client.query(
+			`DELETE FROM collections WHERE "collectionId" = $1`,
+			[collectionId]
+		);
+
+		// Commit the transaction
+		await client.query('COMMIT');
+
+		// Check if there are no rows affected
 		if (deleteCollectionRes.rowCount <= 0)
 			return res.status(500).send({ error: 'There is no such collection' });
 
-		if (deleteCollectionRes.rowCount === 1)
-			return res
-				.status(200)
-				.send({
-					message:
-						'you have successfully deleted a collection uid: ' + collectionId,
-				});
-
+		// Check if there are multiple rows affected
 		if (deleteCollectionRes.rowCount > 1)
 			return res.status(500).send({
 				error: 'error occurred, more than one collection with the same id',
 			});
+
+		// Return success message
+		return res.status(200).send({
+			message:
+				'You have successfully deleted collection with id: ' + collectionId,
+		});
 	} catch (err) {
+		// If error occurs, rollback the transaction
+		await client.query('ROLLBACK');
 		return res.status(500).json({ error: err });
 	}
 };
