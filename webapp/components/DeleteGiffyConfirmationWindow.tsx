@@ -1,12 +1,17 @@
 import { deleteObject, ref } from 'firebase/storage';
 import router from 'next/router';
 import { giffyDTO } from '../API/DTO';
-import { deleteGiffyById } from '../API/serverHooks';
+import {
+	deleteCollectionsByCollectionId,
+	deleteGiffyById,
+} from '../API/serverHooks';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
+	clearSelectedGiffy,
 	closeDeleteGiffyConfirmationWindow,
 	removeGiffyFromACollection,
 	removeSelectedGiffy,
+	unselectACollectionToDelete,
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
 import styles from '../styles/DeleteGiffyConfirmationWindow.module.scss';
@@ -17,6 +22,9 @@ export const DeleteGiffyConfirmationWindow = () => {
 	const dispatch = useAppDispatch();
 	const selectedGiffies = useAppSelector(
 		(state: RootState) => state.collections.selectedGiffyIds
+	);
+	const collectionToBeDeleted = useAppSelector(
+		(state: RootState) => state.collections.selectedCollectionToDelete
 	);
 	const giffies = useAppSelector((state: RootState) => {
 		return state.collections.value?.filter(
@@ -30,9 +38,8 @@ export const DeleteGiffyConfirmationWindow = () => {
 				<button
 					className={styles.cancelButton}
 					onClick={() => {
-						selectedGiffies.forEach((giffyId: number) => {
-							dispatch(removeSelectedGiffy(giffyId));
-						});
+						dispatch(clearSelectedGiffy());
+						dispatch(unselectACollectionToDelete());
 						dispatch(closeDeleteGiffyConfirmationWindow());
 					}}
 				>
@@ -40,9 +47,9 @@ export const DeleteGiffyConfirmationWindow = () => {
 				</button>
 				<button
 					className={styles.deleteButton}
-					onClick={() => {
-						selectedGiffies.forEach(async (giffyId: number) => {
-							try {
+					onClick={async () => {
+						await Promise.all(
+							selectedGiffies.map(async (giffyId: number) => {
 								if (giffies) {
 									giffies
 										.filter((giffy: giffyDTO) => giffy.giffyId === giffyId)
@@ -69,11 +76,16 @@ export const DeleteGiffyConfirmationWindow = () => {
 												.catch(err => console.log(err));
 										});
 								}
-							} catch (error) {
-								console.log(error);
+							})
+						).then(() => {
+							if (collectionToBeDeleted) {
+								// TODO: run this line only after "selectedGiffies.forEach(..." is finished
+								deleteCollectionsByCollectionId(collectionToBeDeleted);
 							}
 						});
+
 						dispatch(closeDeleteGiffyConfirmationWindow());
+						dispatch(unselectACollectionToDelete());
 					}}
 				>
 					Delete

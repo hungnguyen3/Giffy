@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import finalPropsSelectorFactory from 'react-redux/es/connect/selectorFactory';
 import { giffyDTO } from '../API/DTO';
 
 export interface Collection {
@@ -11,6 +12,7 @@ export interface Collection {
 interface CollectionsState {
 	value: Collection[];
 	selectedGiffyIds: number[];
+	selectedCollectionToDelete: number | null;
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;
 	isDeleteGiffyConfirmationWindowOpen: boolean;
@@ -19,6 +21,7 @@ interface CollectionsState {
 const initialState: CollectionsState = {
 	value: [],
 	selectedGiffyIds: [],
+	selectedCollectionToDelete: null,
 	isUploadGiffyWindowOpen: false,
 	isCreateNewCollectionWindowOpen: false,
 	isDeleteGiffyConfirmationWindowOpen: false,
@@ -40,6 +43,12 @@ export const collectionsSlice = createSlice({
 		},
 		clearCollections: state => {
 			state.value = [];
+		},
+		selectACollectionToDelete: (state, action: { payload: number }) => {
+			state.selectedCollectionToDelete = action.payload;
+		},
+		unselectACollectionToDelete: state => {
+			state.selectedCollectionToDelete = null;
 		},
 		openUploadGiffyWindow: state => {
 			state.isUploadGiffyWindowOpen = true;
@@ -112,12 +121,28 @@ export const collectionsSlice = createSlice({
 			const index = state.selectedGiffyIds.indexOf(action.payload);
 			if (index !== -1) state.selectedGiffyIds.splice(index, 1);
 		},
+		clearSelectedGiffy: state => {
+			state.selectedGiffyIds = [];
+		},
+		selectAllGiffiesByCollectionId: (state, action: { payload: number }) => {
+			if (state.value) {
+				for (let i = 0; i < state.value.length; i++) {
+					if (state.value[i].collectionId === action.payload) {
+						state.value[i].giffies.forEach(giffy => {
+							state.selectedGiffyIds.push(giffy.giffyId);
+						});
+					}
+				}
+			}
+		},
 	},
 });
 
 export const {
 	populateCollections,
 	clearCollections,
+	selectACollectionToDelete,
+	unselectACollectionToDelete,
 	openUploadGiffyWindow,
 	closeUploadGiffyWindow,
 	openCreateNewCollectionWindow,
@@ -129,6 +154,8 @@ export const {
 	removeSelectedGiffy,
 	openDeleteGiffyConfirmationWindow,
 	closeDeleteGiffyConfirmationWindow,
+	clearSelectedGiffy,
+	selectAllGiffiesByCollectionId,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

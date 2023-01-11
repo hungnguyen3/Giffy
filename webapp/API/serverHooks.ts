@@ -19,6 +19,27 @@ export async function getCollectionsByUserId(userId: number) {
 	}
 }
 
+export async function deleteCollectionsByCollectionId(collectionId: number) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/deleteCollectionById/${collectionId}`,
+			{
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'DELETE',
+			}
+		);
+
+		return response.json();
+	} catch (e) {
+		console.log(e);
+	}
+}
+
 export async function getUserByFirebaseAuthId(firebaseAuthId: string) {
 	try {
 		const response = await fetch(
