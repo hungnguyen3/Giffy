@@ -33,7 +33,6 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 				const giffyFirebaseRef = `giffies/${userAuth?.email}/${
 					giffy.name
 				}${new Date().getTime()}`;
-				console.log(giffy);
 				const storageRef = ref(storage, giffyFirebaseRef);
 				const snapshot = await uploadBytes(storageRef, giffy);
 				const downloadURL = await getDownloadURL(snapshot.ref);
@@ -77,6 +76,11 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 							...giffyInfo,
 							giffyName: event.target.value,
 						});
+					}}
+					onKeyDown={event => {
+						if (event.key === 'Enter') {
+							uploadHandler();
+						}
 					}}
 				></input>
 			</div>

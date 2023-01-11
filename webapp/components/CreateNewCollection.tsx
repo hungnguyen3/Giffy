@@ -70,6 +70,11 @@ const CreateNewCollection = () => {
 							collectionName: event.target.value,
 						});
 					}}
+					onKeyDown={event => {
+						if (event.key === 'Enter') {
+							uploadHandler();
+						}
+					}}
 				></input>
 			</div>
 			<div className={styles.buttonContainer}>

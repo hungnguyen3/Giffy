@@ -47,42 +47,39 @@ export const DeleteGiffyConfirmationWindow = () => {
 				</button>
 				<button
 					className={styles.deleteButton}
-					onClick={async () => {
-						await Promise.all(
-							selectedGiffies.map(async (giffyId: number) => {
-								if (giffies) {
-									giffies
-										.filter((giffy: giffyDTO) => giffy.giffyId === giffyId)
-										.forEach((giffy: giffyDTO) => {
-											// 1. delete giffy from Firebase
-											deleteObject(ref(storage, giffy.firebaseRef))
-												.then(() => {
-													// 2. delete giffy pic from database
-													deleteGiffyById(giffy.giffyId)
-														.then(response => {
-															// 3. delete from Redux store
-															if (!response.error) {
-																dispatch(
-																	removeGiffyFromACollection({
-																		collectionId: Number(collectionId),
-																		giffyId: giffyId,
-																	})
-																);
-																dispatch(removeSelectedGiffy(giffyId));
-															}
-														})
-														.catch(err => console.log(err));
-												})
-												.catch(err => console.log(err));
-										});
-								}
-							})
-						).then(() => {
-							if (collectionToBeDeleted) {
-								// TODO: run this line only after "selectedGiffies.forEach(..." is finished
-								deleteCollectionsByCollectionId(collectionToBeDeleted);
+					onClick={() => {
+						selectedGiffies.map((giffyId: number) => {
+							if (giffies) {
+								giffies
+									.filter((giffy: giffyDTO) => giffy.giffyId === giffyId)
+									.forEach((giffy: giffyDTO) => {
+										// 1. delete giffy from Firebase
+										deleteObject(ref(storage, giffy.firebaseRef))
+											.then(() => {
+												// 2. delete giffy pic from database
+												deleteGiffyById(giffy.giffyId)
+													.then(response => {
+														// 3. delete from Redux store
+														if (!response.error) {
+															dispatch(
+																removeGiffyFromACollection({
+																	collectionId: Number(collectionId),
+																	giffyId: giffyId,
+																})
+															);
+															dispatch(removeSelectedGiffy(giffyId));
+														}
+													})
+													.catch(err => console.log(err));
+											})
+											.catch(err => console.log(err));
+									});
 							}
 						});
+						if (collectionToBeDeleted) {
+							console.log('deleting');
+							deleteCollectionsByCollectionId(collectionToBeDeleted);
+						}
 
 						dispatch(closeDeleteGiffyConfirmationWindow());
 						dispatch(unselectACollectionToDelete());

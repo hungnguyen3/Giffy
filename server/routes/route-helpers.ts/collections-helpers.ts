@@ -82,9 +82,10 @@ const deleteCollectionUtil = async (collectionId: number, res: any) => {
 		if (deleteCollectionRes.rowCount === 1)
 			return res
 				.status(200)
-				.send(
-					'you have successfully deleted a collection uid: ' + collectionId
-				);
+				.send({
+					message:
+						'you have successfully deleted a collection uid: ' + collectionId,
+				});
 
 		if (deleteCollectionRes.rowCount > 1)
 			return res.status(500).send({
