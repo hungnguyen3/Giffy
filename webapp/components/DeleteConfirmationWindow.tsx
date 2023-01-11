@@ -8,16 +8,17 @@ import {
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
 	clearSelectedGiffy,
-	closeDeleteGiffyConfirmationWindow,
+	closeDeleteConfirmationWindow,
+	removeCollection,
 	removeGiffyFromACollection,
 	removeSelectedGiffy,
 	unselectACollectionToDelete,
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
-import styles from '../styles/DeleteGiffyConfirmationWindow.module.scss';
+import styles from '../styles/DeleteConfirmationWindow.module.scss';
 import { storage } from './Firebase/FirebaseInit';
 
-export const DeleteGiffyConfirmationWindow = () => {
+export const DeleteConfirmationWindow = () => {
 	const { collectionId } = router.query;
 	const dispatch = useAppDispatch();
 	const selectedGiffies = useAppSelector(
@@ -40,7 +41,7 @@ export const DeleteGiffyConfirmationWindow = () => {
 					onClick={() => {
 						dispatch(clearSelectedGiffy());
 						dispatch(unselectACollectionToDelete());
-						dispatch(closeDeleteGiffyConfirmationWindow());
+						dispatch(closeDeleteConfirmationWindow());
 					}}
 				>
 					Cancel
@@ -48,6 +49,16 @@ export const DeleteGiffyConfirmationWindow = () => {
 				<button
 					className={styles.deleteButton}
 					onClick={() => {
+						if (collectionToBeDeleted) {
+							deleteCollectionsByCollectionId(collectionToBeDeleted);
+							dispatch(
+								removeCollection({ collectionId: collectionToBeDeleted })
+							);
+							dispatch(unselectACollectionToDelete());
+							dispatch(closeDeleteConfirmationWindow());
+							return;
+						}
+
 						selectedGiffies.map((giffyId: number) => {
 							if (giffies) {
 								giffies
@@ -76,13 +87,8 @@ export const DeleteGiffyConfirmationWindow = () => {
 									});
 							}
 						});
-						if (collectionToBeDeleted) {
-							console.log('deleting');
-							deleteCollectionsByCollectionId(collectionToBeDeleted);
-						}
 
-						dispatch(closeDeleteGiffyConfirmationWindow());
-						dispatch(unselectACollectionToDelete());
+						dispatch(closeDeleteConfirmationWindow());
 					}}
 				>
 					Delete

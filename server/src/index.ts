@@ -6,6 +6,8 @@ const userRoute = require('../routes/users');
 const collectionRoute = require('../routes/collections');
 const giffyRoute = require('../routes/giffies');
 import cors from 'cors';
+require('dotenv').config();
+
 const admin = require('firebase-admin');
 const serviceAccount = require('../firebase-config.json');
 
@@ -16,10 +18,7 @@ admin.initializeApp({
 export const firebaseStorage = admin.storage();
 
 export const client = new Client({
-	user: 'postgres',
-	database: 'custom-cool-chia',
-	password: 'postgres',
-	port: 5432,
+	connectionString: process.env.PG_CONNECTION_URL,
 });
 
 (async () => {
@@ -43,15 +42,6 @@ export const client = new Client({
 			methods: ['GET', 'POST', 'DELETE'],
 		})
 	);
-
-	const db = admin.firestore();
-	const collection = db.collection('collections');
-
-	collection.get().then((snapshot: any) => {
-		snapshot.forEach((doc: { id: any; data: () => any }) => {
-			console.log(doc.id, '=>', doc.data());
-		});
-	});
 
 	// parse application/x-www-form-urlencoded
 	app.use(bodyParser.urlencoded({ extended: false }));

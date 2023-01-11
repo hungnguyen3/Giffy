@@ -3,8 +3,9 @@ import layoutStyles from '../styles/Layout.module.scss';
 import { close as closeAccountSetting } from '../slices/AccountSettingSlice';
 import {
 	closeCreateNewCollectionWindow,
-	closeDeleteGiffyConfirmationWindow,
+	closeDeleteConfirmationWindow,
 	closeUploadGiffyWindow,
+	unselectACollectionToDelete,
 } from '../slices/CollectionsSlice';
 
 interface ModalProps {
@@ -25,7 +26,8 @@ const Modal = (props: ModalProps) => {
 							dispatch(closeAccountSetting());
 							dispatch(closeUploadGiffyWindow());
 							dispatch(closeCreateNewCollectionWindow());
-							dispatch(closeDeleteGiffyConfirmationWindow());
+							dispatch(closeDeleteConfirmationWindow());
+							dispatch(unselectACollectionToDelete());
 						}}
 					>
 						x

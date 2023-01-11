@@ -1,14 +1,13 @@
 import styles from '../styles/SidePanel.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import Link from 'next/link';
 import {
-	clearSelectedGiffy,
+	Collection,
 	openCreateNewCollectionWindow,
-	openDeleteGiffyConfirmationWindow,
-	selectAllGiffiesByCollectionId,
+	openDeleteConfirmationWindow,
 	selectACollectionToDelete,
 } from '../slices/CollectionsSlice';
 import { useRouter } from 'next/router';
@@ -33,6 +32,17 @@ const SidePanel = (props: SidePanelProps) => {
 	const openPanel = () => {
 		setWidth(props.width);
 	};
+
+	useEffect(() => {
+		var collectionIds = collections.map(
+			(collection: Collection) => collection.collectionId
+		);
+
+		if (!collectionIds.includes(Number(collectionId))) {
+			const minId = collectionIds.length > 0 ? Math.min(...collectionIds) : 0;
+			router.push(`/collections/${minId}`);
+		}
+	}, [collections]);
 
 	return (
 		<div className={styles.sidePanel} style={{ width: width }}>
@@ -70,13 +80,8 @@ const SidePanel = (props: SidePanelProps) => {
 							<button
 								className={styles.deleteCollectionBtn}
 								onClick={() => {
-									// delete a collection
-									// select all giffies of the selected collection and open delete confirmation modal
 									dispatch(selectACollectionToDelete(collection.collectionId));
-									dispatch(
-										selectAllGiffiesByCollectionId(collection.collectionId)
-									);
-									dispatch(openDeleteGiffyConfirmationWindow());
+									dispatch(openDeleteConfirmationWindow());
 								}}
 							>
 								x

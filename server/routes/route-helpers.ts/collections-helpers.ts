@@ -81,10 +81,13 @@ const deleteCollectionUtil = async (collectionId: number, res: any) => {
 		// Delete giffy images from firebase storage
 		const imageDeletionPromises = giffiesToDelete.rows.map(
 			async (giffy: any) => {
-				const ref = firebaseStorage.refFromURL(giffy.firebaseRef);
+				const ref = firebaseStorage
+					.bucket(process.env.FIREBASE_STORAGE_PATH)
+					.file(giffy.firebaseRef);
 				return ref.delete();
 			}
 		);
+
 		await Promise.all(imageDeletionPromises);
 		await client.query(`DELETE FROM giffies WHERE "collectionId" = $1`, [
 			collectionId,
@@ -117,7 +120,7 @@ const deleteCollectionUtil = async (collectionId: number, res: any) => {
 	} catch (err) {
 		// If error occurs, rollback the transaction
 		await client.query('ROLLBACK');
-		return res.status(500).json({ error: err });
+		return res.status(500).send({ error: err });
 	}
 };
 

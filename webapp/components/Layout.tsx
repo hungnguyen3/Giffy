@@ -25,7 +25,7 @@ import { useRouter } from 'next/router';
 import Modal from './Modal';
 import Auth from './Auth';
 import CreateNewCollection from './CreateNewCollection';
-import { DeleteGiffyConfirmationWindow } from './DeleteGiffyConfirmationWindow';
+import { DeleteConfirmationWindow } from './DeleteConfirmationWindow';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -49,8 +49,8 @@ const Layout = (props: LayoutProps) => {
 	const isCreateNewCollectionWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isCreateNewCollectionWindowOpen
 	);
-	const isDeleteGiffyConfirmationWindowOpen = useAppSelector(
-		(state: RootState) => state.collections.isDeleteGiffyConfirmationWindowOpen
+	const isDeleteConfirmationWindowOpen = useAppSelector(
+		(state: RootState) => state.collections.isDeleteConfirmationWindowOpen
 	);
 
 	useEffect(() => {
@@ -112,6 +112,7 @@ const Layout = (props: LayoutProps) => {
 								const collectionIds = collections.map(
 									(collection: collectionDTO) => collection.collectionId
 								);
+
 								return collectionIds.length > 0
 									? Math.min(...collectionIds)
 									: 0;
@@ -162,9 +163,9 @@ const Layout = (props: LayoutProps) => {
 						<CreateNewCollection />
 					</Modal>
 				) : null}
-				{isDeleteGiffyConfirmationWindowOpen ? (
+				{isDeleteConfirmationWindowOpen ? (
 					<Modal disableCloseButton={false}>
-						<DeleteGiffyConfirmationWindow />
+						<DeleteConfirmationWindow />
 					</Modal>
 				) : null}
 			</div>

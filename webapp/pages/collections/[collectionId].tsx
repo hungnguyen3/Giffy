@@ -10,7 +10,7 @@ import { RootState } from '../../store';
 import styles from '../../styles/Collections.module.scss';
 
 import {
-	openDeleteGiffyConfirmationWindow,
+	openDeleteConfirmationWindow,
 	openUploadGiffyWindow,
 } from '../../slices/CollectionsSlice';
 
@@ -30,6 +30,8 @@ const Collection: NextPage = () => {
 
 	useEffect(() => {
 		if (collectionId && !Number.isNaN(Number(collectionId))) {
+			if (!giffies) return setCards(null);
+
 			if (giffies) {
 				setCards(
 					giffies.map((giffy: giffyDTO) => {
@@ -73,7 +75,7 @@ const Collection: NextPage = () => {
 				<button
 					className={styles.deleteGiffyButton}
 					onClick={() => {
-						dispatch(openDeleteGiffyConfirmationWindow());
+						dispatch(openDeleteConfirmationWindow());
 					}}
 				>
 					-
