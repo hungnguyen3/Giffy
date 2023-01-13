@@ -161,10 +161,10 @@ export async function createGiffy(data: {
 	}
 }
 
-export async function deleteGiffyById(giffyId: number) {
+export async function deleteGiffiesByIds(data: { giffyIds: number[] }) {
 	try {
 		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/deleteGiffyById/${giffyId}`,
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/deleteGiffiesByIds`,
 			{
 				method: 'DELETE',
 				mode: 'cors',
@@ -173,6 +173,7 @@ export async function deleteGiffyById(giffyId: number) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				body: JSON.stringify(data),
 			}
 		);
 		return response.json();

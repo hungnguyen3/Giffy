@@ -1,7 +1,7 @@
 import express from 'express';
 import {
 	createGiffy,
-	deleteGiffyById,
+	deleteGiffiesByIds,
 	getGiffyById,
 	updateGiffyById,
 	getGiffiesByCollectionId,
@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post('/createGiffy', createGiffy);
-router.delete('/deleteGiffyById/:giffyId', deleteGiffyById);
+router.delete('/deleteGiffiesByIds', deleteGiffiesByIds);
 router.get('/getGiffyById/:giffyId', getGiffyById);
 router.put('/updateGiffyById/:giffyId', updateGiffyById);
 router.get('/getGiffiesByCollectionId/:collectionId', getGiffiesByCollectionId);

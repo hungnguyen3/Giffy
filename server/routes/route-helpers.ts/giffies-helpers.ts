@@ -1,4 +1,4 @@
-import { client } from '../../src/index';
+import { client, firebaseStorage } from '../../src/index';
 
 export const createGiffy = async (req: any, res: any) => {
 	try {
@@ -41,38 +41,57 @@ export const createGiffy = async (req: any, res: any) => {
 	}
 };
 
-export const deleteGiffyById = async (req: any, res: any) => {
+const deleteGiffies = async (giffyIds: number[], res: any) => {
 	try {
-		if (!req.params.giffyId)
+		if (!giffyIds || !giffyIds.length) {
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
 			});
+		}
 
-		const deleteGiffyRes = await client.query(
-			`
-			  DELETE FROM giffies WHERE "giffyId" = $1;
-		  `,
-			[req.params.giffyId]
+		// Start a transaction
+		await client.query('BEGIN');
+
+		// Select all giffies with the provided ids
+		const giffiesToDelete = await client.query(
+			`SELECT "firebaseRef" FROM giffies WHERE "giffyId" = ANY($1)`,
+			[giffyIds]
 		);
 
-		if (deleteGiffyRes.rowCount <= 0)
-			return res.status(500).send({ error: 'There is no such giffy' });
+		// Delete giffy images from firebase storage
+		const imageDeletionPromises = giffiesToDelete.rows.map(
+			async (giffy: any) => {
+				const ref = firebaseStorage
+					.bucket(process.env.FIREBASE_STORAGE_PATH)
+					.file(giffy.firebaseRef);
+				return ref.delete();
+			}
+		);
 
-		if (deleteGiffyRes.rowCount === 1)
-			return res.status(200).send({
-				successMessage:
-					'you have successfully deleted a giffy uid: ' + req.params.giffyId,
-			});
+		await Promise.all(imageDeletionPromises);
 
-		if (deleteGiffyRes.rowCount > 1)
-			return res
-				.status(500)
-				.send({
-					error: 'error occurred, more than one giffy with the same id',
-				});
-	} catch (err) {
-		return res.status(500).json({ error: err });
+		// Delete giffies from database
+		await client.query(`DELETE FROM giffies WHERE "giffyId" = ANY($1)`, [
+			giffyIds,
+		]);
+
+		// Commit the transaction
+		await client.query('COMMIT');
+
+		// Return success message
+		return res.status(200).send({ message: 'Giffies successfully deleted' });
+	} catch (e) {
+		// An error occurred, rollback the transaction
+		await client.query('ROLLBACK');
+		console.error(e);
+		return res
+			.status(500)
+			.send({ error: 'An error occurred while deleting the giffies' });
 	}
+};
+
+export const deleteGiffiesByIds = async (req: any, res: any) => {
+	return deleteGiffies(req.body.giffyIds, res);
 };
 
 export const getGiffyById = async (req: any, res: any) => {

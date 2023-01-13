@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import finalPropsSelectorFactory from 'react-redux/es/connect/selectorFactory';
 import { giffyDTO } from '../API/DTO';
 
 export interface Collection {
@@ -87,7 +86,7 @@ export const collectionsSlice = createSlice({
 			action: {
 				payload: {
 					collectionId: number;
-					giffyId: number;
+					giffyIds: number[];
 				};
 			}
 		) => {
@@ -95,11 +94,9 @@ export const collectionsSlice = createSlice({
 				for (let i = 0; i < state.value.length; i++) {
 					if (state.value[i].collectionId === action.payload.collectionId) {
 						var giffiesClone = [...state.value[i].giffies];
-
 						var giffiesAfterRemoval = giffiesClone.filter(
-							giffy => giffy.giffyId !== action.payload.giffyId
+							giffy => !action.payload.giffyIds.includes(giffy.giffyId)
 						);
-
 						state.value[i].giffies = giffiesAfterRemoval;
 					}
 				}
