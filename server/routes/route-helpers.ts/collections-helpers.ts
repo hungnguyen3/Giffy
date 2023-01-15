@@ -1,6 +1,12 @@
 import { client, firebaseStorage } from '../../src/index';
+import express from 'express';
+import { GetCollectionsByUserIdDTO } from '../types/collections-types';
+import { ErrorDTO } from '../types/errors-types';
 
-export const createCollection = async (req: any, res: any) => {
+export const createCollection = async (
+	req: express.Request,
+	res: express.Response
+) => {
 	let collectionId = -1;
 	let collection_userId = -1;
 	try {
@@ -62,7 +68,10 @@ export const createCollection = async (req: any, res: any) => {
 	}
 };
 
-const deleteCollectionUtil = async (collectionId: number, res: any) => {
+const deleteCollectionUtil = async (
+	collectionId: number,
+	res: express.Response
+) => {
 	try {
 		if (!collectionId)
 			return res.status(400).send({
@@ -124,11 +133,17 @@ const deleteCollectionUtil = async (collectionId: number, res: any) => {
 	}
 };
 
-export const deleteCollectionById = async (req: any, res: any) => {
-	return deleteCollectionUtil(req.params.collectionId, res);
+export const deleteCollectionById = async (
+	req: express.Request,
+	res: express.Response
+) => {
+	return deleteCollectionUtil(Number(req.params.collectionId), res);
 };
 
-export const getCollectionById = async (req: any, res: any) => {
+export const getCollectionById = async (
+	req: express.Request,
+	res: express.Response
+) => {
 	try {
 		if (!req.params.collectionId)
 			return res.status(400).send({
@@ -157,7 +172,10 @@ export const getCollectionById = async (req: any, res: any) => {
 	}
 };
 
-export const updateCollectionById = async (req: any, res: any) => {
+export const updateCollectionById = async (
+	req: express.Request,
+	res: express.Response
+) => {
 	try {
 		if (
 			!req.params.collectionId ||
@@ -199,30 +217,40 @@ export const updateCollectionById = async (req: any, res: any) => {
 	}
 };
 
-export const getCollectionsByUserId = async (req: any, res: any) => {
+export const getCollectionsByUserId = async (
+	req: express.Request,
+	res: express.Response
+) => {
 	try {
-		if (!req.params.userId) {
+		const userId = parseInt(req.params.userId);
+
+		if (isNaN(userId)) {
 			return res.status(400).send({
-				error: 'missing required parameter(s)',
-			});
+				error: 'userId must be a valid integer',
+			} as ErrorDTO);
 		}
 
 		let getCollectionsRes = await client.query(
 			`
-		    SELECT *
-				FROM collection_user_relationships as cur
-				RIGHT JOIN collections ON cur."collectionId" = collections."collectionId"
-				WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
-		  `,
-			[req.params.userId]
+							SELECT collections.*, COUNT(collections.*) OVER() as totalCount
+							FROM collection_user_relationships as cur
+							INNER JOIN collections ON cur."collectionId" = collections."collectionId"
+							WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
+					`,
+			[userId]
 		);
 
-		if (getCollectionsRes.rowCount === 0)
-			res.status(500).send(getCollectionsRes.rows);
+		if (getCollectionsRes.rowCount === 0) {
+			return res.status(404).send({
+				error: 'no collections found for that userId',
+			} as ErrorDTO);
+		}
 
-		if (getCollectionsRes.rowCount >= 1)
-			res.status(200).send(getCollectionsRes.rows);
-	} catch (err) {
-		res.status(500).json({ error: err });
+		res.status(200).send({
+			data: getCollectionsRes.rows,
+		} as unknown as GetCollectionsByUserIdDTO);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);
 	}
 };

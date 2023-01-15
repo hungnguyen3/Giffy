@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import Link from 'next/link';
 import {
-	Collection,
 	openCreateNewCollectionWindow,
 	openDeleteConfirmationWindow,
 	selectACollectionToDelete,
@@ -32,17 +31,6 @@ const SidePanel = (props: SidePanelProps) => {
 	const openPanel = () => {
 		setWidth(props.width);
 	};
-
-	useEffect(() => {
-		var collectionIds = collections.map(
-			(collection: Collection) => collection.collectionId
-		);
-
-		if (!collectionIds.includes(Number(collectionId))) {
-			const minId = collectionIds.length > 0 ? Math.min(...collectionIds) : 0;
-			router.push(`/collections/${minId}`);
-		}
-	}, [collections]);
 
 	return (
 		<div className={styles.sidePanel} style={{ width: width }}>

@@ -1,4 +1,9 @@
-export async function getCollectionsByUserId(userId: number) {
+import { GetCollectionsByUserIdDTO } from './types/collections-types';
+import { ErrorDTO } from './types/errors-types';
+
+export async function getCollectionsByUserId(
+	userId: number
+): Promise<GetCollectionsByUserIdDTO | ErrorDTO> {
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/getCollectionsByUserId/${userId}`,
@@ -16,6 +21,7 @@ export async function getCollectionsByUserId(userId: number) {
 		return response.json();
 	} catch (e) {
 		console.log(e);
+		return { error: 'unknown error' } as ErrorDTO;
 	}
 }
 
