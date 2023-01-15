@@ -2,7 +2,6 @@ import type { NextPage } from 'next';
 import Layout from '../../components/Layout';
 import Card from '../../components/Card';
 import { useEffect, useState } from 'react';
-import { giffyDTO } from '../../API/DTO';
 import CardDistributor from '../../components/CardDistributor';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -13,6 +12,7 @@ import {
 	openDeleteConfirmationWindow,
 	openUploadGiffyWindow,
 } from '../../slices/CollectionsSlice';
+import { GiffyDTO } from '../../API/types/giffies-types';
 
 const Collection: NextPage = () => {
 	const [cards, setCards] = useState<JSX.Element[] | null>(null);
@@ -34,7 +34,7 @@ const Collection: NextPage = () => {
 
 			if (giffies) {
 				setCards(
-					giffies.map((giffy: giffyDTO) => {
+					giffies.map((giffy: GiffyDTO) => {
 						return (
 							<div key={giffy.giffyId}>
 								<Card

@@ -1,7 +1,9 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createUser } from '../API/serverHooks';
+import { ErrorDTO } from '../API/types/errors-types';
+import { CreateUserDTO, isCreateUserDTO } from '../API/types/users-types';
+import { createUser } from '../API/userHooks';
 import { useAppSelector } from '../hooks';
 import { populateUser } from '../slices/UserSlice';
 import { RootState } from '../store';
@@ -60,26 +62,22 @@ const Auth = () => {
 						'Failed to save image to firebase therefore failed to create a new user'
 					);
 				} else {
-					console.log({
-						userName: userInfo.userName,
-						firebaseAuthId: userInfo.firebaseAuthId,
-						profileImgUrl: userInfo.profileImgUrl,
-					});
-					const createUserRes = await createUser({
+					const createUserRes: ErrorDTO | CreateUserDTO = await createUser({
 						userName: userInfo.userName,
 						firebaseAuthId: userInfo.firebaseAuthId,
 						profileImgUrl: downloadURL,
 					});
 
-					if (createUserRes.error) {
+					if (!isCreateUserDTO(createUserRes)) {
 						alert('Upload unsuccessfully');
 						// TODO: error handling
 					} else {
+						var user = createUserRes.data;
 						dispatch(
 							populateUser({
-								userId: createUserRes.userId,
-								userName: createUserRes.userName,
-								profileImgUrl: createUserRes.profileImgUrl,
+								userId: user.userId,
+								userName: user.userName,
+								profileImgUrl: user.profileImgUrl,
 							})
 						);
 						alert('Created a new user successfully');

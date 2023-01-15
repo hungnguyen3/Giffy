@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { giffyDTO } from '../API/DTO';
+import { GiffyDTO } from '../API/types/giffies-types';
 
 export interface Collection {
 	collectionId: number;
 	collectionName: string;
 	private: boolean;
-	giffies: giffyDTO[];
+	giffies: GiffyDTO[];
 }
 
 interface CollectionsState {
@@ -70,7 +70,7 @@ export const collectionsSlice = createSlice({
 		addGiffyToACollection: (
 			state,
 			action: {
-				payload: giffyDTO;
+				payload: GiffyDTO;
 			}
 		) => {
 			if (state.value) {

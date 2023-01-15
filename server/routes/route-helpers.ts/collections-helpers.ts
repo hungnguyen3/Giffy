@@ -1,14 +1,16 @@
 import { client, firebaseStorage } from '../../src/index';
 import express from 'express';
-import { GetCollectionsByUserIdDTO } from '../types/collections-types';
+import {
+	CreateCollectionDTO,
+	DeleteCollectionDTO,
+	GetCollectionsByUserIdDTO,
+} from '../types/collections-types';
 import { ErrorDTO } from '../types/errors-types';
 
 export const createCollection = async (
 	req: express.Request,
 	res: express.Response
 ) => {
-	let collectionId = -1;
-	let collection_userId = -1;
 	try {
 		if (
 			!(
@@ -17,54 +19,45 @@ export const createCollection = async (
 				req.body.userId
 			)
 		)
-			return res.status(400).send({
-				error: 'missing required parameter(s)',
-			});
+			return res
+				.status(400)
+				.send({ error: 'missing required parameter(s)' } as ErrorDTO);
+
+		await client.query('BEGIN');
 
 		const createCollectionRes = await client.query(
-			`
-        INSERT INTO collections ("collectionName", "private")
-        VALUES ($1, $2)
-        RETURNING *;
-      `,
+			`INSERT INTO collections ("collectionName", "private") VALUES ($1, $2) RETURNING *;`,
 			[req.body.collectionName, req.body.private]
 		);
-		collectionId = createCollectionRes.rows[0].collectionId;
+
 		if (createCollectionRes.rowCount !== 1) {
-			return res.status(500).json({ error: "couldn't create a collection" });
+			await client.query('ROLLBACK');
+			return res
+				.status(500)
+				.send({ error: "couldn't create a collection" } as ErrorDTO);
 		}
 
+		const collectionId = createCollectionRes.rows[0].collectionId;
+
 		const createCollectionsUsersRes = await client.query(
-			`
-        INSERT INTO collection_user_relationships ("collectionId", "userId", "permission")
-        VALUES ($1, $2, $3)
-        RETURNING *;
-      `,
+			`INSERT INTO collection_user_relationships ("collectionId", "userId", "permission") VALUES ($1, $2, $3) RETURNING *;`,
 			[collectionId, req.body.userId, 'admin']
 		);
 
-		collection_userId = createCollectionsUsersRes.rows[0].id;
-
 		if (createCollectionsUsersRes.rowCount !== 1) {
-			if (collection_userId == -1 && collectionId !== -1) {
-				await client.query(
-					`
-              DELETE FROM collections WHERE "collectionId" = $1;
-              `,
-					[collectionId]
-				);
-			}
-			return res.status(500).json({
+			await client.query('ROLLBACK');
+			return res.status(500).send({
 				error: "couldn't create a relationship between collection & user",
-			});
+			} as ErrorDTO);
 		}
 
-		return res.status(200).json(createCollectionRes.rows[0]);
-	} catch (e: any) {
-		if (collection_userId == -1 && collectionId !== -1) {
-			deleteCollectionUtil(collectionId, res);
-		}
-		res.status(500).json({ error: e });
+		await client.query('COMMIT');
+		return res
+			.status(200)
+			.send({ data: createCollectionRes.rows[0] } as CreateCollectionDTO);
+	} catch (e) {
+		await client.query('ROLLBACK');
+		res.status(500).send({ error: e } as ErrorDTO);
 	}
 };
 
@@ -76,7 +69,7 @@ const deleteCollectionUtil = async (
 		if (!collectionId)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
-			});
+			} as ErrorDTO);
 
 		// Start a transaction
 		await client.query('BEGIN');
@@ -113,23 +106,27 @@ const deleteCollectionUtil = async (
 
 		// Check if there are no rows affected
 		if (deleteCollectionRes.rowCount <= 0)
-			return res.status(500).send({ error: 'There is no such collection' });
+			return res
+				.status(500)
+				.send({ error: 'There is no such collection' } as ErrorDTO);
 
 		// Check if there are multiple rows affected
 		if (deleteCollectionRes.rowCount > 1)
 			return res.status(500).send({
 				error: 'error occurred, more than one collection with the same id',
-			});
+			} as ErrorDTO);
 
 		// Return success message
 		return res.status(200).send({
-			message:
-				'You have successfully deleted collection with id: ' + collectionId,
-		});
+			data: {
+				successMessage:
+					'You have successfully deleted collection with id: ' + collectionId,
+			},
+		} as DeleteCollectionDTO);
 	} catch (err) {
 		// If error occurs, rollback the transaction
 		await client.query('ROLLBACK');
-		return res.status(500).send({ error: err });
+		return res.status(500).send({ error: err } as ErrorDTO);
 	}
 };
 
@@ -168,7 +165,7 @@ export const getCollectionById = async (
 				error: 'error occurred, more than one collection with the same id',
 			});
 	} catch (err) {
-		res.status(500).json({ error: err });
+		res.status(500).send({ error: err });
 	}
 };
 
@@ -213,7 +210,7 @@ export const updateCollectionById = async (
 			});
 		}
 	} catch (err) {
-		res.status(500).json({ error: err });
+		res.status(500).send({ error: err });
 	}
 };
 
@@ -232,7 +229,7 @@ export const getCollectionsByUserId = async (
 
 		let getCollectionsRes = await client.query(
 			`
-							SELECT collections.*, COUNT(collections.*) OVER() as totalCount
+							SELECT collections.*
 							FROM collection_user_relationships as cur
 							INNER JOIN collections ON cur."collectionId" = collections."collectionId"
 							WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
@@ -248,7 +245,7 @@ export const getCollectionsByUserId = async (
 
 		res.status(200).send({
 			data: getCollectionsRes.rows,
-		} as unknown as GetCollectionsByUserIdDTO);
+		} as GetCollectionsByUserIdDTO);
 	} catch (error) {
 		console.log(error);
 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);

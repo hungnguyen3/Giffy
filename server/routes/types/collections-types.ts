@@ -1,11 +1,17 @@
-export interface collectionDTO {
+export interface CollectionDTO {
 	collectionId: number;
-	userId: number;
-	permission: string;
 	collectionName: string;
 	private: boolean;
 }
 
+export interface CreateCollectionDTO {
+	data: CollectionDTO;
+}
+
+export interface DeleteCollectionDTO {
+	data: { successMessage: string };
+}
+
 export interface GetCollectionsByUserIdDTO {
-	data: collectionDTO[];
+	data: CollectionDTO[];
 }

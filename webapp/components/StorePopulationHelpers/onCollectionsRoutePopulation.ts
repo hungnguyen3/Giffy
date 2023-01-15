@@ -1,17 +1,17 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { logIn, logOut } from '../../slices/UserAuthSlice';
-import {
-	getCollectionsByUserId,
-	getGiffiesByCollectionId,
-	getUserByFirebaseAuthId,
-} from '../../API/serverHooks';
+import { getUserByFirebaseAuthId } from '../../API/userHooks';
 import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
-	collectionDTO,
+	CollectionDTO,
 	GetCollectionsByUserIdDTO,
 	isGetCollectionsByUserIdDTO,
 } from '../../API/types/collections-types';
-import { giffyDTO } from '../../API/types/giffies-types';
+import {
+	GetGiffiesByCollectionIdDTO,
+	GiffyDTO,
+	isGetGiffiesByCollectionIdDTO,
+} from '../../API/types/giffies-types';
 import {
 	clearCollections,
 	Collection,
@@ -22,6 +22,12 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { ErrorDTO } from '../../API/types/errors-types';
+import { getCollectionsByUserId } from '../../API/collectionHooks';
+import { getGiffiesByCollectionId } from '../../API/giffyHooks';
+import {
+	GetUserByFirebaseAuthIdDTO,
+	isGetUserByFirebaseAuthIdDTO,
+} from '../../API/types/users-types';
 
 interface onCollectionsRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -44,10 +50,12 @@ export const onCollectionsRoutePopulation = (
 			};
 
 			getUserByFirebaseAuthId(userAuth.uid)
-				.then(user => {
-					if (user.error) {
+				.then((response: ErrorDTO | GetUserByFirebaseAuthIdDTO) => {
+					if (!isGetUserByFirebaseAuthIdDTO(response)) {
 						return null;
 					}
+
+					var user = response.data;
 					const userInfo = {
 						userId: user.userId,
 						userName: user.userName,
@@ -71,12 +79,14 @@ export const onCollectionsRoutePopulation = (
 							var collections = response.data;
 							var toStoreCollections: Collection[] = [];
 
-							collections.map((collection: collectionDTO) => {
+							collections.map((collection: CollectionDTO) => {
 								getGiffiesByCollectionId(Number(collection.collectionId)).then(
-									(giffies: giffyDTO[] | any) => {
-										if (giffies.error) {
+									(response: ErrorDTO | GetGiffiesByCollectionIdDTO) => {
+										if (!isGetGiffiesByCollectionIdDTO(response)) {
 											return null;
 										}
+										var giffies: GiffyDTO[] = response.data;
+
 										toStoreCollections = [
 											...toStoreCollections,
 											{
@@ -92,7 +102,7 @@ export const onCollectionsRoutePopulation = (
 							});
 
 							const collectionIds = collections.map(
-								(collection: collectionDTO) => collection.collectionId
+								(collection: CollectionDTO) => collection.collectionId
 							);
 
 							return collectionIds.length > 0 ? Math.min(...collectionIds) : 0;

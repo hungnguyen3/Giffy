@@ -1,8 +1,12 @@
 import router from 'next/router';
+import { deleteCollectionsByCollectionId } from '../API/collectionHooks';
+import { deleteGiffiesByIds } from '../API/giffyHooks';
+import { isDeleteCollectionDTO } from '../API/types/collections-types';
+import { ErrorDTO } from '../API/types/errors-types';
 import {
-	deleteCollectionsByCollectionId,
-	deleteGiffiesByIds,
-} from '../API/serverHooks';
+	DeleteGiffiesDTO,
+	isDeleteGiffiesDTO,
+} from '../API/types/giffies-types';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
 	clearSelectedGiffy,
@@ -43,7 +47,7 @@ export const DeleteConfirmationWindow = () => {
 						if (collectionToBeDeleted) {
 							deleteCollectionsByCollectionId(collectionToBeDeleted).then(
 								response => {
-									if (!response.error) {
+									if (isDeleteCollectionDTO(response)) {
 										dispatch(
 											removeCollection({ collectionId: collectionToBeDeleted })
 										);
@@ -65,8 +69,8 @@ export const DeleteConfirmationWindow = () => {
 						if (selectedGiffies && selectedGiffies.length > 0) {
 							deleteGiffiesByIds({
 								giffyIds: selectedGiffies,
-							}).then(response => {
-								if (!response.error) {
+							}).then((response: ErrorDTO | DeleteGiffiesDTO) => {
+								if (isDeleteGiffiesDTO(response)) {
 									dispatch(
 										removeGiffyFromACollection({
 											collectionId: Number(collectionId),

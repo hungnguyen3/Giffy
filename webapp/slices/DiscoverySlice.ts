@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { giffyDTO } from '../API/types/giffies-types';
+import { GiffyDTO } from '../API/types/giffies-types';
 
 export interface Collection {
 	collectionId: number;
 	collectionName: string;
 	private: boolean;
-	giffies: giffyDTO[];
+	giffies: GiffyDTO[];
 }
 
 interface DiscoveryState {

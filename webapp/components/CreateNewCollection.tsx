@@ -5,9 +5,10 @@ import {
 } from '../slices/CollectionsSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState } from 'react';
-import { createCollection } from '../API/serverHooks';
 import { RootState } from '../store';
 import { useRouter } from 'next/router';
+import { createCollection } from '../API/collectionHooks';
+import { isCreateCollectionDTO } from '../API/types/collections-types';
 
 interface CollectionInfo {
 	collectionName: string;
@@ -30,15 +31,17 @@ const CreateNewCollection = () => {
 			alert("Something went wrong while loading user's info");
 		} else {
 			try {
-				const collection = await createCollection({
+				const createCollectionRes = await createCollection({
 					collectionName: collectionInfo.collectionName,
 					private: collectionInfo.private,
 					userId: userId,
 				});
 
-				if (collection.error) {
+				if (!isCreateCollectionDTO(createCollectionRes)) {
 					alert('Something went wrong trying to create a new collection');
 				} else {
+					var collection = createCollectionRes.data;
+
 					dispatch(
 						addNewCollection({
 							collectionId: collection.collectionId,

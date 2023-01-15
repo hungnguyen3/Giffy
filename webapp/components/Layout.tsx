@@ -7,20 +7,7 @@ import { useEffect, useState } from 'react';
 import { RootState } from '../store';
 import AccountSettings from './AccountSettings';
 import { app } from './Firebase/FirebaseInit';
-import { logIn, logOut } from '../slices/UserAuthSlice';
-import {
-	getCollectionsByUserId,
-	getGiffiesByCollectionId,
-	getUserByFirebaseAuthId,
-} from '../API/serverHooks';
-import { clearUser, populateUser } from '../slices/UserSlice';
-import { collectionDTO } from '../API/types/collections-types';
-import { giffyDTO } from '../API/types/giffies-types';
-import {
-	clearCollections,
-	Collection,
-	populateCollections,
-} from '../slices/CollectionsSlice';
+import { Collection } from '../slices/CollectionsSlice';
 import UploadGiffy from '../components/UploadGiffy';
 import { useRouter } from 'next/router';
 import Modal from './Modal';
