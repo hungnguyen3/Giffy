@@ -1,11 +1,30 @@
 package com.example.androidgiffy;
 
+import static androidx.core.app.ActivityCompat.requestPermissions;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.KeyboardView;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
+import androidx.core.content.ContextCompat;
+
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class MyInputMethodService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
+    private static final String TAG = "MyInputMethodService";
 
     @Override
     public View onCreateInputView() {
@@ -21,8 +40,29 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
         // Set the ImageAdapter as the adapter for the GridView
         gridView.setAdapter(imageAdapter);
 
+        MyInputMethodService that = this;
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Get the image url from the adapter
+                String imageUrl = imageAdapter.getItem(i);
+                // Send the image to the target application
+                // Create a new intent to send to the target application
+                Intent sendIntent = new Intent();
+                // Set the MIME type to text/*
+                sendIntent.setType("text/*");
+                // Add the image URL as an extra
+                sendIntent.putExtra(Intent.EXTRA_TEXT, imageUrl);
+                // Add the FLAG_ACTIVITY_NEW_TASK flag to the intent
+                sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // Send the intent
+                that.startActivity(Intent.createChooser(sendIntent, "Send image URL"));
+            }
+        });
+
         // Fetch and display images of dogs from the Dog API
-        imageAdapter.fetchImages();
+        imageAdapter.fetchImages(imageAdapter);
 
         // Return the keyboard layout
         return keyboardView;
@@ -39,7 +79,7 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
     }
 
     @Override
-    public void onKey(int primatyCode, int[] keyCodes) {
+    public void onKey(int primaryCode, int[] keyCodes) {
 
     }
 

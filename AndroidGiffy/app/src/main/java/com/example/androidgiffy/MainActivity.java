@@ -22,6 +22,6 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(imageAdapter);
 
         // Fetch and display images from the Dog API
-        imageAdapter.fetchImages();
+        imageAdapter.fetchImages(imageAdapter);
     }
 }

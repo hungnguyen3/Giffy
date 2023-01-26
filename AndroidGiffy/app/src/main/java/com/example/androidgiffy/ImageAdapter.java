@@ -2,6 +2,7 @@ package com.example.androidgiffy;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public String getItem(int position) {
         return mImageUrls.get(position);
     }
 
@@ -64,8 +66,7 @@ public class ImageAdapter extends BaseAdapter {
         return view;
     }
 
-    @SuppressLint("StaticFieldLeak")
-    public void fetchImages() {
+    public static void fetchImages(final ImageAdapter imageAdapter) {
         new AsyncTask<Void, Void, List<String>>() {
             @Override
             protected List<String> doInBackground(Void... voids) {
@@ -90,13 +91,42 @@ public class ImageAdapter extends BaseAdapter {
             protected void onPostExecute(List<String> imageUrls) {
                 if (imageUrls != null) {
                     // Add the images to the list
-                    mImageUrls.addAll(imageUrls);
+                    imageAdapter.mImageUrls.addAll(imageUrls);
                     // Notify the adapter that the data has changed
-                    ImageAdapter.this.notifyDataSetChanged();
+                    imageAdapter.notifyDataSetChanged();
                 } else {
                     // An error occurred, log the error message
                     Log.e(TAG, "Error fetching images");
                 }
+            }
+        }.execute();
+    }
+
+    static void sendImage(MyInputMethodService myInputMethodService, String imageUrl) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                // Download the image from the URL
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(imageUrl).build();
+                try (Response response = client.newCall(request).execute()) {
+                    // Convert the image to a byte array
+                    byte[] imageBytes = response.body().bytes();
+                    // Create a new intent to send to the target application
+                    Intent sendIntent = new Intent();
+                    // Set the MIME type to image/*
+                    sendIntent.setType("image/*");
+                    // Add the image bytes as an extra
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, imageBytes);
+                    // Add the FLAG_ACTIVITY_NEW_TASK flag to the intent
+                    sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // Send the intent
+                    myInputMethodService.startActivity(Intent.createChooser(sendIntent, "Send image"));
+                } catch (IOException e) {
+                    // An error occurred, log the error message
+                    Log.e(TAG, "Error sending image", e);
+                }
+                return null;
             }
         }.execute();
     }
