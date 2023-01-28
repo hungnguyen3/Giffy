@@ -15,6 +15,7 @@ interface CollectionsState {
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;
 	isDeleteConfirmationWindowOpen: boolean;
+	isCollectionSettingWindowOpen: boolean;
 }
 
 const initialState: CollectionsState = {
@@ -24,6 +25,7 @@ const initialState: CollectionsState = {
 	isUploadGiffyWindowOpen: false,
 	isCreateNewCollectionWindowOpen: false,
 	isDeleteConfirmationWindowOpen: false,
+	isCollectionSettingWindowOpen: false,
 };
 
 export const collectionsSlice = createSlice({
@@ -66,6 +68,12 @@ export const collectionsSlice = createSlice({
 		},
 		closeDeleteConfirmationWindow: state => {
 			state.isDeleteConfirmationWindowOpen = false;
+		},
+		openCollectionSettingWindow: state => {
+			state.isCollectionSettingWindowOpen = true;
+		},
+		closeCollectionSettingWindow: state => {
+			state.isCollectionSettingWindowOpen = false;
 		},
 		addGiffyToACollection: (
 			state,
@@ -158,6 +166,8 @@ export const {
 	clearSelectedGiffy,
 	openDeleteConfirmationWindow,
 	closeDeleteConfirmationWindow,
+	openCollectionSettingWindow,
+	closeCollectionSettingWindow,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

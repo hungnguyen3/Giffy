@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { open as openAccountSetting } from '../slices/AccountSettingSlice';
 import { RootState } from '../store';
 import { useRouter } from 'next/router';
+import { openCollectionSettingWindow } from '../slices/CollectionsSlice';
 
 const Header = () => {
 	const router = useRouter();
@@ -49,6 +50,12 @@ const Header = () => {
 				<div className={styles.leftPart}>
 					<div className={styles.mainTitle}>
 						<h1>{curCollectionName}</h1>
+					</div>
+					<div
+						className={styles.collectionSettingBtn}
+						onClick={() => dispatch(openCollectionSettingWindow())}
+					>
+						...
 					</div>
 				</div>
 

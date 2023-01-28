@@ -2,6 +2,7 @@ import { useAppDispatch } from '../hooks';
 import layoutStyles from '../styles/Layout.module.scss';
 import { close as closeAccountSetting } from '../slices/AccountSettingSlice';
 import {
+	closeCollectionSettingWindow,
 	closeCreateNewCollectionWindow,
 	closeDeleteConfirmationWindow,
 	closeUploadGiffyWindow,
@@ -28,6 +29,7 @@ const Modal = (props: ModalProps) => {
 							dispatch(closeCreateNewCollectionWindow());
 							dispatch(closeDeleteConfirmationWindow());
 							dispatch(unselectACollectionToDelete());
+							dispatch(closeCollectionSettingWindow());
 						}}
 					>
 						x

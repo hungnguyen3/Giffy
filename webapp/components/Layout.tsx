@@ -15,6 +15,7 @@ import Auth from './Auth';
 import CreateNewCollection from './CreateNewCollection';
 import { DeleteConfirmationWindow } from './DeleteConfirmationWindow';
 import { onCollectionsRoutePopulation } from './StorePopulationHelpers/onCollectionsRoutePopulation';
+import { CollectionSettingWindow } from './CollectionSettingWindow';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -40,6 +41,9 @@ const Layout = (props: LayoutProps) => {
 	);
 	const isDeleteConfirmationWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isDeleteConfirmationWindowOpen
+	);
+	const isCollectionSettingWindowOpen = useAppSelector(
+		(state: RootState) => state.collections.isCollectionSettingWindowOpen
 	);
 	const collections = useAppSelector(
 		(state: RootState) => state.collections.value
@@ -77,26 +81,31 @@ const Layout = (props: LayoutProps) => {
 					<Header />
 					<div className={layoutStyles.pageContent}>{props.children}</div>
 				</div>
-				{isAccountSettingOpen ? (
+				{isAccountSettingOpen && (
 					<Modal disableCloseButton={false}>
 						<AccountSettings />
 					</Modal>
-				) : null}
-				{isUploadGiffyWindowOpen ? (
+				)}
+				{isUploadGiffyWindowOpen && (
 					<Modal disableCloseButton={false}>
 						<UploadGiffy currentCollectionId={Number(collectionId)} />
 					</Modal>
-				) : null}
-				{isCreateNewCollectionWindowOpen ? (
+				)}
+				{isCreateNewCollectionWindowOpen && (
 					<Modal disableCloseButton={false}>
 						<CreateNewCollection />
 					</Modal>
-				) : null}
-				{isDeleteConfirmationWindowOpen ? (
+				)}
+				{isDeleteConfirmationWindowOpen && (
 					<Modal disableCloseButton={false}>
 						<DeleteConfirmationWindow />
 					</Modal>
-				) : null}
+				)}
+				{isCollectionSettingWindowOpen && (
+					<Modal disableCloseButton={false}>
+						<CollectionSettingWindow />
+					</Modal>
+				)}
 			</div>
 		);
 
