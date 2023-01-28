@@ -134,6 +134,28 @@ export const collectionsSlice = createSlice({
 
 			state.value = collectionsAfterRemoval;
 		},
+		updateCollection: (
+			state,
+			action: {
+				payload: {
+					collectionId: number;
+					collectionName: string;
+					private: boolean;
+				};
+			}
+		) => {
+			var collectionsClone = state.value;
+
+			var collectionIndex = collectionsClone.findIndex(
+				collection => collection.collectionId === action.payload.collectionId
+			);
+
+			collectionsClone[collectionIndex].collectionName =
+				action.payload.collectionName;
+			collectionsClone[collectionIndex].private = action.payload.private;
+
+			state.value = collectionsClone;
+		},
 		addSelectedGiffy: (state, action: { payload: number }) => {
 			state.selectedGiffyIds.push(action.payload);
 		},
@@ -168,6 +190,7 @@ export const {
 	closeDeleteConfirmationWindow,
 	openCollectionSettingWindow,
 	closeCollectionSettingWindow,
+	updateCollection,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;
