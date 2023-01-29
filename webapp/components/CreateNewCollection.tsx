@@ -21,7 +21,7 @@ const CreateNewCollection = () => {
 	const userId = useAppSelector((state: RootState) => state.user.value?.userId);
 	const [collectionInfo, setCollectionInfo] = useState<CollectionInfo>({
 		collectionName: '',
-		private: true,
+		private: false,
 	});
 
 	const uploadHandler = async () => {
@@ -79,6 +79,21 @@ const CreateNewCollection = () => {
 						}
 					}}
 				></input>
+			</div>
+			<div className={styles.visibility}>
+				Visibility: &nbsp;
+				<select
+					value={collectionInfo.private ? 'private' : 'public'}
+					onChange={event => {
+						setCollectionInfo({
+							...collectionInfo,
+							private: event.target.value === 'private',
+						});
+					}}
+				>
+					<option value="private">Private</option>
+					<option value="public">Public</option>
+				</select>
 			</div>
 			<div className={styles.buttonContainer}>
 				<button className={styles.createBtn} onClick={uploadHandler}>
