@@ -24,8 +24,8 @@ const SidePanel = (props: SidePanelProps) => {
 	const closePanel = () => {
 		setWidth('0%');
 	};
-	const collections = useAppSelector(
-		(state: RootState) => state.collections.value
+	const collections = useAppSelector((state: RootState) =>
+		Object.values(state.collections.value)
 	);
 
 	const openPanel = () => {

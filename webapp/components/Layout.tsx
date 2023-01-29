@@ -45,8 +45,8 @@ const Layout = (props: LayoutProps) => {
 	const isCollectionSettingWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isCollectionSettingWindowOpen
 	);
-	const collections = useAppSelector(
-		(state: RootState) => state.collections.value
+	const collections = useAppSelector((state: RootState) =>
+		Object.values(state.collections.value)
 	);
 
 	useEffect(() => {

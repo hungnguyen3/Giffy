@@ -9,10 +9,7 @@ import styles from '../styles/CollectionSettingWindow.module.scss';
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
 	const collection: Collection = useAppSelector(
-		(state: RootState) =>
-			state.collections.value.filter(
-				collection => collection.collectionId == Number(collectionId)
-			)[0]
+		(state: RootState) => state.collections.value[Number(collectionId)]
 	);
 	const [updateCollectionPayload, setUpdateCollectionPayload] = useState<{
 		collectionId: number;
@@ -24,7 +21,11 @@ export const CollectionSettingWindow = () => {
 		private: collection.private,
 	});
 	const dispatch = useDispatch();
-	const handleSubmit = (event: KeyboardEvent<HTMLInputElement>) => {
+	const handleSubmit = (
+		event: KeyboardEvent<HTMLInputElement> | Event | undefined
+	) => {
+		if (event === undefined) return;
+
 		event.preventDefault();
 
 		// send API request with updateCollectionPayload

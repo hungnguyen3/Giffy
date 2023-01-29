@@ -18,9 +18,11 @@ const Header = () => {
 	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 	const curCollectionName = useAppSelector((state: RootState) => {
-		return state.collections.value?.filter(
-			curCollection => curCollection.collectionId === Number(collectionId)
-		)[0]?.collectionName;
+		if (Object.keys(state.collections.value).length !== 0) {
+			if (Number(collectionId) in state.collections.value) {
+				return state.collections.value[Number(collectionId)].collectionName;
+			}
+		}
 	});
 	const userInfo = useAppSelector((state: RootState) => state.user.value);
 

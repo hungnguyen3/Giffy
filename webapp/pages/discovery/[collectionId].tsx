@@ -20,9 +20,9 @@ const Collection: NextPage = () => {
 	const { collectionId } = router.query;
 	const dispatch = useAppDispatch();
 	const giffies = useAppSelector((state: RootState) => {
-		return state.collections.value?.filter(
-			curCollection => curCollection.collectionId === Number(collectionId)
-		)[0]?.giffies;
+		if (Number(collectionId) in state.collections.value) {
+			// return state.collections.value[Number(collectionId)].giffies;
+		}
 	});
 	const selectedGiffies = useAppSelector(
 		(state: RootState) => state.collections.selectedGiffyIds
