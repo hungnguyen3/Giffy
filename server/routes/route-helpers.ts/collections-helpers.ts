@@ -4,6 +4,7 @@ import {
 	CreateCollectionDTO,
 	DeleteCollectionDTO,
 	GetCollectionsByUserIdDTO,
+	UpdateCollectionByIdDTO,
 } from '../types/collections-types';
 import { ErrorDTO } from '../types/errors-types';
 
@@ -177,8 +178,8 @@ export const updateCollectionById = async (
 		if (
 			!req.params.collectionId ||
 			!req.body.collectionName ||
-			!req.body.profileImgUrl ||
-			!req.params.collectionId
+			req.body.private === undefined ||
+			req.body.private === null
 		)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
@@ -187,21 +188,24 @@ export const updateCollectionById = async (
 		const updateCollectionRes = await client.query(
 			`
         UPDATE collections
-        SET "collectionName" = COALESCE($1, "collectionName"), "profileImgUrl"= COALESCE($2, "profileImgUrl")
-        WHERE "collectionId" = $3;
+        SET "collectionName" = COALESCE($1, "collectionName"), "private"= COALESCE($2, "private")
+        WHERE "collectionId" = $3
+				RETURNING *;
       `,
-			[req.body.collectionName, req.body.profileImgUrl, req.params.collectionId]
+			[req.body.collectionName, req.body.private, req.params.collectionId]
 		);
+
 		if (updateCollectionRes.rowCount === 0)
-			res.status(500).send({ error: 'There is no such collection' });
+			res.status(404).send({ error: 'There is no such collection' });
 
 		if (updateCollectionRes.rowCount === 1) {
-			res
-				.status(200)
-				.send(
-					'you have successfully update a collection uid: ' +
-						req.params.collectionId
-				);
+			res.status(200).send({
+				data: {
+					collectionId: updateCollectionRes.rows[0].collectionId,
+					collectionName: updateCollectionRes.rows[0].collectionName,
+					private: updateCollectionRes.rows[0].private,
+				},
+			} as UpdateCollectionByIdDTO);
 		}
 
 		if (updateCollectionRes.rowCount > 1) {
@@ -210,6 +214,7 @@ export const updateCollectionById = async (
 			});
 		}
 	} catch (err) {
+		console.log(err);
 		res.status(500).send({ error: err });
 	}
 };

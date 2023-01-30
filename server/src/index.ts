@@ -39,7 +39,7 @@ export const client = new Client({
 		cors({
 			origin: whitelist,
 			credentials: true,
-			methods: ['GET', 'POST', 'DELETE'],
+			methods: ['GET', 'POST', 'DELETE', 'PUT'],
 		})
 	);
 

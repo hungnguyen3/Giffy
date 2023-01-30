@@ -16,6 +16,10 @@ export interface GetCollectionsByUserIdDTO {
 	data: CollectionDTO[];
 }
 
+export interface UpdateCollectionByIdDTO {
+	data: CollectionDTO;
+}
+
 // ----- type guards -----
 export function isCollectionDTO(obj: any): obj is CollectionDTO {
 	return (
@@ -51,4 +55,10 @@ export function isGetCollectionsByUserIdDTO(
 		Array.isArray(obj.data) &&
 		obj.data.every(isCollectionDTO)
 	);
+}
+
+export function isUpdateCollectionByIdDTO(
+	obj: any
+): obj is UpdateCollectionByIdDTO {
+	return obj && obj.hasOwnProperty('data') && isCollectionDTO(obj.data);
 }

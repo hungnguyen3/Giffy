@@ -12,6 +12,10 @@ export interface DeleteCollectionDTO {
 	data: { successMessage: string };
 }
 
+export interface UpdateCollectionByIdDTO {
+	data: CollectionDTO;
+}
+
 export interface GetCollectionsByUserIdDTO {
 	data: CollectionDTO[];
 }

@@ -1,9 +1,11 @@
 import router from 'next/router';
 import { KeyboardEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { updateCollectionById } from '../API/collectionHooks';
 import { useAppSelector } from '../hooks';
 import { Collection, updateCollection } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
+import { isUpdateCollectionByIdDTO } from '../API/types/collections-types';
 import styles from '../styles/CollectionSettingWindow.module.scss';
 
 export const CollectionSettingWindow = () => {
@@ -21,7 +23,7 @@ export const CollectionSettingWindow = () => {
 		private: collection.private,
 	});
 	const dispatch = useDispatch();
-	const handleSubmit = (
+	const handleSubmit = async (
 		event: KeyboardEvent<HTMLInputElement> | Event | undefined
 	) => {
 		if (event === undefined) return;
@@ -29,7 +31,18 @@ export const CollectionSettingWindow = () => {
 		event.preventDefault();
 
 		// send API request with updateCollectionPayload
-		dispatch(updateCollection(updateCollectionPayload));
+		const updateCollectionByIdRes = await updateCollectionById({
+			collectionId: updateCollectionPayload.collectionId,
+			collectionName: updateCollectionPayload.collectionName,
+			private: updateCollectionPayload.private,
+		});
+
+		if (isUpdateCollectionByIdDTO(updateCollectionByIdRes)) {
+			// update collection in redux store
+			dispatch(updateCollection(updateCollectionPayload));
+		} else {
+			alert('Error updating collection');
+		}
 	};
 
 	return (
