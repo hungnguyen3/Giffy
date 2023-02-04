@@ -1,4 +1,4 @@
-@import "ColorTheme.module.scss";
+@import 'ColorTheme.module.scss';
 
 .centeredBox {
 	display: flex;
@@ -26,6 +26,16 @@
 		outline: none;
 		text-transform: uppercase;
 		font-weight: 700;
+		&:hover {
+			background: $green200;
+			color: white;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
+		&:active {
+			border: 0;
+			transition: all 0.2s ease;
+		}
 	}
 
 	.createBtn {
@@ -34,18 +44,6 @@
 
 	.saveBtn {
 		@include createBtn;
-	}
-
-	.createBtn:hover {
-		background: $green200;
-		color: white;
-		transition: all 0.2s ease;
-		cursor: pointer;
-	}
-
-	.createBtn:active {
-		border: 0;
-		transition: all 0.2s ease;
 	}
 
 	.deleteButton {
@@ -61,13 +59,12 @@
 		outline: none;
 		text-transform: uppercase;
 		font-weight: 700;
-	}
-
-	.deleteButton:hover {
-		background: #f32633;
-		color: white;
-		transition: all 0.2s ease;
-		cursor: pointer;
+		&:hover {
+			background: #f32633;
+			color: white;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
 	}
 
 	.cancelButton {
@@ -83,12 +80,11 @@
 		outline: none;
 		text-transform: uppercase;
 		font-weight: 700;
-	}
-
-	.cancelButton:hover {
-		background: #70758c;
-		color: #2c3149;
-		transition: all 0.2s ease;
-		cursor: pointer;
+		&:hover {
+			background: #70758c;
+			color: #2c3149;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
 	}
 }
