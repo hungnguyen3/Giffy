@@ -37,6 +37,7 @@ export const DeleteConfirmationWindow = () => {
 						dispatch(clearSelectedGiffy());
 						dispatch(unselectACollectionToDelete());
 						dispatch(closeDeleteConfirmationWindow());
+						//dispatch(openCreateNewCollectionWindow());
 					}}
 				>
 					Cancel

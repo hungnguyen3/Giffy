@@ -3,7 +3,12 @@ import { KeyboardEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateCollectionById } from '../API/collectionHooks';
 import { useAppSelector } from '../hooks';
-import { closeCollectionSettingWindow, Collection, updateCollection } from '../slices/CollectionsSlice';
+import {
+	closeCollectionSettingWindow,
+	closeCreateNewCollectionWindow,
+	Collection,
+	updateCollection,
+} from '../slices/CollectionsSlice';
 import { RootState } from '../store';
 import { isUpdateCollectionByIdDTO } from '../API/types/collections-types';
 import styles from '../styles/CollectionSettingWindow.module.scss';
@@ -15,6 +20,7 @@ import {
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
+	const dispatch = useDispatch();
 	const collection: Collection = useAppSelector(
 		(state: RootState) => state.collections.value[Number(collectionId)]
 	);
@@ -27,14 +33,8 @@ export const CollectionSettingWindow = () => {
 		collectionName: collection.collectionName,
 		private: collection.private,
 	});
-	const dispatch = useDispatch();
-	const handleSubmit = async (
-		event: KeyboardEvent<HTMLInputElement> | Event | undefined
-	) => {
-		if (event === undefined) return;
 
-		event.preventDefault();
-
+	const handleSubmit = async () => {
 		// send API request with updateCollectionPayload
 		const updateCollectionByIdRes = await updateCollectionById({
 			collectionId: updateCollectionPayload.collectionId,
@@ -57,56 +57,64 @@ export const CollectionSettingWindow = () => {
 					handleSubmit;
 				}}
 			>
-				<div className={styles.name}>
-					Collection name: &nbsp;
-					<input
-						type="text"
-						value={updateCollectionPayload.collectionName}
-						onChange={event => {
-							setUpdateCollectionPayload({
-								...updateCollectionPayload,
-								collectionName: event.target.value,
-							});
-						}}
-						onKeyDown={event => {
-							if (event.key === 'Enter') {
-								handleSubmit(event);
-							}
-						}}
-					></input>
+				<div className={styles.centeredBox}>
+					<div className={styles.name}>
+						Collection name: &nbsp;
+						<input
+							type="text"
+							value={updateCollectionPayload.collectionName}
+							onChange={event => {
+								setUpdateCollectionPayload({
+									...updateCollectionPayload,
+									collectionName: event.target.value,
+								});
+							}}
+							onKeyDown={event => {
+								if (event.key === 'Enter') {
+									handleSubmit();
+								}
+							}}
+						></input>
+					</div>
+					<div className={styles.visibility}>
+						Visibility: &nbsp;
+						<select
+							value={updateCollectionPayload.private ? 'private' : 'public'}
+							onChange={event => {
+								setUpdateCollectionPayload({
+									...updateCollectionPayload,
+									private: event.target.value === 'private',
+								});
+							}}
+						>
+							<option value="private">Private</option>
+							<option value="public">Public</option>
+						</select>
+					</div>
 				</div>
-				<div className={styles.visibility}>
-					Visibility: &nbsp;
-					<select
-						value={updateCollectionPayload.private ? 'private' : 'public'}
-						onChange={event => {
-							setUpdateCollectionPayload({
-								...updateCollectionPayload,
-								private: event.target.value === 'private',
-							});
+
+				<div className={styles.buttonContainer}>
+					<input
+						className={styles.saveBtn}
+						type="submit"
+						value="Save"
+						onClick={e => {
+							e.preventDefault();
+							handleSubmit();
+							dispatch(closeCollectionSettingWindow());
+						}}
+					/>
+					<button
+						className={styles.deleteButton}
+						onClick={() => {
+							dispatch(selectACollectionToDelete(Number(collectionId)));
+							dispatch(closeCollectionSettingWindow());
+							dispatch(openDeleteConfirmationWindow());
 						}}
 					>
-						<option value="private">Private</option>
-						<option value="public">Public</option>
-					</select>
+						x
+					</button>
 				</div>
-				<input
-					type="submit"
-					value="Save Changes"
-					onClick={() => {
-						handleSubmit(event);
-					}}
-				/>
-				<button
-								className={styles.deleteCollectionBtn}
-								onClick={() => {
-									dispatch(selectACollectionToDelete(Number(collectionId)));
-									dispatch(closeCollectionSettingWindow());
-									dispatch(openDeleteConfirmationWindow());
-								}}
-							>
-								x
-							</button>
 			</form>
 		</div>
 	);

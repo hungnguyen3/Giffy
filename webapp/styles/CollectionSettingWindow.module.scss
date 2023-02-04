@@ -1,7 +1,14 @@
-@import "Common.module.scss";
+@import 'Common.module.scss';
 
 .centeredBox {
-    .visibility {
-        margin: 17px;
-    }
+	.visibility {
+		margin: 17px;
+		width: 50%;
+	}
+}
+
+.buttonContainer {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
 }
