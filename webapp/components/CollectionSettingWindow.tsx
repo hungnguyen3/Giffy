@@ -3,10 +3,15 @@ import { KeyboardEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateCollectionById } from '../API/collectionHooks';
 import { useAppSelector } from '../hooks';
-import { Collection, updateCollection } from '../slices/CollectionsSlice';
+import { closeCollectionSettingWindow, Collection, updateCollection } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
 import { isUpdateCollectionByIdDTO } from '../API/types/collections-types';
 import styles from '../styles/CollectionSettingWindow.module.scss';
+import {
+	openCreateNewCollectionWindow,
+	openDeleteConfirmationWindow,
+	selectACollectionToDelete,
+} from '../slices/CollectionsSlice';
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
@@ -92,6 +97,16 @@ export const CollectionSettingWindow = () => {
 						handleSubmit(event);
 					}}
 				/>
+				<button
+								className={styles.deleteCollectionBtn}
+								onClick={() => {
+									dispatch(selectACollectionToDelete(Number(collectionId)));
+									dispatch(closeCollectionSettingWindow());
+									dispatch(openDeleteConfirmationWindow());
+								}}
+							>
+								x
+							</button>
 			</form>
 		</div>
 	);

@@ -65,15 +65,6 @@ const SidePanel = (props: SidePanelProps) => {
 							>
 								{collection.collectionName}
 							</Link>
-							<button
-								className={styles.deleteCollectionBtn}
-								onClick={() => {
-									dispatch(selectACollectionToDelete(collection.collectionId));
-									dispatch(openDeleteConfirmationWindow());
-								}}
-							>
-								x
-							</button>
 						</a>
 					);
 				})}
