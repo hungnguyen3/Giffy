@@ -4,7 +4,7 @@
 	position: absolute;
 	right: 20px;
 	bottom: 10px;
-	background-color: rgb(5, 142, 78);
+	background-color: $green200;
 	border: none;
 	color: white;
 	padding: 10px 25px 10px 25px;
@@ -12,13 +12,18 @@
 	font-size: 50px;
 	border-radius: 50%;
 
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+	box-shadow: $boxShadow100;
 	transition: 0.3s;
 
 	&:hover {
-		background-color: RoyalBlue;
+		background-color: $blue200;
 		box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5);
 		cursor: pointer;
+	}
+	
+	&:focus {
+		outline: none;
+		box-shadow: $boxShadowFocusGreen300;
 	}
 }
 

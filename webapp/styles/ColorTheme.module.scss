@@ -1,4 +1,39 @@
+$red100:#ec5e68;
+$red200: #f32633;
+
+$green50: #6caa7f;
 $green100: #1fb264;
 $green200: #1aa059;
 $green300: #15824b;
+
+$blue100: #c8dafc;
+$blue200: RoyalBlue;
+$blue300: #1f4fe0;
+
+$grey50:  #eeeeee;
+$grey100: #8389a4;
+$grey200: #70758c;
+$grey300: #2c3149;
+
 $blackWithOpacity: rgba(0, 0, 0, 0.4);
+
+$boxShadow100: 0 -1px 0 rgb(0 0 0 / 4%), 0 3px 3px rgb(0 0 0 / 25%);
+$boxShadowHover: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
+
+$boxShadowFocusRed200: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+0 0 0 3px $red200;
+
+$boxShadowFocusGreen200: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+0 0 0 3px $green200;
+$boxShadowFocusGreen300: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+0 0 0 3px $green300;
+
+$boxShadowFocusBlue100: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+0 0 0 3px $blue100;
+$boxShadowFocusBlue200: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+0 0 0 3px $blue200;
+$boxShadowFocusBlue300: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+0 0 0 3px $blue300;
+
+$boxShadowFocusGrey200: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+0 0 0 3px $grey200;

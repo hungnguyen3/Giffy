@@ -2,11 +2,21 @@
 
 .sidePanel {
 	position: relative;
-	background-color: #6e9b7b;
+	background-color: $green50;
 	transition: 0.5s ease;
 	overflow-x: visible;
 	padding-top: 20px;
 
+	border-right: $green300 solid 3px;
+
+	border-left: 0;
+	border-right: 0;
+	border-bottom: 0;
+	border-right: 10px solid;
+	border-image-slice: 1;
+	border-width: 3px;
+	border-image-source: linear-gradient(to top right, $green300, $green50);
+	
 	.sidePanelContent {
 		display: flex;
 		flex-direction: column;
@@ -20,14 +30,7 @@
 			padding: 0.5em;
 			text-align: center;
 			&:hover {
-				background-color: #92b3a3;
-			}
-			.deleteCollectionBtn {
-				margin-left: 11px;
-				&:hover {
-					cursor: pointer;
-					background-color: firebrick;
-				}
+				background-color: $green100;
 			}
 		}
 
@@ -38,7 +41,7 @@
 	}
 
 	.btn {
-		background-color: rgb(5, 142, 78);
+		background-color: $green100;
 		height: 40px;
 		width: 40px;
 		border: none;
@@ -56,7 +59,12 @@
 		justify-content: center;
 
 		&:hover {
-			background-color: RoyalBlue;
+			background-color: $blue200;
+		}
+
+		&:focus {
+			outline: none;
+			box-shadow: $boxShadowFocusGreen200;
 		}
 	}
 
