@@ -1,10 +1,14 @@
 import styles from '../styles/SidePanel.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import Link from 'next/link';
-import { openCreateNewCollectionWindow } from '../slices/CollectionsSlice';
+import {
+	openCreateNewCollectionWindow,
+	openDeleteConfirmationWindow,
+	selectACollectionToDelete,
+} from '../slices/CollectionsSlice';
 import { useRouter } from 'next/router';
 
 interface SidePanelProps {
@@ -12,16 +16,16 @@ interface SidePanelProps {
 }
 
 const SidePanel = (props: SidePanelProps) => {
-	const [width, setWidth] = useState(props.width);
-	const dispatch = useAppDispatch();
 	const router = useRouter();
+	const dispatch = useAppDispatch();
+	const [width, setWidth] = useState(props.width);
 	const { collectionId } = router.query;
 
 	const closePanel = () => {
 		setWidth('0%');
 	};
-	const collections = useAppSelector(
-		(state: RootState) => state.collections.value
+	const collections = useAppSelector((state: RootState) =>
+		Object.values(state.collections.value)
 	);
 
 	const openPanel = () => {

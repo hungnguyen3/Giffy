@@ -5,9 +5,10 @@ import {
 } from '../slices/CollectionsSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState } from 'react';
-import { createCollection } from '../API/serverHooks';
 import { RootState } from '../store';
 import { useRouter } from 'next/router';
+import { createCollection } from '../API/collectionHooks';
+import { isCreateCollectionDTO } from '../API/types/collections-types';
 
 interface CollectionInfo {
 	collectionName: string;
@@ -20,7 +21,7 @@ const CreateNewCollection = () => {
 	const userId = useAppSelector((state: RootState) => state.user.value?.userId);
 	const [collectionInfo, setCollectionInfo] = useState<CollectionInfo>({
 		collectionName: '',
-		private: true,
+		private: false,
 	});
 
 	const uploadHandler = async () => {
@@ -30,15 +31,17 @@ const CreateNewCollection = () => {
 			alert("Something went wrong while loading user's info");
 		} else {
 			try {
-				const collection = await createCollection({
+				const createCollectionRes = await createCollection({
 					collectionName: collectionInfo.collectionName,
 					private: collectionInfo.private,
 					userId: userId,
 				});
 
-				if (collection.error) {
+				if (!isCreateCollectionDTO(createCollectionRes)) {
 					alert('Something went wrong trying to create a new collection');
 				} else {
+					var collection = createCollectionRes.data;
+
 					dispatch(
 						addNewCollection({
 							collectionId: collection.collectionId,
@@ -70,7 +73,27 @@ const CreateNewCollection = () => {
 							collectionName: event.target.value,
 						});
 					}}
+					onKeyDown={event => {
+						if (event.key === 'Enter') {
+							uploadHandler();
+						}
+					}}
 				></input>
+			</div>
+			<div className={styles.visibility}>
+				Visibility: &nbsp;
+				<select
+					value={collectionInfo.private ? 'private' : 'public'}
+					onChange={event => {
+						setCollectionInfo({
+							...collectionInfo,
+							private: event.target.value === 'private',
+						});
+					}}
+				>
+					<option value="private">Private</option>
+					<option value="public">Public</option>
+				</select>
 			</div>
 			<div className={styles.buttonContainer}>
 				<button className={styles.createBtn} onClick={uploadHandler}>

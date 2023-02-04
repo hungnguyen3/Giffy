@@ -6,12 +6,19 @@ const userRoute = require('../routes/users');
 const collectionRoute = require('../routes/collections');
 const giffyRoute = require('../routes/giffies');
 import cors from 'cors';
+require('dotenv').config();
+
+const admin = require('firebase-admin');
+const serviceAccount = require('../firebase-config.json');
+
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount),
+});
+
+export const firebaseStorage = admin.storage();
 
 export const client = new Client({
-	user: 'postgres',
-	database: 'custom-cool-chia',
-	password: 'postgres',
-	port: 5432,
+	connectionString: process.env.PG_CONNECTION_URL,
 });
 
 (async () => {
@@ -32,7 +39,7 @@ export const client = new Client({
 		cors({
 			origin: whitelist,
 			credentials: true,
-			methods: ['GET', 'POST', 'DELETE'],
+			methods: ['GET', 'POST', 'DELETE', 'PUT'],
 		})
 	);
 

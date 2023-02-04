@@ -1,3 +1,5 @@
+@import 'ColorTheme.module.scss';
+
 .centeredBox {
 	display: flex;
 	flex-direction: column;
@@ -11,29 +13,78 @@
 	text-align: center;
 	width: 50%;
 
-	.createBtn {
+	@mixin createBtn {
 		width: 70%;
 		margin: 10px;
-		color: #fff;
-		background: #1fb264;
+		color: white;
+		background: $green100;
 		border: none;
 		padding: 10px;
 		border-radius: 11px;
-		border-bottom: 4px solid #15824b;
+		border-bottom: 4px solid $green300;
 		transition: all 0.2s ease;
 		outline: none;
 		text-transform: uppercase;
 		font-weight: 700;
-	}
-	.createBtn:hover {
-		background: #1aa059;
-		color: #ffffff;
-		transition: all 0.2s ease;
-		cursor: pointer;
+		&:hover {
+			background: $green200;
+			color: white;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
+		&:active {
+			border: 0;
+			transition: all 0.2s ease;
+		}
 	}
 
-	.createBtn:active {
-		border: 0;
+	.createBtn {
+		@include createBtn;
+	}
+
+	.saveBtn {
+		@include createBtn;
+	}
+
+	.deleteButton {
+		width: 70%;
+		margin: 10px;
+		color: white;
+		background: #ec5e68;
+		border: none;
+		padding: 10px;
+		border-radius: 11px;
+		border-bottom: 4px solid #f32633;
 		transition: all 0.2s ease;
+		outline: none;
+		text-transform: uppercase;
+		font-weight: 700;
+		&:hover {
+			background: #f32633;
+			color: white;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
+	}
+
+	.cancelButton {
+		width: 70%;
+		margin: 10px;
+		color: #2c3149;
+		background: #8389a4;
+		border: none;
+		padding: 10px;
+		border-radius: 11px;
+		border-bottom: 4px solid #70758c;
+		transition: all 0.2s ease;
+		outline: none;
+		text-transform: uppercase;
+		font-weight: 700;
+		&:hover {
+			background: #70758c;
+			color: #2c3149;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
 	}
 }

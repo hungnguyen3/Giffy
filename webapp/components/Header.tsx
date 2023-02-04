@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { open as openAccountSetting } from '../slices/AccountSettingSlice';
 import { RootState } from '../store';
 import { useRouter } from 'next/router';
+import { openCollectionSettingWindow } from '../slices/CollectionsSlice';
 
 const Header = () => {
 	const router = useRouter();
@@ -17,9 +18,11 @@ const Header = () => {
 	const dropdownBlockRef = useRef<HTMLInputElement | null>(null);
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 	const curCollectionName = useAppSelector((state: RootState) => {
-		return state.collections.value?.filter(
-			curCollection => curCollection.collectionId === Number(collectionId)
-		)[0]?.collectionName;
+		if (Object.keys(state.collections.value).length !== 0) {
+			if (Number(collectionId) in state.collections.value) {
+				return state.collections.value[Number(collectionId)].collectionName;
+			}
+		}
 	});
 	const userInfo = useAppSelector((state: RootState) => state.user.value);
 
@@ -49,6 +52,12 @@ const Header = () => {
 				<div className={styles.leftPart}>
 					<div className={styles.mainTitle}>
 						<h1>{curCollectionName}</h1>
+					</div>
+					<div
+						className={styles.collectionSettingBtn}
+						onClick={() => dispatch(openCollectionSettingWindow())}
+					>
+						...
 					</div>
 				</div>
 

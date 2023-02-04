@@ -1,27 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { giffyDTO } from '../API/DTO';
+import { GiffyDTO } from '../API/types/giffies-types';
 
 export interface Collection {
 	collectionId: number;
 	collectionName: string;
 	private: boolean;
-	giffies: giffyDTO[];
+	giffies: GiffyDTO[];
 }
 
 interface CollectionsState {
-	value: Collection[];
+	value: { [collectionId: number]: Collection };
 	selectedGiffyIds: number[];
+	selectedCollectionToDelete: number | null;
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;
-	isDeleteGiffyConfirmationWindowOpen: boolean;
+	isDeleteConfirmationWindowOpen: boolean;
+	isCollectionSettingWindowOpen: boolean;
 }
 
 const initialState: CollectionsState = {
-	value: [],
+	value: {},
 	selectedGiffyIds: [],
+	selectedCollectionToDelete: null,
 	isUploadGiffyWindowOpen: false,
 	isCreateNewCollectionWindowOpen: false,
-	isDeleteGiffyConfirmationWindowOpen: false,
+	isDeleteConfirmationWindowOpen: false,
+	isCollectionSettingWindowOpen: false,
 };
 
 export const collectionsSlice = createSlice({
@@ -36,10 +40,20 @@ export const collectionsSlice = createSlice({
 			}
 		) => {
 			const collectionsValue: Collection[] = action.payload;
-			state.value = collectionsValue;
+			let tempValue: { [collectionId: number]: Collection } = {};
+			for (let collection of collectionsValue) {
+				tempValue[collection.collectionId] = collection;
+			}
+			state.value = tempValue;
 		},
 		clearCollections: state => {
-			state.value = [];
+			state.value = {};
+		},
+		selectACollectionToDelete: (state, action: { payload: number }) => {
+			state.selectedCollectionToDelete = action.payload;
+		},
+		unselectACollectionToDelete: state => {
+			state.selectedCollectionToDelete = null;
 		},
 		openUploadGiffyWindow: state => {
 			state.isUploadGiffyWindowOpen = true;
@@ -53,47 +67,47 @@ export const collectionsSlice = createSlice({
 		closeCreateNewCollectionWindow: state => {
 			state.isCreateNewCollectionWindowOpen = false;
 		},
-		openDeleteGiffyConfirmationWindow: state => {
-			state.isDeleteGiffyConfirmationWindowOpen = true;
+		openDeleteConfirmationWindow: state => {
+			state.isDeleteConfirmationWindowOpen = true;
 		},
-		closeDeleteGiffyConfirmationWindow: state => {
-			state.isDeleteGiffyConfirmationWindowOpen = false;
+		closeDeleteConfirmationWindow: state => {
+			state.isDeleteConfirmationWindowOpen = false;
+		},
+		openCollectionSettingWindow: state => {
+			state.isCollectionSettingWindowOpen = true;
+		},
+		closeCollectionSettingWindow: state => {
+			state.isCollectionSettingWindowOpen = false;
 		},
 		addGiffyToACollection: (
 			state,
 			action: {
-				payload: giffyDTO;
+				payload: GiffyDTO;
 			}
 		) => {
-			if (state.value) {
-				for (let i = 0; i < state.value.length; i++) {
-					if (state.value[i].collectionId === action.payload.collectionId) {
-						state.value[i].giffies.push(action.payload);
-					}
-				}
+			let tempValue = state.value;
+			if (action.payload.collectionId in tempValue) {
+				tempValue[action.payload.collectionId].giffies.push(action.payload);
 			}
+			state.value = tempValue;
 		},
 		removeGiffyFromACollection: (
 			state,
 			action: {
 				payload: {
 					collectionId: number;
-					giffyId: number;
+					giffyIds: number[];
 				};
 			}
 		) => {
-			if (state.value) {
-				for (let i = 0; i < state.value.length; i++) {
-					if (state.value[i].collectionId === action.payload.collectionId) {
-						var giffiesClone = [...state.value[i].giffies];
-
-						var giffiesAfterRemoval = giffiesClone.filter(
-							giffy => giffy.giffyId !== action.payload.giffyId
-						);
-
-						state.value[i].giffies = giffiesAfterRemoval;
-					}
-				}
+			let tempValue = state.value;
+			if (action.payload.collectionId in tempValue) {
+				var giffiesClone = tempValue[action.payload.collectionId].giffies;
+				var giffiesAfterRemoval = giffiesClone.filter(
+					giffy => !action.payload.giffyIds.includes(giffy.giffyId)
+				);
+				tempValue[action.payload.collectionId].giffies = giffiesAfterRemoval;
+				state.value = tempValue;
 			}
 		},
 		addNewCollection: (
@@ -102,7 +116,38 @@ export const collectionsSlice = createSlice({
 				payload: Collection;
 			}
 		) => {
-			state.value?.push(action.payload);
+			state.value[action.payload.collectionId] = action.payload;
+		},
+		removeCollection: (
+			state,
+			action: {
+				payload: {
+					collectionId: number;
+				};
+			}
+		) => {
+			var tempValue = state.value;
+			delete tempValue[action.payload.collectionId];
+
+			state.value = tempValue;
+		},
+		updateCollection: (
+			state,
+			action: {
+				payload: {
+					collectionId: number;
+					collectionName: string;
+					private: boolean;
+				};
+			}
+		) => {
+			var tempValue = state.value;
+
+			tempValue[action.payload.collectionId].collectionName =
+				action.payload.collectionName;
+			tempValue[action.payload.collectionId].private = action.payload.private;
+
+			state.value = tempValue;
 		},
 		addSelectedGiffy: (state, action: { payload: number }) => {
 			state.selectedGiffyIds.push(action.payload);
@@ -112,12 +157,17 @@ export const collectionsSlice = createSlice({
 			const index = state.selectedGiffyIds.indexOf(action.payload);
 			if (index !== -1) state.selectedGiffyIds.splice(index, 1);
 		},
+		clearSelectedGiffy: state => {
+			state.selectedGiffyIds = [];
+		},
 	},
 });
 
 export const {
 	populateCollections,
 	clearCollections,
+	selectACollectionToDelete,
+	unselectACollectionToDelete,
 	openUploadGiffyWindow,
 	closeUploadGiffyWindow,
 	openCreateNewCollectionWindow,
@@ -125,10 +175,15 @@ export const {
 	addGiffyToACollection,
 	removeGiffyFromACollection,
 	addNewCollection,
+	removeCollection,
 	addSelectedGiffy,
 	removeSelectedGiffy,
-	openDeleteGiffyConfirmationWindow,
-	closeDeleteGiffyConfirmationWindow,
+	clearSelectedGiffy,
+	openDeleteConfirmationWindow,
+	closeDeleteConfirmationWindow,
+	openCollectionSettingWindow,
+	closeCollectionSettingWindow,
+	updateCollection,
 } = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

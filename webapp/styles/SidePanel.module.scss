@@ -22,6 +22,13 @@
 			&:hover {
 				background-color: #92b3a3;
 			}
+			.deleteCollectionBtn {
+				margin-left: 11px;
+				&:hover {
+					cursor: pointer;
+					background-color: firebrick;
+				}
+			}
 		}
 
 		// to clear the bullet point before link

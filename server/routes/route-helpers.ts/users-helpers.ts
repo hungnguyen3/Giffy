@@ -1,4 +1,9 @@
 import { client } from '../../src/index';
+import { ErrorDTO } from '../types/errors-types';
+import {
+	CreateUserDTO,
+	GetUserByFirebaseAuthIdDTO,
+} from '../types/users-types';
 
 export const createUser = async (req: any, res: any) => {
 	try {
@@ -9,7 +14,7 @@ export const createUser = async (req: any, res: any) => {
 		)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
-			});
+			} as ErrorDTO);
 
 		const insertUserRes = await client.query(
 			`
@@ -21,12 +26,17 @@ export const createUser = async (req: any, res: any) => {
 		);
 
 		if (insertUserRes.rowCount === 1) {
-			return res.status(200).send(insertUserRes.rows[0]);
+			return res
+				.status(200)
+				.send({ data: insertUserRes.rows[0] } as CreateUserDTO);
 		}
 
-		return res.status(500).json({ error: 'db error' });
+		return res.status(500).send({ error: 'Db error' } as ErrorDTO);
 	} catch (err) {
-		return res.status(500).json({ error: err });
+		console.log(err);
+		return res.status(500).send({
+			error: 'Db error while creating a user',
+		} as ErrorDTO);
 	}
 };
 
@@ -57,7 +67,7 @@ export const deleteUserById = async (req: any, res: any) => {
 				.status(500)
 				.send({ error: 'error occurred, more than one user with the same id' });
 	} catch (err) {
-		return res.status(500).json({ error: err });
+		return res.status(500).send({ error: err });
 	}
 };
 
@@ -86,7 +96,7 @@ export const getUserById = async (req: any, res: any) => {
 				.status(500)
 				.send('error occurred, more than one user with the same id');
 	} catch (err) {
-		return res.status(500).json({ error: err });
+		return res.status(500).send({ error: err });
 	}
 };
 
@@ -94,8 +104,8 @@ export const getUserByFirebaseAuthId = async (req: any, res: any) => {
 	try {
 		if (!req.params.firebaseAuthId)
 			return res.status(400).send({
-				error: 'missing required parameter(s)',
-			});
+				error: 'Missing required parameter(s)',
+			} as ErrorDTO);
 
 		const getUserRes = await client.query(
 			`
@@ -105,17 +115,24 @@ export const getUserByFirebaseAuthId = async (req: any, res: any) => {
 		);
 
 		if (getUserRes.rowCount <= 0)
-			return res.status(500).send({ error: 'There is no such user' });
-
-		if (getUserRes.rowCount === 1)
-			return res.status(200).send(getUserRes.rows[0]);
-
-		if (getUserRes.rowCount > 1)
 			return res
 				.status(500)
-				.send('error occurred, more than one user with the same id');
+				.send({ error: 'There is no such user' } as ErrorDTO);
+
+		if (getUserRes.rowCount === 1)
+			return res
+				.status(200)
+				.send({ data: getUserRes.rows[0] } as GetUserByFirebaseAuthIdDTO);
+
+		if (getUserRes.rowCount > 1)
+			return res.status(500).send({
+				error: 'Error occurred, more than one user with the same id',
+			} as ErrorDTO);
 	} catch (err) {
-		return res.status(500).json({ error: err });
+		console.log(err);
+		return res.status(500).send({
+			error: 'Unknown db error',
+		} as ErrorDTO);
 	}
 };
 
@@ -147,6 +164,6 @@ export const updateUserById = async (req: any, res: any) => {
 				.status(500)
 				.send({ error: 'error occurred, more than one user with the same id' });
 	} catch (err) {
-		return res.status(500).json({ error: err });
+		return res.status(500).send({ error: err });
 	}
 };
