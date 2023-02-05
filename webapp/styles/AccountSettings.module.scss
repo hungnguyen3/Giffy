@@ -3,7 +3,7 @@
 .centeredBox {
     .settingsContainer {
         // credits: https://codepen.io/priyaa-sharma/pen/MWKgjyz
-        color: #86212c;
+        color: $red150;
         padding: 0 77px 0 77px;
         overflow-x: hidden;
         font-family: 'Fira Sans', sans-serif;
@@ -12,16 +12,31 @@
         .pageTitle {
             font-size: 36px;
             font-weight: bold;
-            color: #333;
+            color: $grey400;
             text-align: center;
         }
 
         .settingsSection {
             width: 100%;
-            border-bottom: 2px solid #454545;
+            border-bottom: 2px solid $grey400;
             padding-bottom: 20px;
             margin-bottom: 20px;
 
+            .userInfo {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 0 11px 11px;
+                p {
+                    margin: 0;
+                }
+                .username {
+                    color: $red100;
+                }
+                .userEmail {
+                    color: $grey100;
+                }
+            }
             .profileForm {
                 visibility: invisible;
 
@@ -29,8 +44,10 @@
                     width: 100%;
                     display: flex;
                     align-items: center;
-                    margin-bottom:1em;
-                    
+                    margin: 3em;
+                    border-bottom: 2px solid $grey400;
+                    margin-left: auto;
+                    padding-bottom: 35px;
             
                     .imgUpload {
                         background-position: center;
@@ -45,15 +62,82 @@
                         border: 2px solid #454545;
                         transition: all 0.3s ease-in-out;
                         cursor: pointer;
+                        margin-top: -37px;
                         margin-bottom: 0;
-                        margin-right: 11px;
-                        
+                        margin-left: 11px;
+
                         &:hover {
                             border: 2px solid #e5dada;
+                            box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
+                            17px 3px 17px 17px $blue300;;
                         }
 
                         input {
                             display: none;
+                        }
+
+                        .imgUploadBox {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            position: relative;
+                            margin-right: 25px;
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 50%;
+                            background-color: #454545;
+
+                            .userProfileImg {
+                                position: absolute;
+                                left: 0;
+                                top: 50%;
+                                transform: translateY(-50%);
+
+                                border: solid;
+                                border-width: 7px;
+                                background-image: 
+                                repeating-linear-gradient(0deg, $green100, $green100 10px, transparent 10px, transparent 20px), // left
+                                repeating-linear-gradient(90deg, $green100, $green100 10px, transparent 10px, transparent 20px), // top
+                                repeating-linear-gradient(180deg, $green100, $green100 10px, transparent 10px, transparent 20px), // right
+                                repeating-linear-gradient(270deg, $green100, $green100 10px, transparent 10px, transparent 20px); // bottom
+                                
+                                border-image: 
+                                repeating-linear-gradient(0deg, $green100, $green100 10px, transparent 10px, transparent 20px);
+                            
+                                
+                                width: auto;
+                                height: auto;
+                                border-radius: 50%;
+                                overflow: hidden;          
+                                pointer-events: none;
+    
+                                &:hover {
+                                    background-color: rgba(0,0,0,.8);
+                                    z-index: 10000;
+                                    color: white;
+                                    transition: background-color .2s ease-in-out;
+                                    border-radius: 50%;
+                                    margin-bottom: 0;
+
+                                    span {
+                                        visibility: visible;
+                                    }
+                                }
+                            }
+                            .changeImgText {
+                                margin-right: 7px;
+                                margin-left: 30px;
+                                margin-bottom: 7px;
+                                padding: .2em;
+                                height: 2em;
+                                color: white;
+                                
+                                &:hover {
+                                    z-index: 111;
+                                    visibility: visible;
+                                    color: white;
+                                }
+                            }
                         }
                     }
 
@@ -64,12 +148,49 @@
                     }
                 }
 
-                .imgUploadSubmit {
-                    width: 300px;
-                    height: 2rem;
+                .formSubmit {
+                    .imgUploadSubmit {
+                        // width: auto;
+                        width: 70%;
+                        height: 3em;
+                        margin-left: auto;
+                        margin-right: auto;
+                        margin-bottom: 7px;
+                        
+                        font-size: large;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+    
+                        color: white;
+                        background-color: $green100;
+                        border: none;
+                        border-radius: 17px;
+                        padding: 10px;
+                        transition: all 0.3s ease;
+                        outline: none;
+                        font-weight: 700;
+    
+                        &:hover {
+                            box-shadow: $boxShadowHover;
+                            background: $green200;
+                            color: white;
+                            transition: all 0.2s ease;
+                            cursor: pointer;
+                        }
+                        &:active {
+                            border: 0;
+                            transition: all 0.2s ease;
+                        }
+                        &:focus {
+                            outline: none;
+                            box-shadow: $boxShadowFocusGreen300;
+                        }
+                        box-shadow: $boxShadow100;
+                    }
                 }
+                
             }
-
         }
     }
 }

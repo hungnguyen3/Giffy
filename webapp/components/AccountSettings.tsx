@@ -1,101 +1,109 @@
+import { useState } from 'react';
 import { useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import styles from '../styles/AccountSettings.module.scss';
 
 const AccountSettings = () => {
 	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
+	const [prevewImage, setPrevewImage] = useState<string>(
+		userAuth?.photoURL as string
+	);
+	const [userName, setUserName] = useState<string>(
+		userAuth?.displayName as string
+	);
+	const [isImgUploadSubmitDisabled, setIsImgUploadSubmitDisabled] =
+		useState<boolean>(true);
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+	const handleSubmit = () => {
+		console.log('handle this');
+	};
 	return (
 		<div className={styles.centeredBox}>
 			<div className={styles.settingsContainer}>
 				{/* credits: https://codepen.io/priyaa-sharma/pen/MWKgjyz */}
 				<h1 className={styles.pageTitle}>Account Settings</h1>
 				<div className={styles.settingsSection}>
-					<h2 className={styles.settingsTitle}>General Information</h2>
-					<div className={styles.userInfo}>
-						<p>username: big ass user</p>
-					</div>
-					<div>
-						<div className={styles.userInfo}>
-							<p>email: youissb@gmail.com</p>
-							<p>email: youissb@gmail.com</p>
-						</div>
-					</div>
-					<div>
-						<div className={styles.userInfo}>
-							<p></p>
-						</div>
-					</div>
-				</div>
-				<div className={styles.settingsSection}>
 					<h2 className={styles.settingsTitle}>My profile</h2>
 					<form className={styles.profileForm}>
 						<div className={styles.imgUploadContainer}>
+							<h4 style={{ paddingRight: '37px', marginTop: '-17px' }}>
+								Change Your Profile Picture
+							</h4>
 							<label className={styles.imgUpload}>
-								<input
-									type="file"
-									accept=".jpg, .png, .jpeg, .gif"
-									value=""
-									className={styles.imgUploadInput}
-								/>
+								<div className={styles.imgUploadBox}>
+									<input
+										type="file"
+										accept="image/*"
+										value=""
+										className={styles.imgUploadInput}
+										onChange={event => {
+											if (event.target.files) {
+												const file = event.target.files[0];
+												setSelectedFile(file);
+												setIsImgUploadSubmitDisabled(true);
+											} else setSelectedFile(null);
+										}}
+									/>
+									<img src={prevewImage} className={styles.userProfileImg} />
+									<span className={styles.changeImgText}>Change Image</span>
+								</div>
 							</label>
-							<h4>Change Your Profile Picture</h4>
-							<div className={styles.imgPreviewContainer}>
-								<div className={styles.imgPreview}></div>
+						</div>
+
+						<div className={styles.settingsSection}>
+							<h2 className={styles.settingsTitle}>General Information</h2>
+							<div className={styles.userInfo}>
+								<p>username:</p>
+								<input
+									type="text"
+									value={userName}
+									onChange={event => {
+										setUserName(event.target.value);
+										if (
+											event.target.value === userAuth?.displayName &&
+											selectedFile === null
+										) {
+											setIsImgUploadSubmitDisabled(true);
+										} else {
+											setUserName(event.target.value);
+											setIsImgUploadSubmitDisabled(false);
+										}
+									}}
+									onKeyDown={event => {
+										if (event.key === 'Enter') {
+											handleSubmit();
+										}
+									}}
+								></input>
+							</div>
+							<div>
+								<div className={styles.userInfo}>
+									<p>email: </p>
+									<p className={styles.userEmail}>{userAuth?.email}</p>
+								</div>
 							</div>
 						</div>
+
 						<div className={styles.formSubmit}>
-							<button className={styles.imgUploadSubmit} type="submit" disabled>
-								Save New Picture
+							<button
+								className={styles.imgUploadSubmit}
+								type="submit"
+								onClick={() => {}}
+								disabled={isImgUploadSubmitDisabled}
+								style={
+									isImgUploadSubmitDisabled
+										? {
+												pointerEvents: 'none',
+												backgroundColor: 'grey',
+										  }
+										: {}
+								}
+							>
+								Save
 							</button>
 						</div>
 					</form>
-				</div>
-				<div className={styles.settingsSection}>
-					<h2 className={styles.settingsTitle}>Password</h2>
-					<form className={styles.form + ' ' + styles.myForm} />
-					<div className={styles.formGroup}>
-						<div className={styles.inputGroup}>
-							<input
-								name="currentPassword"
-								placeholder="Old Password"
-								type="password"
-								className={styles.formControl}
-								autoComplete="Old Password"
-								value=""
-							/>
-							<span className={styles.focusInput}></span>
-						</div>
-					</div>
-					<div className={styles.formGroup}>
-						<label htmlFor="email" className={styles.label}>
-							Email
-						</label>
-						<input
-							type="email"
-							id="email"
-							className={styles.input}
-							placeholder="Enter your email"
-						/>
-					</div>
-
-					<div className={styles.formGroup}>
-						<label htmlFor="password" className={styles.label}>
-							Password
-						</label>
-						<input
-							type="password"
-							id="password"
-							className={styles.input}
-							placeholder="Enter your password"
-						/>
-					</div>
-
-					<div className={styles.formGroup}>
-						<button type="submit" className={styles.button}>
-							Submit
-						</button>
-					</div>
 				</div>
 			</div>
 		</div>
