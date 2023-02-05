@@ -1,0 +1,75 @@
+@import 'Common.module.scss';
+
+.centeredBox {
+    .settingsContainer {
+        // credits: https://codepen.io/priyaa-sharma/pen/MWKgjyz
+        color: #86212c;
+        padding: 0 77px 0 77px;
+        overflow-x: hidden;
+        font-family: 'Fira Sans', sans-serif;
+        background-color: transparent;
+
+        .pageTitle {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+
+        .settingsSection {
+            width: 100%;
+            border-bottom: 2px solid #454545;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+
+            .profileForm {
+                visibility: invisible;
+
+                .imgUploadContainer {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    margin-bottom:1em;
+                    
+            
+                    .imgUpload {
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        height: 70px;
+                        width: 70px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        border: 2px solid #454545;
+                        transition: all 0.3s ease-in-out;
+                        cursor: pointer;
+                        margin-bottom: 0;
+                        margin-right: 11px;
+                        
+                        &:hover {
+                            border: 2px solid #e5dada;
+                        }
+
+                        input {
+                            display: none;
+                        }
+                    }
+
+                    .imgPreviewContainer {
+                        position: absolute;
+                        border-radius:0.25rem;
+                        overflow:hidden;
+                    }
+                }
+
+                .imgUploadSubmit {
+                    width: 300px;
+                    height: 2rem;
+                }
+            }
+
+        }
+    }
+}
