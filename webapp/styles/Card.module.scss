@@ -1,3 +1,5 @@
+@import 'Common.module.scss';
+
 .cardsList {
 	width: 90%;
 	height: 300px; // avoid random vertical space between rows of cards
@@ -9,7 +11,6 @@
 		width: 150px;
 		height: 150px;
 		border-radius: 40px;
-		box-shadow: 5px 5px 30px 7px #dce0dd, -5px -5px 30px 7px #dce0dd;
 		cursor: pointer;
 		transition: 0.4s;
 	
@@ -38,13 +39,9 @@
 	
 		&:hover {
 			transform: scale(0.9, 0.9);
-			box-shadow: 5px 5px 30px 15px #c5d3d0, -5px -5px 30px 15px #c5d3d0;
-	
-			.cardCheckbox {
-				visibility: visible;
-			}
+			box-shadow: $boxShadowFocusRed200;
 		}
-	
+
 		.cardCheckbox {
 			visibility: hidden;
 			position: relative;
