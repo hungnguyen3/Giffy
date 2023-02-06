@@ -28,6 +28,7 @@ export const CollectionSettingWindow = () => {
 		collectionId: number;
 		collectionName: string;
 		private: boolean;
+		// TODO: list of users here
 	}>({
 		collectionId: Number(collectionId),
 		collectionName: collection.collectionName,

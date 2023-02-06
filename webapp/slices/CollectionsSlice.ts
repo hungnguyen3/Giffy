@@ -11,6 +11,7 @@ export interface Collection {
 interface CollectionsState {
 	value: { [collectionId: number]: Collection };
 	selectedGiffyIds: number[];
+	// TODO: users shared with, visibility?
 	selectedCollectionToDelete: number | null;
 	isUploadGiffyWindowOpen: boolean;
 	isCreateNewCollectionWindowOpen: boolean;

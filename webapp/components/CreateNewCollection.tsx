@@ -13,6 +13,7 @@ import { isCreateCollectionDTO } from '../API/types/collections-types';
 interface CollectionInfo {
 	collectionName: string;
 	private: boolean;
+	// TODO: add list of shared users, auto clear(?) if private is true
 }
 
 const CreateNewCollection = () => {

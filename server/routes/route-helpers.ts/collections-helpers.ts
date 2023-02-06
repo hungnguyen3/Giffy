@@ -7,7 +7,7 @@ import {
 	UpdateCollectionByIdDTO,
 } from '../types/collections-types';
 import { ErrorDTO } from '../types/errors-types';
-
+//TODO: create implementation for adding users router here
 export const createCollection = async (
 	req: express.Request,
 	res: express.Response

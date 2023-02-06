@@ -13,5 +13,6 @@ router.delete('/deleteCollectionById/:collectionId', deleteCollectionById);
 router.get('/getCollectionById/:collectionId', getCollectionById);
 router.put('/updateCollectionById/:collectionId', updateCollectionById);
 router.get('/getCollectionsByUserId/:userId', getCollectionsByUserId);
+//TODO: add put router for adding users
 
 module.exports = router;
