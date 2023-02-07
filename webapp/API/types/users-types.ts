@@ -13,6 +13,10 @@ export interface GetUserByFirebaseAuthIdDTO {
 	data: UserDTO;
 }
 
+export interface UpdateUserByIdDTO {
+	data: UserDTO;
+}
+
 // ----- type guards -----
 export function isUserDTO(obj: any): obj is UserDTO {
 	return (

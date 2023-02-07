@@ -69,7 +69,7 @@
                         &:hover {
                             border: 2px solid #e5dada;
                             box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
-                            17px 3px 17px 17px $blue300;;
+                            17px 3px 17px 17px $blue300;
                         }
 
                         input {
@@ -91,18 +91,22 @@
                                 position: absolute;
                                 left: 0;
                                 top: 50%;
+                                min-width:  110px;
+                                min-height: 110px;
+                                max-width:  110px;
+                                max-height: 110px;
                                 transform: translateY(-50%);
 
                                 border: solid;
-                                border-width: 7px;
+                                border-width: 25px;
                                 background-image: 
-                                repeating-linear-gradient(0deg, $green100, $green100 10px, transparent 10px, transparent 20px), // left
+                                repeating-linear-gradient(0deg, $green100, $green100 100px, transparent 10px, transparent 20px), // left
                                 repeating-linear-gradient(90deg, $green100, $green100 10px, transparent 10px, transparent 20px), // top
                                 repeating-linear-gradient(180deg, $green100, $green100 10px, transparent 10px, transparent 20px), // right
                                 repeating-linear-gradient(270deg, $green100, $green100 10px, transparent 10px, transparent 20px); // bottom
                                 
                                 border-image: 
-                                repeating-linear-gradient(0deg, $green100, $green100 10px, transparent 10px, transparent 20px);
+                                repeating-linear-gradient(0deg, $red200, $red200 37px, transparent 10px, transparent 20px);
                             
                                 
                                 width: auto;
@@ -118,7 +122,6 @@
                                     transition: background-color .2s ease-in-out;
                                     border-radius: 50%;
                                     margin-bottom: 0;
-
                                     span {
                                         visibility: visible;
                                     }

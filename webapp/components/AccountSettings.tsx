@@ -1,23 +1,112 @@
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useState } from 'react';
-import { useAppSelector } from '../hooks';
+import { ErrorDTO } from '../API/types/errors-types';
+import { isUserDTO, UpdateUserByIdDTO } from '../API/types/users-types';
+import { updateUser } from '../API/userHooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { populateUser } from '../slices/UserSlice';
 import { RootState } from '../store';
 import styles from '../styles/AccountSettings.module.scss';
+import { storage } from './Firebase/FirebaseInit';
 
 const AccountSettings = () => {
+	const dispatch = useAppDispatch();
+	const user = useAppSelector((state: RootState) => state.user?.value);
 	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
-	const [prevewImage, setPrevewImage] = useState<string>(
-		userAuth?.photoURL as string
-	);
-	const [userName, setUserName] = useState<string>(
-		userAuth?.displayName as string
-	);
-	const [isImgUploadSubmitDisabled, setIsImgUploadSubmitDisabled] =
+	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [profileImage, setProfileImage] = useState<File | null>(null);
+	const [prevewImageUrl, setPrevewImageUrl] = useState<string | null>(null);
+	const [userName, setUserName] = useState<string>(user?.userName as string);
+	const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
 		useState<boolean>(true);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 	const handleSubmit = () => {
 		console.log('handle this');
 	};
+
+	const handleImageChange = (file: File) => {
+		if (!file) return;
+
+		setProfileImage(file);
+		setIsSaveButtonDisabled(false);
+
+		const reader = new FileReader();
+		reader.onloadend = () => {
+			setPrevewImageUrl(reader.result as string);
+		};
+		reader.readAsDataURL(file!);
+	};
+
+	const handleSave = async () => {
+		if (isSaveButtonDisabled) return;
+
+		setIsSaving(true);
+
+		if (profileImage) {
+			// if profile picture is updated, update it along with name in firebase and database
+			try {
+				const imageFirebaseRef = `/userProfilePics/${userAuth?.email}`;
+				const profileImageStorageRef = ref(storage, imageFirebaseRef);
+				const snapshot = await uploadBytes(
+					profileImageStorageRef,
+					profileImage
+				);
+				const downloadURL = await getDownloadURL(snapshot.ref);
+
+				if (!downloadURL) {
+					alert('Failed to save image to firebase');
+				} else {
+					const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser({
+						userId: user?.userId as number,
+						userName: userName,
+						profileImgUrl: downloadURL,
+					});
+
+					if (!isUserDTO(updateUserRes)) {
+						alert('Something went wrong saving new profile picture!');
+					} else {
+						dispatch(
+							populateUser({
+								userId: updateUserRes.userId,
+								userName: updateUserRes.userName,
+								profileImgUrl: updateUserRes.profileImgUrl,
+							})
+						);
+						alert('Upload successfully');
+					}
+				}
+			} catch (error) {
+				alert('Upload unsuccessfully');
+			} finally {
+				setIsSaving(false);
+			}
+		} else {
+			if (userName != user?.userName) {
+				// if name is updated, update name in database
+				const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser({
+					userId: user?.userId as number,
+					userName: userName,
+					profileImgUrl: user?.profileImgUrl as string,
+				});
+
+				if (!isUserDTO(updateUserRes)) {
+					alert('Something went wrong updating username!');
+				} else {
+					dispatch(
+						populateUser({
+							userId: updateUserRes.userId,
+							userName: updateUserRes.userName,
+							profileImgUrl: updateUserRes.profileImgUrl,
+						})
+					);
+					alert('Upload successfully');
+				}
+			}
+			setIsSaving(false);
+		}
+	};
+
 	return (
 		<div className={styles.centeredBox}>
 			<div className={styles.settingsContainer}>
@@ -39,13 +128,19 @@ const AccountSettings = () => {
 										className={styles.imgUploadInput}
 										onChange={event => {
 											if (event.target.files) {
-												const file = event.target.files[0];
-												setSelectedFile(file);
-												setIsImgUploadSubmitDisabled(true);
+												handleImageChange(event.target.files?.[0]);
 											} else setSelectedFile(null);
 										}}
 									/>
-									<img src={prevewImage} className={styles.userProfileImg} />
+									<img
+										src={
+											prevewImageUrl === null
+												? user?.profileImgUrl
+												: prevewImageUrl
+										}
+										className={styles.userProfileImg}
+										alt={'Preview'}
+									/>
 									<span className={styles.changeImgText}>Change Image</span>
 								</div>
 							</label>
@@ -61,13 +156,13 @@ const AccountSettings = () => {
 									onChange={event => {
 										setUserName(event.target.value);
 										if (
-											event.target.value === userAuth?.displayName &&
+											event.target.value === user?.userName &&
 											selectedFile === null
 										) {
-											setIsImgUploadSubmitDisabled(true);
+											setIsSaveButtonDisabled(true);
 										} else {
 											setUserName(event.target.value);
-											setIsImgUploadSubmitDisabled(false);
+											setIsSaveButtonDisabled(false);
 										}
 									}}
 									onKeyDown={event => {
@@ -77,22 +172,16 @@ const AccountSettings = () => {
 									}}
 								></input>
 							</div>
-							<div>
-								<div className={styles.userInfo}>
-									<p>email: </p>
-									<p className={styles.userEmail}>{userAuth?.email}</p>
-								</div>
-							</div>
 						</div>
 
 						<div className={styles.formSubmit}>
 							<button
 								className={styles.imgUploadSubmit}
 								type="submit"
-								onClick={() => {}}
-								disabled={isImgUploadSubmitDisabled}
+								onClick={handleSave}
+								disabled={isSaveButtonDisabled}
 								style={
-									isImgUploadSubmitDisabled
+									isSaveButtonDisabled
 										? {
 												pointerEvents: 'none',
 												backgroundColor: 'grey',
