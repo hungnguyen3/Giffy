@@ -1,4 +1,4 @@
-@import "ColorTheme.module.scss";
+@import 'ColorTheme.module.scss';
 
 .header {
 	padding: 1px;
@@ -80,7 +80,6 @@
 
 		.dropdownContainer {
 			padding: 9px 0 0 0;
-			z-index: 2;
 			.userButton {
 				// margin-right: 1vw;
 				border: none;
