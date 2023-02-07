@@ -1,0 +1,66 @@
+@import 'Common.module.scss';
+
+.profileSettingForm {
+	margin-top: 20px;
+
+	.profileImgContainer {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 2px solid $grey400;
+		margin-left: auto;
+		padding-bottom: 2.5em;
+
+		.profileImgBox {
+			width: 150px;
+			height: 150px;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: 0.4s;
+			position: relative;
+
+			.profileImgUploadInput {
+				position: absolute;
+				cursor: pointer;
+				width: inherit;
+				height: inherit;
+				opacity: 0;
+			}
+
+			.profileImg {
+				width: inherit;
+				height: inherit;
+				border-radius: inherit;
+			}
+
+			.editIcon {
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				margin: 10px;
+				cursor: pointer;
+			}
+
+			&:hover {
+				opacity: 0.5;
+				transform: scale(0.9, 0.9);
+				box-shadow: $boxShadowFocusBlue100;
+			}
+		}
+	}
+
+	.userInfo {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-bottom: 2px solid $grey400;
+		padding-top: 2.5em;
+		padding-bottom: 2.5em;
+	}
+
+	.buttonContainer {
+		padding-top: 2.5em;
+		width: 100%;
+	}
+}

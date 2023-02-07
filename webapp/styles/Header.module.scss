@@ -1,4 +1,4 @@
-@import "ColorTheme.module.scss";
+@import 'ColorTheme.module.scss';
 
 .header {
 	padding: 1px;
@@ -28,12 +28,39 @@
 		.collectionSettingBtn {
 			background-color: $green100;
 			color: white;
-			font-size: 16px;
-			border: none;
 			cursor: pointer;
 
-			&:hover &:focus {
-				background-color: #3e8e41;
+			position: relative;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			box-shadow: $boxShadow100;
+			margin-left: -17px;
+
+			&:after {
+				content: '';
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				width: 2px;
+				height: 2px;
+				margin-left: -1px;
+				margin-top: -1px;
+				background-color: white;
+				border-radius: 50%;
+				box-shadow: $boxShadowFocusGrey50;
+			}
+
+			&:hover {
+				background: $green200;
+				color: white;
+				transition: all 0.2s ease;
+				cursor: pointer;
+			}
+
+			&:focus {
+				outline: none;
+				box-shadow: $boxShadowFocusGreen300;
 			}
 		}
 	}
@@ -53,7 +80,6 @@
 
 		.dropdownContainer {
 			padding: 9px 0 0 0;
-
 			.userButton {
 				// margin-right: 1vw;
 				border: none;
@@ -83,12 +109,10 @@
 				border: 1px solid rgba(0, 0, 0, 0.04);
 				box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14);
 				background-color: white;
-
 				ul {
 					list-style: none;
 					padding: 0;
 					margin: 0;
-
 					li {
 						// height: 35px;
 						padding: 0px 0px;
@@ -104,6 +128,7 @@
 			margin-right: 2em;
 			padding: 0px 0 0px 7px;
 			font-size: small;
+
 			.userMenuText {
 				white-space: nowrap;
 				max-width: 100px;

@@ -40,7 +40,6 @@ export function isGiffyDTO(obj: any): obj is GiffyDTO {
 export function isGetGiffiesByCollectionIdDTO(
 	obj: any
 ): obj is GetGiffiesByCollectionIdDTO {
-	console.log(obj.data);
 	return (
 		obj &&
 		obj.hasOwnProperty('data') &&

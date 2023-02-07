@@ -3,6 +3,7 @@ import { ErrorDTO } from '../types/errors-types';
 import {
 	CreateUserDTO,
 	GetUserByFirebaseAuthIdDTO,
+	UpdateUserByIdDTO,
 } from '../types/users-types';
 
 export const createUser = async (req: any, res: any) => {
@@ -147,17 +148,18 @@ export const updateUserById = async (req: any, res: any) => {
 			`
         UPDATE users
         SET "userName" = COALESCE($1, "userName"), "profileImgUrl"= COALESCE($2, "profileImgUrl")
-        WHERE "userId" = $3;
-      `,
+        WHERE "userId" = $3 
+							RETURNING *;`,
+
 			[req.body.userName, req.body.profileImgUrl, req.params.userId]
 		);
 		if (updateUserRes.rowCount <= 0)
 			return res.status(500).send({ error: 'There is no such user' });
 
 		if (updateUserRes.rowCount === 1)
-			return res
-				.status(200)
-				.send('you have successfully update a user uid: ' + req.params.userId);
+			return res.send({
+				data: updateUserRes.rows[0],
+			} as UpdateUserByIdDTO);
 
 		if (updateUserRes.rowCount > 1)
 			return res
