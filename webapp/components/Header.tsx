@@ -55,6 +55,7 @@ const Header = () => {
 					</div>
 					<div
 						className={styles.collectionSettingBtn}
+						tabIndex={0}
 						onClick={() => dispatch(openCollectionSettingWindow())}
 					></div>
 				</div>

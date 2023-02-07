@@ -99,14 +99,15 @@
 
                                 border: solid;
                                 border-width: 25px;
+                                color: $green300;
                                 background-image: 
                                 repeating-linear-gradient(0deg, $green100, $green100 100px, transparent 10px, transparent 20px), // left
                                 repeating-linear-gradient(90deg, $green100, $green100 10px, transparent 10px, transparent 20px), // top
                                 repeating-linear-gradient(180deg, $green100, $green100 10px, transparent 10px, transparent 20px), // right
                                 repeating-linear-gradient(270deg, $green100, $green100 10px, transparent 10px, transparent 20px); // bottom
                                 
-                                border-image: 
-                                repeating-linear-gradient(0deg, $red200, $red200 37px, transparent 10px, transparent 20px);
+                                // border-image: 
+                                // repeating-linear-gradient(0deg, $red200, $red200 37px, transparent 10px, transparent 20px);
                             
                                 
                                 width: auto;

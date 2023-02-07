@@ -29,9 +29,6 @@
 			background-color: $green100;
 			color: white;
 			cursor: pointer;
-			&:hover &:focus {
-				background-color: #3e8e41;
-			}
 
 			position: relative;
 			width: 50px;
@@ -51,7 +48,7 @@
 				margin-top: -1px;
 				background-color: white;
 				border-radius: 50%;
-				box-shadow: 0 0 0 2px white, 0 11px 0 2px white, 0 -11px 0 2px white;
+				box-shadow: $boxShadowFocusGrey50;
 			}
 
 			&:hover {
@@ -60,9 +57,10 @@
 				transition: all 0.2s ease;
 				cursor: pointer;
 			}
+
 			&:focus {
 				outline: none;
-				box-shadow: $boxShadowFocusGreen200;
+				box-shadow: $boxShadowFocusGreen300;
 			}
 		}
 	}

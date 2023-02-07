@@ -3,6 +3,7 @@ import { ErrorDTO } from '../types/errors-types';
 import {
 	CreateUserDTO,
 	GetUserByFirebaseAuthIdDTO,
+	UpdateUserByIdDTO,
 } from '../types/users-types';
 
 export const createUser = async (req: any, res: any) => {
@@ -158,7 +159,7 @@ export const updateUserById = async (req: any, res: any) => {
 		if (updateUserRes.rowCount === 1)
 			return res.send({
 				data: updateUserRes.rows[0],
-			} as GetUserByFirebaseAuthIdDTO);
+			} as UpdateUserByIdDTO);
 
 		if (updateUserRes.rowCount > 1)
 			return res

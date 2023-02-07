@@ -41,3 +41,7 @@ export function isGetUserByFirebaseAuthIdDTO(
 ): obj is GetUserByFirebaseAuthIdDTO {
 	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
 }
+
+export function isUpdateUserByIdDTO(obj: any): obj is UpdateUserByIdDTO {
+	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
+}

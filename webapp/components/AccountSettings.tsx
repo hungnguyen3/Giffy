@@ -1,7 +1,11 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useState } from 'react';
 import { ErrorDTO } from '../API/types/errors-types';
-import { isUserDTO, UpdateUserByIdDTO } from '../API/types/users-types';
+import {
+	isUpdateUserByIdDTO,
+	isUserDTO,
+	UpdateUserByIdDTO,
+} from '../API/types/users-types';
 import { updateUser } from '../API/userHooks';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { populateUser } from '../slices/UserSlice';
@@ -13,17 +17,12 @@ const AccountSettings = () => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector((state: RootState) => state.user?.value);
 	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [profileImage, setProfileImage] = useState<File | null>(null);
 	const [prevewImageUrl, setPrevewImageUrl] = useState<string | null>(null);
 	const [userName, setUserName] = useState<string>(user?.userName as string);
 	const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
 		useState<boolean>(true);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-	const handleSubmit = () => {
-		console.log('handle this');
-	};
 
 	const handleImageChange = (file: File) => {
 		if (!file) return;
@@ -40,70 +39,52 @@ const AccountSettings = () => {
 
 	const handleSave = async () => {
 		if (isSaveButtonDisabled) return;
+		if (!profileImage && userName === user?.userName) return; // return if no change
 
-		setIsSaving(true);
+		const updateUserData = {
+			userId: user?.userId as number,
+			userName: userName,
+			profileImgUrl: user?.profileImgUrl as string,
+		};
 
 		if (profileImage) {
-			// if profile picture is updated, update it along with name in firebase and database
+			// update image if a file exist, update profileImgUrl
 			try {
 				const imageFirebaseRef = `/userProfilePics/${userAuth?.email}`;
-				const profileImageStorageRef = ref(storage, imageFirebaseRef);
 				const snapshot = await uploadBytes(
-					profileImageStorageRef,
+					ref(storage, imageFirebaseRef),
 					profileImage
 				);
+
 				const downloadURL = await getDownloadURL(snapshot.ref);
 
 				if (!downloadURL) {
 					alert('Failed to save image to firebase');
 				} else {
-					const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser({
-						userId: user?.userId as number,
-						userName: userName,
-						profileImgUrl: downloadURL,
-					});
-
-					if (!isUserDTO(updateUserRes)) {
-						alert('Something went wrong saving new profile picture!');
-					} else {
-						dispatch(
-							populateUser({
-								userId: updateUserRes.userId,
-								userName: updateUserRes.userName,
-								profileImgUrl: updateUserRes.profileImgUrl,
-							})
-						);
-						alert('Upload successfully');
-					}
+					updateUserData.profileImgUrl = downloadURL;
 				}
 			} catch (error) {
 				alert('Upload unsuccessfully');
-			} finally {
-				setIsSaving(false);
+				return;
 			}
-		} else {
-			if (userName != user?.userName) {
-				// if name is updated, update name in database
-				const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser({
-					userId: user?.userId as number,
-					userName: userName,
-					profileImgUrl: user?.profileImgUrl as string,
-				});
+		}
 
-				if (!isUserDTO(updateUserRes)) {
-					alert('Something went wrong updating username!');
-				} else {
-					dispatch(
-						populateUser({
-							userId: updateUserRes.userId,
-							userName: updateUserRes.userName,
-							profileImgUrl: updateUserRes.profileImgUrl,
-						})
-					);
-					alert('Upload successfully');
-				}
-			}
-			setIsSaving(false);
+		// API call to backend
+		const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser(
+			updateUserData
+		);
+
+		// update user at the frontend
+		if (!isUpdateUserByIdDTO(updateUserRes)) {
+			alert('Something went wrong updating profile data!');
+		} else {
+			dispatch(
+				populateUser({
+					userId: updateUserRes.data.userId,
+					userName: updateUserRes.data.userName,
+					profileImgUrl: updateUserRes.data.profileImgUrl,
+				})
+			);
 		}
 	};
 
@@ -163,11 +144,6 @@ const AccountSettings = () => {
 										} else {
 											setUserName(event.target.value);
 											setIsSaveButtonDisabled(false);
-										}
-									}}
-									onKeyDown={event => {
-										if (event.key === 'Enter') {
-											handleSubmit();
 										}
 									}}
 								></input>
