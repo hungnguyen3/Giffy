@@ -38,18 +38,8 @@ const AccountSettings = () => {
 		reader.readAsDataURL(file!);
 	};
 
-	const handleSave = async () => {
-		if (isSaveButtonDisabled) return;
-		if (!profileImage && userName === user?.userName) return; // return if no change
-
-		const updateUserData = {
-			userId: user?.userId as number,
-			userName: userName,
-			profileImgUrl: user?.profileImgUrl as string,
-		};
-
+	const uploadImage = async (profileImage: File) => {
 		if (profileImage) {
-			// update image if a file exist, update profileImgUrl
 			try {
 				const imageFirebaseRef = `/userProfilePics/${userAuth?.email}`;
 				const snapshot = await uploadBytes(
@@ -62,18 +52,30 @@ const AccountSettings = () => {
 				if (!downloadURL) {
 					alert('Failed to save image to firebase');
 				} else {
-					updateUserData.profileImgUrl = downloadURL;
+					return downloadURL;
 				}
 			} catch (error) {
 				alert('Upload unsuccessfully');
-				return;
+				return null;
 			}
 		}
 
+		return null;
+	};
+
+	const handleSave = async () => {
+		if (isSaveButtonDisabled) return;
+		if (!profileImage && userName === user?.userName) return; // return if no change
+
+		// upload image to firebase
+		const imgURL = await uploadImage(profileImage as File);
+
 		// API call to backend
-		const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser(
-			updateUserData
-		);
+		const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser({
+			userId: user?.userId as number,
+			userName: userName,
+			profileImgUrl: imgURL ? imgURL : (user?.profileImgUrl as string),
+		});
 
 		// update user at the frontend
 		if (!isUpdateUserByIdDTO(updateUserRes)) {
