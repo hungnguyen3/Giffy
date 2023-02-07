@@ -12,3 +12,7 @@ export interface CreateUserDTO {
 export interface GetUserByFirebaseAuthIdDTO {
 	data: UserDTO;
 }
+
+export interface AddUsersToCollectionsByUserIdDTO {
+	data: UserDTO[];
+}

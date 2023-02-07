@@ -49,6 +49,7 @@ const CreateNewCollection = () => {
 							collectionName: collection.collectionName,
 							private: collection.private,
 							giffies: [],
+							users: [],
 						})
 					);
 					dispatch(closeCreateNewCollectionWindow());

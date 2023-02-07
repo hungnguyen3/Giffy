@@ -1,11 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { User } from 'firebase/auth';
 import { GiffyDTO } from '../API/types/giffies-types';
+import { UserDTO } from '../API/types/users-types';
+import { userSlice } from './UserSlice';
 
 export interface Collection {
 	collectionId: number;
 	collectionName: string;
 	private: boolean;
 	giffies: GiffyDTO[];
+	users: { [userId: number]: UserAccess };
+}
+
+export interface UserAccess {
+	collectionId: number;
+	user: UserDTO;
+	permission: string;
 }
 
 interface CollectionsState {
@@ -92,6 +102,17 @@ export const collectionsSlice = createSlice({
 			}
 			state.value = tempValue;
 		},
+		//TODO: implement this
+		addUsersToACollection: (
+			state,
+			action: {
+				payload: UserAccess;
+			}
+		) => {
+			state.value[action.payload.collectionId].users[
+				action.payload.user.userId
+			] = action.payload;
+		},
 		removeGiffyFromACollection: (
 			state,
 			action: {
@@ -174,6 +195,7 @@ export const {
 	openCreateNewCollectionWindow,
 	closeCreateNewCollectionWindow,
 	addGiffyToACollection,
+	addUsersToACollection,
 	removeGiffyFromACollection,
 	addNewCollection,
 	removeCollection,

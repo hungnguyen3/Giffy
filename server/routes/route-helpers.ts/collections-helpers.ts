@@ -256,3 +256,42 @@ export const getCollectionsByUserId = async (
 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);
 	}
 };
+
+//TODO: complete implementation
+// export const addUsersToCollectionsByUserId = async (
+// 	req: express.Request,
+// 	res: express.Response
+// ) => {
+// 	try {
+// 		const userId = parseInt(req.params.userId);
+
+// 		if (isNaN(userId)) {
+// 			return res.status(400).send({
+// 				error: 'userId must be a valid integer',
+// 			} as ErrorDTO);
+// 		}
+
+// 		let getCollectionsRes = await client.query(
+// 			`
+// 							SELECT collections.*
+// 							FROM collection_user_relationships as cur
+// 							INNER JOIN collections ON cur."collectionId" = collections."collectionId"
+// 							WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
+// 					`,
+// 			[userId]
+// 		);
+
+// 		if (getCollectionsRes.rowCount === 0) {
+// 			return res.status(404).send({
+// 				error: 'no collections found for that userId',
+// 			} as ErrorDTO);
+// 		}
+
+// 		res.status(200).send({
+// 			data: getCollectionsRes.rows,
+// 		} as GetCollectionsByUserIdDTO);
+// 	} catch (error) {
+// 		console.log(error);
+// 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);
+// 	}
+// };
