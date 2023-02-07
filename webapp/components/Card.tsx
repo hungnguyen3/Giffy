@@ -50,8 +50,7 @@ const Card = (props: CardProps) => {
 				isChecked
 					? {
 							transform: 'scale(0.85, 0.85)',
-							boxShadow:
-								'-7px -7px 7px rgba(255, 255, 255, 0.5), 7px 7px 7px rgba(70, 70, 70, 0.77), 0px 0px 0px 7px #f32633',
+							boxShadow: '0px 0px 0px 5px RoyalBlue',
 					  }
 					: {}
 			}

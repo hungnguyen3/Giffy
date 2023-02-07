@@ -1,195 +1,66 @@
 @import 'Common.module.scss';
 
-.centeredBox {
-    .settingsContainer {
-        // credits: https://codepen.io/priyaa-sharma/pen/MWKgjyz
-        color: $red150;
-        padding: 0 77px 0 77px;
-        overflow-x: hidden;
-        font-family: 'Fira Sans', sans-serif;
-        background-color: transparent;
+.profileSettingForm {
+	margin-top: 20px;
 
-        .pageTitle {
-            font-size: 36px;
-            font-weight: bold;
-            color: $grey400;
-            text-align: center;
-        }
+	.profileImgContainer {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 2px solid $grey400;
+		margin-left: auto;
+		padding-bottom: 2.5em;
 
-        .settingsSection {
-            width: 100%;
-            border-bottom: 2px solid $grey400;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
+		.profileImgBox {
+			width: 150px;
+			height: 150px;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: 0.4s;
+			position: relative;
 
-            .userInfo {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin: 0 11px 11px;
-                p {
-                    margin: 0;
-                }
-                .username {
-                    color: $red100;
-                }
-                .userEmail {
-                    color: $grey100;
-                }
-            }
-            .profileForm {
-                visibility: invisible;
+			.profileImgUploadInput {
+				position: absolute;
+				cursor: pointer;
+				width: inherit;
+				height: inherit;
+				opacity: 0;
+			}
 
-                .imgUploadContainer {
-                    width: 100%;
-                    display: flex;
-                    align-items: center;
-                    margin: 3em;
-                    border-bottom: 2px solid $grey400;
-                    margin-left: auto;
-                    padding-bottom: 35px;
-            
-                    .imgUpload {
-                        background-position: center;
-                        background-repeat: no-repeat;
-                        background-size: cover;
-                        height: 70px;
-                        width: 70px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 50%;
-                        border: 2px solid #454545;
-                        transition: all 0.3s ease-in-out;
-                        cursor: pointer;
-                        margin-top: -37px;
-                        margin-bottom: 17px;
-                        margin-left: 11px;
+			.profileImg {
+				width: inherit;
+				height: inherit;
+				border-radius: inherit;
+			}
 
-                        &:hover {
-                            border: 2px solid #e5dada;
-                            box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25),
-                            17px 3px 17px 17px $blue300;
-                        }
+			.editIcon {
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				margin: 10px;
+				cursor: pointer;
+			}
 
-                        input {
-                            display: none;
-                        }
+			&:hover {
+				opacity: 0.5;
+				transform: scale(0.9, 0.9);
+				box-shadow: $boxShadowFocusBlue100;
+			}
+		}
+	}
 
-                        .imgUploadBox {
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                            position: relative;
-                            margin-right: 25px;
-                            width: 100%;
-                            height: 100%;
-                            border-radius: 50%;
-                            background-color: #454545;
+	.userInfo {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-bottom: 2px solid $grey400;
+		padding-top: 2.5em;
+		padding-bottom: 2.5em;
+	}
 
-                            .userProfileImg {
-                                position: absolute;
-                                left: -17px;
-                                top: 50%;
-                                min-width:  130px;
-                                min-height: 130px;
-                                max-width:  130px;
-                                max-height: 130px;
-                                transform: translateY(-50%);
-
-                                border: solid;
-                                border-width: 5px;
-                                padding: 1.5px;
-                                color: $red150;
-                                
-                                width: auto;
-                                height: auto;
-                                border-radius: 50%;
-                                overflow: hidden;          
-                                pointer-events: none;
-    
-                                &:hover {
-                                    background-color: rgba(0,0,0,.8);
-                                    z-index: 10000;
-                                    color: white;
-                                    transition: background-color .2s ease-in-out;
-                                    border-radius: 50%;
-                                    margin-bottom: 0;
-                                    span {
-                                        visibility: visible;
-                                    }
-                                }
-                            }
-                            .changeImgText {
-                                margin-right: 7px;
-                                margin-left: 30px;
-                                margin-bottom: 7px;
-                                padding: .2em;
-                                height: 2em;
-                                
-                                &:hover {
-                                    z-index: 111;
-                                    visibility: visible;
-                                    font-weight: 700;
-                                    font-size: 41px;
-                                    color: $red200;
-                                    margin-left: -25px;
-                                    margin-bottom: 17px;
-                                }
-                            }
-                        }
-                    }
-
-                    .imgPreviewContainer {
-                        position: absolute;
-                        border-radius:0.25rem;
-                        overflow:hidden;
-                    }
-                }
-
-                .formSubmit {
-                    .imgUploadSubmit {
-                        // width: auto;
-                        width: 70%;
-                        height: 3em;
-                        margin-left: auto;
-                        margin-right: auto;
-                        margin-bottom: 7px;
-                        
-                        font-size: large;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-    
-                        color: white;
-                        background-color: $green100;
-                        border: none;
-                        border-radius: 17px;
-                        padding: 10px;
-                        transition: all 0.3s ease;
-                        outline: none;
-                        font-weight: 700;
-    
-                        &:hover {
-                            box-shadow: $boxShadowHover;
-                            background: $green200;
-                            color: white;
-                            transition: all 0.2s ease;
-                            cursor: pointer;
-                        }
-                        &:active {
-                            border: 0;
-                            transition: all 0.2s ease;
-                        }
-                        &:focus {
-                            outline: none;
-                            box-shadow: $boxShadowFocusGreen300;
-                        }
-                        box-shadow: $boxShadow100;
-                    }
-                }
-                
-            }
-        }
-    }
+	.buttonContainer {
+		padding-top: 2.5em;
+		width: 100%;
+	}
 }

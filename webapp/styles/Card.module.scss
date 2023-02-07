@@ -13,20 +13,20 @@
 		border-radius: 40px;
 		cursor: pointer;
 		transition: 0.4s;
-	
+
 		.cardImage {
 			width: inherit;
 			height: inherit;
 			border-radius: 40px;
-	
+
 			img {
 				width: inherit;
 				height: inherit;
-				border-radius: 40px;
+				border-radius: inherit;
 				object-fit: cover;
 			}
 		}
-	
+
 		.cardTitle {
 			text-align: center;
 			border-radius: 0px 0px 40px 40px;
@@ -36,10 +36,10 @@
 			margin-top: -20px;
 			height: 40px;
 		}
-	
+
 		&:hover {
 			transform: scale(0.9, 0.9);
-			box-shadow: $boxShadowFocusRed200;
+			box-shadow: $boxShadowFocusBlue100;
 		}
 
 		.cardCheckbox {
@@ -48,7 +48,7 @@
 			left: 0px;
 			top: -205px;
 			z-index: 1;
-	
+
 			:hover {
 				cursor: pointer;
 			}
