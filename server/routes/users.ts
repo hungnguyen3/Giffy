@@ -5,7 +5,7 @@ import {
 	getUserById,
 	getUserByFirebaseAuthId,
 	updateUserById,
-} from './route-helpers.ts/users-helpers';
+} from './route-helpers/users-helpers';
 const router = express.Router();
 
 router.post('/createUser', createUser);

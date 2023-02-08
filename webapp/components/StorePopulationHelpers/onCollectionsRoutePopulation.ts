@@ -94,6 +94,18 @@ export const onCollectionsRoutePopulation = (
 												collectionName: collection.collectionName,
 												private: collection.private,
 												giffies: giffies,
+												users: {
+													1: {
+														collectionId: 1,
+														user: {
+															userId: 1,
+															userName: '',
+															profileImgUrl: '',
+															firebaseAuthId: '',
+														},
+														permission: 'admin',
+													},
+												},
 											},
 										];
 										dispatch(populateCollections(toStoreCollections));

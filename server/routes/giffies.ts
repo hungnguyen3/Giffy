@@ -5,7 +5,7 @@ import {
 	getGiffyById,
 	updateGiffyById,
 	getGiffiesByCollectionId,
-} from './route-helpers.ts/giffies-helpers';
+} from './route-helpers/giffies-helpers';
 const router = express.Router();
 
 router.post('/createGiffy', createGiffy);

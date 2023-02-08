@@ -5,6 +5,7 @@ import { initTables } from '../db/initTable';
 const userRoute = require('../routes/users');
 const collectionRoute = require('../routes/collections');
 const giffyRoute = require('../routes/giffies');
+const collectionUserRelationshipRoute = require('../routes/collection-user-relationships');
 import cors from 'cors';
 require('dotenv').config();
 
@@ -61,7 +62,7 @@ export const client = new Client({
 	app.use('/users', userRoute);
 	app.use('/collections', collectionRoute);
 	app.use('/giffies', giffyRoute);
-	// app.use('/collection_user_relationships', userRoute);
+	app.use('/collection-user-relationships', collectionUserRelationshipRoute);
 
 	app.listen(4000, () => {
 		console.log('server running on port 4000');
