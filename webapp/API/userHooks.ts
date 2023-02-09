@@ -12,7 +12,6 @@ export async function getUserByFirebaseAuthId(
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserByFirebaseAuthId/${firebaseAuthId}`,
 			{
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
@@ -38,7 +37,6 @@ export async function createUser(data: {
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/createUser`,
 			{
 				method: 'POST',
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
@@ -64,7 +62,6 @@ export async function updateUser(data: {
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/updateUserById/${data.userId}`,
 			{
 				method: 'PUT',
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
