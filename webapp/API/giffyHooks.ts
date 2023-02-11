@@ -12,7 +12,6 @@ export async function getGiffiesByCollectionId(
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/getGiffiesByCollectionId/${collectionId}`,
 			{
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
@@ -39,7 +38,6 @@ export async function createGiffy(data: {
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/createGiffy`,
 			{
 				method: 'POST',
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
@@ -63,7 +61,6 @@ export async function deleteGiffiesByIds(data: {
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/deleteGiffiesByIds`,
 			{
 				method: 'DELETE',
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {

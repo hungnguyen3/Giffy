@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Layout from '../../components/Layout';
 import Card from '../../components/Card';
 import { useEffect, useState } from 'react';
-import { giffyDTO } from '../../API/DTO';
+import { GiffyDTO } from '../../API/types/giffies-types';
 import CardDistributor from '../../components/CardDistributor';
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -21,7 +21,7 @@ const Collection: NextPage = () => {
 	const dispatch = useAppDispatch();
 	const giffies = useAppSelector((state: RootState) => {
 		if (Number(collectionId) in state.collections.value) {
-			// return state.collections.value[Number(collectionId)].giffies;
+			return state.collections.value[Number(collectionId)].giffies;
 		}
 	});
 	const selectedGiffies = useAppSelector(
@@ -34,7 +34,7 @@ const Collection: NextPage = () => {
 
 			if (giffies) {
 				setCards(
-					giffies.map((giffy: giffyDTO) => {
+					giffies.map((giffy: GiffyDTO) => {
 						return (
 							<div key={giffy.giffyId}>
 								<Card

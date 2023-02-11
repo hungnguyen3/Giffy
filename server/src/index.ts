@@ -29,16 +29,22 @@ export const client = new Client({
 	app.set('trust proxy', 1);
 
 	// cors;
-	var whitelist;
+	var whitelist: string | string[];
 	if ((process.env.PROD as string) !== 'true') {
-		whitelist = 'http://localhost:3000';
+		whitelist = ['http://localhost:3000', process.env.CORS_ORIGIN!];
 	} else {
 		whitelist = process.env.CORS_ORIGIN!;
 	}
 
 	app.use(
 		cors({
-			origin: whitelist,
+			origin: function (origin, callback) {
+				if (whitelist.indexOf(origin!) !== -1) {
+					callback(null, true);
+				} else {
+					callback(new Error('Not allowed by CORS'));
+				}
+			},
 			credentials: true,
 			methods: ['GET', 'POST', 'DELETE', 'PUT'],
 		})
@@ -64,7 +70,7 @@ export const client = new Client({
 	app.use('/giffies', giffyRoute);
 	app.use('/collection-user-relationships', collectionUserRelationshipRoute);
 
-	app.listen(4000, () => {
-		console.log('server running on port 4000');
+	app.listen(process.env.PORT || 4000, () => {
+		console.log(`server running on port ${process.env.PORT || 4000}`);
 	});
 })();

@@ -14,6 +14,7 @@
 	width: 50%;
 
 	@mixin createBtn {
+		box-shadow: $boxShadow100;
 		width: 70%;
 		margin: 10px;
 		color: white;
@@ -21,12 +22,12 @@
 		border: none;
 		padding: 10px;
 		border-radius: 11px;
-		border-bottom: 4px solid $green300;
 		transition: all 0.2s ease;
 		outline: none;
 		text-transform: uppercase;
 		font-weight: 700;
 		&:hover {
+			box-shadow: $boxShadowHover;
 			background: $green200;
 			color: white;
 			transition: all 0.2s ease;
@@ -35,6 +36,10 @@
 		&:active {
 			border: 0;
 			transition: all 0.2s ease;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: $boxShadowFocusGreen300;
 		}
 	}
 
@@ -50,41 +55,49 @@
 		width: 70%;
 		margin: 10px;
 		color: white;
-		background: #ec5e68;
+		background: $red100;
 		border: none;
 		padding: 10px;
 		border-radius: 11px;
-		border-bottom: 4px solid #f32633;
+		border-bottom: 4px solid $red200;
 		transition: all 0.2s ease;
 		outline: none;
 		text-transform: uppercase;
 		font-weight: 700;
 		&:hover {
-			background: #f32633;
+			background: $red200;
 			color: white;
 			transition: all 0.2s ease;
 			cursor: pointer;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: $boxShadowFocusRed200;
 		}
 	}
 
 	.cancelButton {
 		width: 70%;
 		margin: 10px;
-		color: #2c3149;
-		background: #8389a4;
+		color: $grey300;
+		background: $grey100;
 		border: none;
 		padding: 10px;
 		border-radius: 11px;
-		border-bottom: 4px solid #70758c;
+		border-bottom: 4px solid $grey200;
 		transition: all 0.2s ease;
 		outline: none;
 		text-transform: uppercase;
 		font-weight: 700;
 		&:hover {
-			background: #70758c;
-			color: #2c3149;
+			background: $grey200;
+			color: $grey300;
 			transition: all 0.2s ease;
 			cursor: pointer;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: $boxShadowFocusGrey200;
 		}
 	}
 }

@@ -16,7 +16,6 @@ export async function createCollection(data: {
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/createCollection`,
 			{
 				method: 'POST',
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
@@ -40,7 +39,6 @@ export async function deleteCollectionsByCollectionId(
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/deleteCollectionById/${collectionId}`,
 			{
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
@@ -64,7 +62,6 @@ export async function getCollectionsByUserId(
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/getCollectionsByUserId/${userId}`,
 			{
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {
@@ -90,7 +87,6 @@ export async function updateCollectionById(data: {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/updateCollectionById/${data.collectionId}`,
 			{
-				mode: 'cors',
 				cache: 'no-cache',
 				credentials: 'same-origin',
 				headers: {

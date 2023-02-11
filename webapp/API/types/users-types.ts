@@ -13,6 +13,10 @@ export interface GetUserByFirebaseAuthIdDTO {
 	data: UserDTO;
 }
 
+export interface UpdateUserByIdDTO {
+	data: UserDTO;
+}
+
 // ----- type guards -----
 export function isUserDTO(obj: any): obj is UserDTO {
 	return (
@@ -35,5 +39,9 @@ export function isCreateUserDTO(obj: any): obj is CreateUserDTO {
 export function isGetUserByFirebaseAuthIdDTO(
 	obj: any
 ): obj is GetUserByFirebaseAuthIdDTO {
+	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
+}
+
+export function isUpdateUserByIdDTO(obj: any): obj is UpdateUserByIdDTO {
 	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
 }

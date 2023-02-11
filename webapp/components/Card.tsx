@@ -43,9 +43,20 @@ const Card = (props: CardProps) => {
 	};
 
 	return (
-		<div className={styles.card} onClick={onClickHandler}>
+		<div
+			className={styles.card}
+			onClick={onClickHandler}
+			style={
+				isChecked
+					? {
+							transform: 'scale(0.85, 0.85)',
+							boxShadow: '0px 0px 0px 5px RoyalBlue',
+					  }
+					: {}
+			}
+		>
 			<div className={styles.cardImage}>
-				<img src={props.img} alt="Avatar" />
+				<img src={props.img} alt="Avatar" draggable="false" />
 			</div>
 
 			<div className={styles.cardTitle}>
@@ -54,16 +65,7 @@ const Card = (props: CardProps) => {
 			</div>
 
 			<div className={styles.cardCheckbox}>
-				<input
-					type="checkbox"
-					checked={isChecked}
-					style={
-						isChecked
-							? { visibility: isChecked ? 'visible' : 'hidden' }
-							: undefined
-					}
-					onChange={onClickHandler}
-				/>
+				<input type="checkbox" checked={isChecked} onChange={onClickHandler} />
 			</div>
 		</div>
 	);
