@@ -4,11 +4,7 @@ import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import Link from 'next/link';
-import {
-	openCreateNewCollectionWindow,
-	openDeleteConfirmationWindow,
-	selectACollectionToDelete,
-} from '../slices/CollectionsSlice';
+import { openCreateNewCollectionWindow } from '../slices/CollectionsSlice';
 import { useRouter } from 'next/router';
 
 interface SidePanelProps {
@@ -20,12 +16,18 @@ const SidePanel = (props: SidePanelProps) => {
 	const dispatch = useAppDispatch();
 	const [width, setWidth] = useState(props.width);
 	const { collectionId } = router.query;
+	const path = router.pathname.split('/')[1];
+	const isOnDiscoveryPage = path == 'discovery';
 
 	const closePanel = () => {
 		setWidth('0%');
 	};
 	const collections = useAppSelector((state: RootState) =>
 		Object.values(state.collections.value)
+	);
+
+	const hasAnAccount = useAppSelector((state: RootState) =>
+		state.user.value ? true : false
 	);
 
 	const openPanel = () => {
@@ -48,29 +50,36 @@ const SidePanel = (props: SidePanelProps) => {
 			</button>
 
 			<div className={styles.sidePanelContent}>
-				<h1>Collections</h1>
-				{collections?.map(collection => {
-					return (
-						<a
-							style={
-								collection.collectionId === Number(collectionId)
-									? { backgroundColor: '#7da79d' }
-									: undefined
-							}
-							key={collection.collectionId}
-						>
-							<Link
+				<h1>{path.charAt(0).toUpperCase() + path.slice(1)}</h1>
+				<div className={styles.collectionsContainer}>
+					{collections?.map(collection => {
+						return (
+							<a
+								style={
+									collection.collectionId === Number(collectionId)
+										? { backgroundColor: '#7da79d' }
+										: undefined
+								}
 								key={collection.collectionId}
-								href={`/collections/${collection.collectionId}`}
 							>
-								{collection.collectionName}
-							</Link>
-						</a>
-					);
-				})}
+								<Link
+									key={collection.collectionId}
+									href={`/${path}/${collection.collectionId}`}
+								>
+									{collection.collectionName}
+								</Link>
+							</a>
+						);
+					})}
+				</div>
 				<div className={styles.buttonContainer}>
 					<button
 						className={styles.createBtn}
+						style={{
+							opacity: isOnDiscoveryPage ? 0 : 1,
+							cursor: isOnDiscoveryPage ? 'auto' : 'pointer',
+						}}
+						disabled={isOnDiscoveryPage ? true : false}
 						onClick={() => {
 							dispatch(openCreateNewCollectionWindow());
 						}}
@@ -78,6 +87,20 @@ const SidePanel = (props: SidePanelProps) => {
 						+
 					</button>
 				</div>
+				{!isOnDiscoveryPage && (
+					<div className={styles.buttonContainer}>
+						<button className={styles.goToDiscoveryBtn}>
+							<Link href="/discovery/0">Discovery Page</Link>
+						</button>
+					</div>
+				)}
+				{isOnDiscoveryPage && hasAnAccount && (
+					<div className={styles.buttonContainer}>
+						<button className={styles.goToDiscoveryBtn}>
+							<Link href="/collections/0">Your collections</Link>
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);

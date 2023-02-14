@@ -25,6 +25,8 @@ const Header = () => {
 		}
 	});
 	const userInfo = useAppSelector((state: RootState) => state.user.value);
+	const path = router.pathname.split('/')[1];
+	const isOnDiscoveryPage = path == 'discovery';
 
 	// Track events outside scope
 	const clickOutside = (event: TouchEvent | MouseEvent) => {
@@ -53,11 +55,13 @@ const Header = () => {
 					<div className={styles.mainTitle}>
 						<h1>{curCollectionName}</h1>
 					</div>
-					<div
-						className={styles.collectionSettingBtn}
-						tabIndex={0}
-						onClick={() => dispatch(openCollectionSettingWindow())}
-					></div>
+					{!isOnDiscoveryPage && (
+						<div
+							className={styles.collectionSettingBtn}
+							tabIndex={0}
+							onClick={() => dispatch(openCollectionSettingWindow())}
+						></div>
+					)}
 				</div>
 
 				<div
@@ -79,9 +83,20 @@ const Header = () => {
 						{isUserMenuOpen ? (
 							<div className={styles.dropdown}>
 								<ul>
-									<li onClick={logOut} className={styles.login}>
-										<DropdownItem icon={BiLogOut} text={'Log out'} />
-									</li>
+									{userInfo ? (
+										<li onClick={logOut} className={styles.login}>
+											<DropdownItem icon={BiLogOut} text={'Log out'} />
+										</li>
+									) : (
+										<li
+											onClick={() => {
+												router.push('/auth');
+											}}
+											className={styles.login}
+										>
+											<DropdownItem icon={BiLogIn} text={'Log in'} />
+										</li>
+									)}
 									<li
 										onClick={() => {
 											dispatch(openAccountSetting());

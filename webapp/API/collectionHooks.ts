@@ -2,6 +2,7 @@ import {
 	CreateCollectionDTO,
 	DeleteCollectionDTO,
 	GetCollectionsByUserIdDTO,
+	GetPublicCollectionsDTO,
 	UpdateCollectionByIdDTO,
 } from './types/collections-types';
 import { ErrorDTO } from './types/errors-types';
@@ -97,6 +98,32 @@ export async function updateCollectionById(data: {
 					collectionName: data.collectionName,
 					private: data.private,
 				}),
+			}
+		);
+
+		return response.json();
+	} catch (e) {
+		console.log(e);
+		return { error: 'unknown error' } as ErrorDTO;
+	}
+}
+
+export async function getPublicCollections(
+	limit?: number
+): Promise<GetPublicCollectionsDTO | ErrorDTO> {
+	try {
+		const queryString = limit
+			? new URLSearchParams({ limit: limit.toString() }).toString()
+			: '';
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/getPublicCollections?${queryString}`,
+			{
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'GET',
 			}
 		);
 

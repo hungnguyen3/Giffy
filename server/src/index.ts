@@ -28,17 +28,14 @@ export const client = new Client({
 	app.set('trust proxy', 1);
 
 	// cors;
-	var whitelist: string | string[];
-	if ((process.env.PROD as string) !== 'true') {
-		whitelist = ['http://localhost:3000', process.env.CORS_ORIGIN!];
-	} else {
-		whitelist = process.env.CORS_ORIGIN!;
-	}
+	var whitelist: string | string[] = [process.env.CORS_ORIGIN!];
 
 	app.use(
 		cors({
 			origin: function (origin, callback) {
-				if (whitelist.indexOf(origin!) !== -1) {
+				if ((process.env.PROD as string) !== 'true') {
+					callback(null, true); // allow requests from all origins in dev mode
+				} else if (whitelist.indexOf(origin!) !== -1) {
 					callback(null, true);
 				} else {
 					callback(new Error('Not allowed by CORS'));

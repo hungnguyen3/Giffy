@@ -5,7 +5,9 @@ import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
 	CollectionDTO,
 	GetCollectionsByUserIdDTO,
+	GetPublicCollectionsDTO,
 	isGetCollectionsByUserIdDTO,
+	isGetPublicCollectionsDTO,
 } from '../../API/types/collections-types';
 import {
 	GetGiffiesByCollectionIdDTO,
@@ -22,62 +24,25 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { ErrorDTO } from '../../API/types/errors-types';
-import { getCollectionsByUserId } from '../../API/collectionHooks';
-import { getGiffiesByCollectionId } from '../../API/giffyHooks';
 import {
-	GetUserByFirebaseAuthIdDTO,
-	isGetUserByFirebaseAuthIdDTO,
-} from '../../API/types/users-types';
+	getCollectionsByUserId,
+	getPublicCollections,
+} from '../../API/collectionHooks';
+import { getGiffiesByCollectionId } from '../../API/giffyHooks';
+import { populateUserInfo } from './onCollectionsRoutePopulation';
 
-interface onCollectionsRoutePopulationProps {
+interface onDiscoveryRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
 	router: NextRouter;
 	setLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
-// Function to populate user information
-export const populateUserInfo = (
-	dispatch: ThunkDispatch<any, any, any>,
-	userAuth: UserAuth
-) => {
-	return new Promise<{
-		userId: number;
-		userName: string;
-		profileImgUrl: string;
-	}>((resolve, reject) => {
-		getUserByFirebaseAuthId(userAuth.uid)
-			.then((response: ErrorDTO | GetUserByFirebaseAuthIdDTO) => {
-				if (!isGetUserByFirebaseAuthIdDTO(response)) {
-					return reject();
-				}
-
-				var user = response.data;
-				const userInfo = {
-					userId: user.userId,
-					userName: user.userName,
-					profileImgUrl: user.profileImgUrl,
-				};
-
-				if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName) {
-					dispatch(populateUser(userInfo));
-				}
-				return resolve(userInfo);
-			})
-			.catch(() => {
-				reject();
-			});
-	});
-};
-
 // Function to populate collections
-const populateCollectionsInfo = (
-	dispatch: ThunkDispatch<any, any, any>,
-	userId: number
-) => {
+const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise((resolve, reject) => {
-		getCollectionsByUserId(userId)
-			.then((response: GetCollectionsByUserIdDTO | ErrorDTO) => {
-				if (!isGetCollectionsByUserIdDTO(response)) {
+		getPublicCollections(10)
+			.then((response: GetPublicCollectionsDTO | ErrorDTO) => {
+				if (!isGetPublicCollectionsDTO(response)) {
 					return reject();
 				}
 
@@ -120,9 +85,8 @@ const populateCollectionsInfo = (
 	});
 };
 
-// Original function modified to call the new functions
-export const onCollectionsRoutePopulation = (
-	props: onCollectionsRoutePopulationProps
+export const onDiscoveryRoutePopulation = (
+	props: onDiscoveryRoutePopulationProps
 ) => {
 	const { dispatch, router, setLoggedIn } = props;
 
@@ -136,11 +100,8 @@ export const onCollectionsRoutePopulation = (
 			};
 
 			populateUserInfo(dispatch, userAuth)
-				.then(userInfo => {
-					if (!userInfo) {
-						return null;
-					}
-					return populateCollectionsInfo(dispatch, userInfo.userId);
+				.then(() => {
+					return populateCollectionsInfo(dispatch);
 				})
 				.then(firstCollectionId => {
 					if (
@@ -148,21 +109,18 @@ export const onCollectionsRoutePopulation = (
 						firstCollectionId !== undefined &&
 						!router.route.includes('discovery')
 					) {
-						router.push(`/collections/${firstCollectionId}`);
+						router.push(`/discovery/${firstCollectionId}`);
 					}
 				})
-				.catch(() => {
-					router.push('/auth');
-				});
+				.catch(() => {});
 
 			dispatch(logIn(userAuth));
 			setLoggedIn(true);
 		} else {
+			populateCollectionsInfo(dispatch);
 			dispatch(logOut());
 			dispatch(clearUser());
-			dispatch(clearCollections());
 			setLoggedIn(false);
-			router.push('/auth');
 		}
 	});
 };

@@ -16,17 +16,21 @@ import CreateNewCollection from './CreateNewCollection';
 import { DeleteConfirmationWindow } from './DeleteConfirmationWindow';
 import { onCollectionsRoutePopulation } from './StorePopulationHelpers/onCollectionsRoutePopulation';
 import { CollectionSettingWindow } from './CollectionSettingWindow';
+import { onDiscoveryRoutePopulation } from './StorePopulationHelpers/onDiscoveryRoutePopulation';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
 }
 
 const Layout = (props: LayoutProps) => {
-	const auth = getAuth(app);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const { collectionId } = router.query;
+	const path = router.pathname.split('/')[1];
+	const isOnDiscoveryPage = path == 'discovery';
+	const isOnCollectionsPage = path == 'collections';
+
 	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
 	);
@@ -50,11 +54,21 @@ const Layout = (props: LayoutProps) => {
 	);
 
 	useEffect(() => {
-		onCollectionsRoutePopulation({
-			dispatch: dispatch,
-			router: router,
-			setLoggedIn: setLoggedIn,
-		});
+		if (isOnDiscoveryPage) {
+			onCollectionsRoutePopulation({
+				dispatch: dispatch,
+				router: router,
+				setLoggedIn: setLoggedIn,
+			});
+		}
+
+		if (isOnCollectionsPage) {
+			onCollectionsRoutePopulation({
+				dispatch: dispatch,
+				router: router,
+				setLoggedIn: setLoggedIn,
+			});
+		}
 	}, [hasAnAccount]); // rerun the entire flow again after account creation
 
 	// handling collection deletion
@@ -65,14 +79,14 @@ const Layout = (props: LayoutProps) => {
 
 		if (
 			!collectionIds.includes(Number(collectionId)) &&
-			!router.route.includes('discovery')
+			(isOnCollectionsPage || isOnDiscoveryPage)
 		) {
 			const minId = collectionIds.length > 0 ? Math.min(...collectionIds) : 0;
-			router.push(`/collections/${minId}`);
+			router.push(`/${path}/${minId}`);
 		}
 	}, [collections.length]);
 
-	if (loggedIn && hasAnAccount)
+	if ((loggedIn && hasAnAccount) || isOnDiscoveryPage)
 		return (
 			<div className={layoutStyles.background}>
 				{/* if change the value 20%, change the width of flexView class too*/}

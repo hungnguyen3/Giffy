@@ -4,6 +4,7 @@ import {
 	CreateCollectionDTO,
 	DeleteCollectionDTO,
 	GetCollectionsByUserIdDTO,
+	GetPublicCollectionsDTO,
 	UpdateCollectionByIdDTO,
 } from '../types/collections-types';
 import { ErrorDTO } from '../types/errors-types';
@@ -156,7 +157,9 @@ export const getCollectionById = async (
 		);
 
 		if (getCollectionRes.rowCount === 0)
-			res.status(500).send({ error: 'There is no such collection' });
+			res
+				.status(500)
+				.send({ error: 'There is no such collection' } as ErrorDTO);
 
 		if (getCollectionRes.rowCount === 1)
 			res.status(200).send(getCollectionRes.rows[0]);
@@ -164,9 +167,9 @@ export const getCollectionById = async (
 		if (getCollectionRes.rowCount > 1)
 			res.status(500).send({
 				error: 'error occurred, more than one collection with the same id',
-			});
+			} as ErrorDTO);
 	} catch (err) {
-		res.status(500).send({ error: err });
+		res.status(500).send({ error: err } as ErrorDTO);
 	}
 };
 
@@ -196,7 +199,9 @@ export const updateCollectionById = async (
 		);
 
 		if (updateCollectionRes.rowCount === 0)
-			res.status(404).send({ error: 'There is no such collection' });
+			res
+				.status(404)
+				.send({ error: 'There is no such collection' } as ErrorDTO);
 
 		if (updateCollectionRes.rowCount === 1) {
 			res.status(200).send({
@@ -215,7 +220,7 @@ export const updateCollectionById = async (
 		}
 	} catch (err) {
 		console.log(err);
-		res.status(500).send({ error: err });
+		res.status(500).send({ error: err } as ErrorDTO);
 	}
 };
 
@@ -251,6 +256,43 @@ export const getCollectionsByUserId = async (
 		res.status(200).send({
 			data: getCollectionsRes.rows,
 		} as GetCollectionsByUserIdDTO);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);
+	}
+};
+
+export const getPublicCollections = async (
+	req: express.Request,
+	res: express.Response
+) => {
+	try {
+		const limit = parseInt(req.query.limit?.toString() || '10');
+		if (isNaN(limit)) {
+			return res.status(400).send({
+				error: 'limit must be a valid integer',
+			} as ErrorDTO);
+		}
+
+		let getCollectionsRes = await client.query(
+			`
+        SELECT *
+        FROM collections
+        WHERE "private" = false
+        LIMIT $1;
+      `,
+			[limit]
+		);
+
+		if (getCollectionsRes.rowCount === 0) {
+			return res.status(404).send({
+				error: 'no public collections found',
+			} as ErrorDTO);
+		}
+
+		res.status(200).send({
+			data: getCollectionsRes.rows,
+		} as GetPublicCollectionsDTO);
 	} catch (error) {
 		console.log(error);
 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);

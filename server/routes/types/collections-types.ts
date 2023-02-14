@@ -19,3 +19,7 @@ export interface UpdateCollectionByIdDTO {
 export interface GetCollectionsByUserIdDTO {
 	data: CollectionDTO[];
 }
+
+export interface GetPublicCollectionsDTO {
+	data: CollectionDTO[];
+}
