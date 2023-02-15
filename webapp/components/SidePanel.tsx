@@ -1,11 +1,12 @@
 import styles from '../styles/SidePanel.module.scss';
 import { useEffect, useState } from 'react';
-import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
+import { BiLeftArrow, BiRightArrow, BiTimer } from 'react-icons/bi';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
-import Link from 'next/link';
 import { openCreateNewCollectionWindow } from '../slices/CollectionsSlice';
 import { useRouter } from 'next/router';
+
+import Link from 'next/link';
 
 interface SidePanelProps {
 	width: string;
@@ -18,6 +19,10 @@ const SidePanel = (props: SidePanelProps) => {
 	const { collectionId } = router.query;
 	const path = router.pathname.split('/')[1];
 	const isOnDiscoveryPage = path == 'discovery';
+	const [
+		isDisabledToWaitForStoreToRepopulate,
+		setIsDisabledToWaitForStoreToRepopulate,
+	] = useState(true);
 
 	const closePanel = () => {
 		setWidth('0%');
@@ -33,6 +38,12 @@ const SidePanel = (props: SidePanelProps) => {
 	const openPanel = () => {
 		setWidth(props.width);
 	};
+
+	useEffect(() => {
+		setTimeout(() => {
+			setIsDisabledToWaitForStoreToRepopulate(false);
+		}, 1000);
+	}, []);
 
 	return (
 		<div className={styles.sidePanel} style={{ width: width }}>
@@ -89,15 +100,35 @@ const SidePanel = (props: SidePanelProps) => {
 				</div>
 				{!isOnDiscoveryPage && (
 					<div className={styles.buttonContainer}>
-						<button className={styles.goToDiscoveryBtn}>
-							<Link href="/discovery/0">Discovery Page</Link>
+						<button
+							className={styles.goToDiscoveryBtn}
+							disabled={isDisabledToWaitForStoreToRepopulate}
+							onClick={() => {
+								router.push('/discovery/0');
+							}}
+						>
+							{isDisabledToWaitForStoreToRepopulate ? (
+								<BiTimer size={32} />
+							) : (
+								<p>Discovery</p>
+							)}
 						</button>
 					</div>
 				)}
 				{isOnDiscoveryPage && hasAnAccount && (
 					<div className={styles.buttonContainer}>
-						<button className={styles.goToDiscoveryBtn}>
-							<Link href="/collections/0">Your collections</Link>
+						<button
+							className={styles.goToDiscoveryBtn}
+							disabled={isDisabledToWaitForStoreToRepopulate}
+							onClick={() => {
+								router.push('/collections/0');
+							}}
+						>
+							{isDisabledToWaitForStoreToRepopulate ? (
+								<BiTimer size={32} />
+							) : (
+								<p>Collections</p>
+							)}
 						</button>
 					</div>
 				)}

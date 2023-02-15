@@ -24,10 +24,7 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { ErrorDTO } from '../../API/types/errors-types';
-import {
-	getCollectionsByUserId,
-	getPublicCollections,
-} from '../../API/collectionHooks';
+import { getPublicCollections } from '../../API/collectionHooks';
 import { getGiffiesByCollectionId } from '../../API/giffyHooks';
 import { populateUserInfo } from './onCollectionsRoutePopulation';
 
@@ -90,6 +87,9 @@ export const onDiscoveryRoutePopulation = (
 ) => {
 	const { dispatch, router, setLoggedIn } = props;
 
+	// clear collections every time we change route
+	dispatch(clearCollections());
+
 	onAuthStateChanged(getAuth(app), user => {
 		if (user) {
 			const userAuth = {
@@ -112,7 +112,10 @@ export const onDiscoveryRoutePopulation = (
 						router.push(`/discovery/${firstCollectionId}`);
 					}
 				})
-				.catch(() => {});
+				.catch(() => {
+					// TODO: need better logic here
+					dispatch(clearCollections());
+				});
 
 			dispatch(logIn(userAuth));
 			setLoggedIn(true);

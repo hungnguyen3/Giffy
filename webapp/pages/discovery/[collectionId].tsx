@@ -46,7 +46,7 @@ const Collection: NextPage = () => {
 		return (
 			<Layout>
 				<div className={styles.centeredBox}>
-					<h1>Create a collection to get started</h1>
+					<h1>No public collections to discover at this time 👀</h1>
 				</div>
 			</Layout>
 		);
@@ -60,7 +60,7 @@ const Collection: NextPage = () => {
 				</div>
 			) : (
 				<div className={styles.centeredBox}>
-					<h1>No items yet</h1>
+					<h1>Empty collection 👀</h1>
 				</div>
 			)}
 		</Layout>

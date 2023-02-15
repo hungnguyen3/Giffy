@@ -26,19 +26,20 @@
 		}
 
 		.collectionSettingBtn {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			background-color: $green100;
 			color: white;
 			cursor: pointer;
-
 			position: relative;
-			width: 50px;
-			height: 50px;
+			width: 30px;
+			height: 30px;
 			border-radius: 50%;
 			box-shadow: $boxShadow100;
-			margin-left: -17px;
+			margin-left: -25px;
 
 			&:after {
-				content: '';
 				position: absolute;
 				left: 50%;
 				top: 50%;
@@ -81,7 +82,9 @@
 		.dropdownContainer {
 			padding: 9px 0 0 0;
 			.userButton {
-				// margin-right: 1vw;
+				display: flex;
+				justify-content: center;
+				align-items: center;
 				border: none;
 				width: 50px;
 				height: 50px;
@@ -93,9 +96,9 @@
 				font-size: 40px;
 
 				img {
-					width: 50px;
-					height: 50px;
-					border-radius: 50%;
+					width: inherit;
+					height: inherit;
+					border-radius: inherit;
 					overflow: hidden;
 				}
 			}

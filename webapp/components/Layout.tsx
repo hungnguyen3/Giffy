@@ -1,7 +1,7 @@
 import layoutStyles from '../styles/Layout.module.scss';
 import SidePanel from './SidePanel';
 import Header from './Header';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useEffect, useState } from 'react';
 import { RootState } from '../store';
@@ -24,10 +24,11 @@ interface LayoutProps {
 
 const Layout = (props: LayoutProps) => {
 	const [loggedIn, setLoggedIn] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const { collectionId } = router.query;
-	const path = router.pathname.split('/')[1];
+	let path = router.pathname.split('/')[1];
 	const isOnDiscoveryPage = path == 'discovery';
 	const isOnCollectionsPage = path == 'collections';
 
@@ -54,22 +55,40 @@ const Layout = (props: LayoutProps) => {
 	);
 
 	useEffect(() => {
-		if (isOnDiscoveryPage) {
-			onCollectionsRoutePopulation({
-				dispatch: dispatch,
-				router: router,
-				setLoggedIn: setLoggedIn,
-			});
-		}
+		const handlePath = async () => {
+			switch (path) {
+				case '':
+					router.push('/discovery/0');
+				case 'discovery':
+					await onDiscoveryRoutePopulation({
+						dispatch: dispatch,
+						router: router,
+						setLoggedIn: setLoggedIn,
+					});
+					setLoading(false);
+					break;
+				case 'auth':
+					// TO DO: add auth route population
+					await onCollectionsRoutePopulation({
+						dispatch: dispatch,
+						router: router,
+						setLoggedIn: setLoggedIn,
+					});
+					setLoading(false);
+					break;
+				default:
+					await onCollectionsRoutePopulation({
+						dispatch: dispatch,
+						router: router,
+						setLoggedIn: setLoggedIn,
+					});
+					setLoading(false);
+					break;
+			}
+		};
 
-		if (isOnCollectionsPage) {
-			onCollectionsRoutePopulation({
-				dispatch: dispatch,
-				router: router,
-				setLoggedIn: setLoggedIn,
-			});
-		}
-	}, [hasAnAccount]); // rerun the entire flow again after account creation
+		handlePath();
+	}, [hasAnAccount, isOnCollectionsPage, isOnDiscoveryPage]); // rerun the entire flow
 
 	// handling collection deletion
 	useEffect(() => {
@@ -86,7 +105,9 @@ const Layout = (props: LayoutProps) => {
 		}
 	}, [collections.length]);
 
-	if ((loggedIn && hasAnAccount) || isOnDiscoveryPage)
+	if (loading) {
+		return <Loading />;
+	} else if ((loggedIn && hasAnAccount) || isOnDiscoveryPage) {
 		return (
 			<div className={layoutStyles.background}>
 				{/* if change the value 20%, change the width of flexView class too*/}
@@ -122,12 +143,24 @@ const Layout = (props: LayoutProps) => {
 				)}
 			</div>
 		);
+	} else {
+		return (
+			<div>
+				<Modal disableCloseButton={true}>
+					<Auth />
+				</Modal>
+			</div>
+		);
+	}
+};
 
+const Loading = () => {
 	return (
-		<div>
-			<Modal disableCloseButton={true}>
-				<Auth />
-			</Modal>
+		<div
+			className={layoutStyles.centeredBox}
+			style={{ width: '100vw', height: '100vh' }}
+		>
+			<h3>Loading...</h3>
 		</div>
 	);
 };

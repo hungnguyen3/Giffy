@@ -32,6 +32,8 @@ const Collection: NextPage = () => {
 		(state: RootState) => state.collections.selectedGiffyIds
 	);
 
+	const user = useAppSelector((state: RootState) => state.user.value);
+
 	useEffect(() => {
 		if (collectionId && !Number.isNaN(Number(collectionId))) {
 			if (!giffies) return setCards(null);
@@ -59,7 +61,7 @@ const Collection: NextPage = () => {
 		return (
 			<Layout>
 				<div className={styles.centeredBox}>
-					<h1>Create a collection to get started</h1>
+					<h1>Hi {user?.userName}👋, create a collection to get started</h1>
 				</div>
 			</Layout>
 		);
@@ -91,7 +93,7 @@ const Collection: NextPage = () => {
 				</div>
 			) : (
 				<div className={styles.centeredBox}>
-					<h1>No items yet</h1>
+					<h1>Empty collection 👀</h1>
 				</div>
 			)}
 		</Layout>

@@ -247,12 +247,6 @@ export const getCollectionsByUserId = async (
 			[userId]
 		);
 
-		if (getCollectionsRes.rowCount === 0) {
-			return res.status(404).send({
-				error: 'no collections found for that userId',
-			} as ErrorDTO);
-		}
-
 		res.status(200).send({
 			data: getCollectionsRes.rows,
 		} as GetCollectionsByUserIdDTO);
@@ -283,12 +277,6 @@ export const getPublicCollections = async (
       `,
 			[limit]
 		);
-
-		if (getCollectionsRes.rowCount === 0) {
-			return res.status(404).send({
-				error: 'no public collections found',
-			} as ErrorDTO);
-		}
 
 		res.status(200).send({
 			data: getCollectionsRes.rows,

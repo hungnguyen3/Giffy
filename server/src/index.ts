@@ -66,6 +66,9 @@ export const client = new Client({
 	app.use('/giffies', giffyRoute);
 	// app.use('/collection_user_relationships', userRoute);
 
+	app.get('/', (_: express.Request, res: express.Response) => {
+		res.send('Giffy server! Please do not hack me!');
+	});
 	app.listen(process.env.PORT || 4000, () => {
 		console.log(`server running on port ${process.env.PORT || 4000}`);
 	});

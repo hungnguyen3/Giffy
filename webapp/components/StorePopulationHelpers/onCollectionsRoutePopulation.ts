@@ -126,6 +126,9 @@ export const onCollectionsRoutePopulation = (
 ) => {
 	const { dispatch, router, setLoggedIn } = props;
 
+	// clear collections every time we change route
+	dispatch(clearCollections());
+
 	onAuthStateChanged(getAuth(app), user => {
 		if (user) {
 			const userAuth = {
@@ -152,7 +155,7 @@ export const onCollectionsRoutePopulation = (
 					}
 				})
 				.catch(() => {
-					router.push('/auth');
+					router.push(`/collections/0`);
 				});
 
 			dispatch(logIn(userAuth));
@@ -162,7 +165,6 @@ export const onCollectionsRoutePopulation = (
 			dispatch(clearUser());
 			dispatch(clearCollections());
 			setLoggedIn(false);
-			router.push('/auth');
 		}
 	});
 };

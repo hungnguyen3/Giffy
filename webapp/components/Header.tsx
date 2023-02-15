@@ -1,8 +1,8 @@
 import styles from '../styles/Header.module.scss';
 import { useEffect, useRef, useState } from 'react';
-import { googleSignIn, logOut } from './Firebase/FirebaseInit';
+import { logOut } from './Firebase/FirebaseInit';
 import { VscAccount } from 'react-icons/vsc';
-import { BiLogIn, BiLogOut } from 'react-icons/bi';
+import { BiEditAlt, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { FiSettings } from 'react-icons/fi';
 import DropdownItem from './DropdownItem';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -55,12 +55,14 @@ const Header = () => {
 					<div className={styles.mainTitle}>
 						<h1>{curCollectionName}</h1>
 					</div>
-					{!isOnDiscoveryPage && (
+					{!isOnDiscoveryPage && Number(collectionId) !== 0 && (
 						<div
 							className={styles.collectionSettingBtn}
 							tabIndex={0}
 							onClick={() => dispatch(openCollectionSettingWindow())}
-						></div>
+						>
+							<BiEditAlt />
+						</div>
 					)}
 				</div>
 
@@ -73,9 +75,7 @@ const Header = () => {
 					<div className={styles.dropdownContainer} ref={dropdownBlockRef}>
 						<div className={styles.userButton}>
 							{userInfo?.profileImgUrl ? (
-								<div className={styles.userImg}>
-									<img src={userInfo.profileImgUrl} />
-								</div>
+								<img src={userInfo.profileImgUrl} />
 							) : (
 								<VscAccount />
 							)}
