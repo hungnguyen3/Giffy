@@ -11,7 +11,34 @@
 		2274F486299F721600B3DD90 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2274F485299F721600B3DD90 /* ContentView.swift */; };
 		2274F488299F721700B3DD90 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2274F487299F721700B3DD90 /* Assets.xcassets */; };
 		2274F48B299F721700B3DD90 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2274F48A299F721700B3DD90 /* Preview Assets.xcassets */; };
+		2274F498299F72C800B3DD90 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2274F497299F72C800B3DD90 /* KeyboardViewController.swift */; };
+		2274F49C299F72C800B3DD90 /* GiffyBoard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2274F495299F72C800B3DD90 /* GiffyBoard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		2274F4A2299F741F00B3DD90 /* GiffyBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2274F4A1299F741F00B3DD90 /* GiffyBoardView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2274F49A299F72C800B3DD90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2274F478299F721600B3DD90 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2274F494299F72C800B3DD90;
+			remoteInfo = GiffyBoard;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2274F4A0299F72C800B3DD90 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2274F49C299F72C800B3DD90 /* GiffyBoard.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2274F480299F721600B3DD90 /* iOSGiffy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSGiffy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -19,10 +46,21 @@
 		2274F485299F721600B3DD90 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2274F487299F721700B3DD90 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2274F48A299F721700B3DD90 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		2274F495299F72C800B3DD90 /* GiffyBoard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GiffyBoard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2274F497299F72C800B3DD90 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		2274F499299F72C800B3DD90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2274F4A1299F741F00B3DD90 /* GiffyBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiffyBoardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2274F47D299F721600B3DD90 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2274F492299F72C800B3DD90 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -36,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				2274F482299F721600B3DD90 /* iOSGiffy */,
+				2274F496299F72C800B3DD90 /* GiffyBoard */,
 				2274F481299F721600B3DD90 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -44,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				2274F480299F721600B3DD90 /* iOSGiffy.app */,
+				2274F495299F72C800B3DD90 /* GiffyBoard.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,6 +107,16 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		2274F496299F72C800B3DD90 /* GiffyBoard */ = {
+			isa = PBXGroup;
+			children = (
+				2274F497299F72C800B3DD90 /* KeyboardViewController.swift */,
+				2274F499299F72C800B3DD90 /* Info.plist */,
+				2274F4A1299F741F00B3DD90 /* GiffyBoardView.swift */,
+			);
+			path = GiffyBoard;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -77,15 +127,34 @@
 				2274F47C299F721600B3DD90 /* Sources */,
 				2274F47D299F721600B3DD90 /* Frameworks */,
 				2274F47E299F721600B3DD90 /* Resources */,
+				2274F4A0299F72C800B3DD90 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2274F49B299F72C800B3DD90 /* PBXTargetDependency */,
 			);
 			name = iOSGiffy;
 			productName = iOSGiffy;
 			productReference = 2274F480299F721600B3DD90 /* iOSGiffy.app */;
 			productType = "com.apple.product-type.application";
+		};
+		2274F494299F72C800B3DD90 /* GiffyBoard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2274F49D299F72C800B3DD90 /* Build configuration list for PBXNativeTarget "GiffyBoard" */;
+			buildPhases = (
+				2274F491299F72C800B3DD90 /* Sources */,
+				2274F492299F72C800B3DD90 /* Frameworks */,
+				2274F493299F72C800B3DD90 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GiffyBoard;
+			productName = GiffyBoard;
+			productReference = 2274F495299F72C800B3DD90 /* GiffyBoard.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -98,6 +167,9 @@
 				LastUpgradeCheck = 1310;
 				TargetAttributes = {
 					2274F47F299F721600B3DD90 = {
+						CreatedOnToolsVersion = 13.1;
+					};
+					2274F494299F72C800B3DD90 = {
 						CreatedOnToolsVersion = 13.1;
 					};
 				};
@@ -116,6 +188,7 @@
 			projectRoot = "";
 			targets = (
 				2274F47F299F721600B3DD90 /* iOSGiffy */,
+				2274F494299F72C800B3DD90 /* GiffyBoard */,
 			);
 		};
 /* End PBXProject section */
@@ -127,6 +200,13 @@
 			files = (
 				2274F48B299F721700B3DD90 /* Preview Assets.xcassets in Resources */,
 				2274F488299F721700B3DD90 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2274F493299F72C800B3DD90 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,7 +222,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2274F491299F72C800B3DD90 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2274F498299F72C800B3DD90 /* KeyboardViewController.swift in Sources */,
+				2274F4A2299F741F00B3DD90 /* GiffyBoardView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2274F49B299F72C800B3DD90 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2274F494299F72C800B3DD90 /* GiffyBoard */;
+			targetProxy = 2274F49A299F72C800B3DD90 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2274F48C299F721700B3DD90 /* Debug */ = {
@@ -264,6 +361,7 @@
 		2274F48F299F721700B3DD90 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -293,6 +391,7 @@
 		2274F490299F721700B3DD90 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -319,6 +418,56 @@
 			};
 			name = Release;
 		};
+		2274F49E299F72C800B3DD90 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U6XMW9P652;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GiffyBoard/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GiffyBoard;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hachi.codingcat.iOSGiffy.GiffyBoard;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2274F49F299F72C800B3DD90 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U6XMW9P652;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GiffyBoard/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GiffyBoard;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hachi.codingcat.iOSGiffy.GiffyBoard;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -336,6 +485,15 @@
 			buildConfigurations = (
 				2274F48F299F721700B3DD90 /* Debug */,
 				2274F490299F721700B3DD90 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2274F49D299F72C800B3DD90 /* Build configuration list for PBXNativeTarget "GiffyBoard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2274F49E299F72C800B3DD90 /* Debug */,
+				2274F49F299F72C800B3DD90 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

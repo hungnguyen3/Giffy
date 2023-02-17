@@ -6,10 +6,16 @@
 //
 
 import UIKit
+import SwiftUI
+
+struct KeyboardData {
+    var images: [URL] = []
+}
 
 class KeyboardViewController: UIInputViewController {
-
+    
     @IBOutlet var nextKeyboardButton: UIButton!
+    var giffyBoardView: UIView?
     
     override func updateViewConstraints() {
         super.updateViewConstraints()
@@ -21,9 +27,22 @@ class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         
         // Perform custom UI setup here
+        
+        // Adding GiffyBoardView
+        let giffyBoardView = GiffyBoardView(keyboardViewController: self)
+        let hostingController = UIHostingController(rootView: giffyBoardView)
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
+        self.giffyBoardView = hostingController.view
+        
+        // Resize GiffyBoardView to match keyboard size
+        self.giffyBoardView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        // Adding button to go the next keyboard
         self.nextKeyboardButton = UIButton(type: .system)
         
-        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
+        self.nextKeyboardButton.setTitle(NSLocalizedString("Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
         self.nextKeyboardButton.sizeToFit()
         self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -33,6 +52,13 @@ class KeyboardViewController: UIInputViewController {
         
         self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Remove the GiffyBoardView when the keyboard is dismissed
+        self.giffyBoardView?.removeFromSuperview()
     }
     
     override func viewWillLayoutSubviews() {
@@ -56,5 +82,4 @@ class KeyboardViewController: UIInputViewController {
         }
         self.nextKeyboardButton.setTitleColor(textColor, for: [])
     }
-
 }
