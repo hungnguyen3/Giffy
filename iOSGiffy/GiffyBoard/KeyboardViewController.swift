@@ -28,6 +28,9 @@ class KeyboardViewController: UIInputViewController {
         
         // Perform custom UI setup here
         
+        // Set background color to match the default keyboard background
+        self.view.backgroundColor = UIColor.systemBackground
+        
         // Adding GiffyBoardView
         let giffyBoardView = GiffyBoardView(keyboardViewController: self)
         let hostingController = UIHostingController(rootView: giffyBoardView)
@@ -41,17 +44,19 @@ class KeyboardViewController: UIInputViewController {
         
         // Adding button to go the next keyboard
         self.nextKeyboardButton = UIButton(type: .system)
-        
-        self.nextKeyboardButton.setTitle(NSLocalizedString("Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
+
+        self.nextKeyboardButton.setTitle("⌨️", for: [])
         self.nextKeyboardButton.sizeToFit()
         self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-        
+
         self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-        
+
         self.view.addSubview(self.nextKeyboardButton)
-        
-        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+
+        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 10).isActive = true
+        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 10).isActive = true
+        self.nextKeyboardButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        self.nextKeyboardButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {

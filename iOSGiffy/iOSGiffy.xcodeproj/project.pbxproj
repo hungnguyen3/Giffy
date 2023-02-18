@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		223248D229A0F6DF00FF4B19 /* DTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223248D129A0F6DF00FF4B19 /* DTO.swift */; };
+		223248D429A0F72100FF4B19 /* RemoteGiffy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223248D329A0F72100FF4B19 /* RemoteGiffy.swift */; };
+		223248D629A1046700FF4B19 /* ImageGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223248D529A1046700FF4B19 /* ImageGridView.swift */; };
 		2274F484299F721600B3DD90 /* iOSGiffyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2274F483299F721600B3DD90 /* iOSGiffyApp.swift */; };
 		2274F486299F721600B3DD90 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2274F485299F721600B3DD90 /* ContentView.swift */; };
 		2274F488299F721700B3DD90 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2274F487299F721700B3DD90 /* Assets.xcassets */; };
@@ -41,6 +44,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		223248D129A0F6DF00FF4B19 /* DTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTO.swift; sourceTree = "<group>"; };
+		223248D329A0F72100FF4B19 /* RemoteGiffy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteGiffy.swift; sourceTree = "<group>"; };
+		223248D529A1046700FF4B19 /* ImageGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGridView.swift; sourceTree = "<group>"; };
 		2274F480299F721600B3DD90 /* iOSGiffy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSGiffy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2274F483299F721600B3DD90 /* iOSGiffyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSGiffyApp.swift; sourceTree = "<group>"; };
 		2274F485299F721600B3DD90 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -113,6 +119,9 @@
 				2274F497299F72C800B3DD90 /* KeyboardViewController.swift */,
 				2274F499299F72C800B3DD90 /* Info.plist */,
 				2274F4A1299F741F00B3DD90 /* GiffyBoardView.swift */,
+				223248D129A0F6DF00FF4B19 /* DTO.swift */,
+				223248D329A0F72100FF4B19 /* RemoteGiffy.swift */,
+				223248D529A1046700FF4B19 /* ImageGridView.swift */,
 			);
 			path = GiffyBoard;
 			sourceTree = "<group>";
@@ -226,6 +235,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				223248D629A1046700FF4B19 /* ImageGridView.swift in Sources */,
+				223248D229A0F6DF00FF4B19 /* DTO.swift in Sources */,
+				223248D429A0F72100FF4B19 /* RemoteGiffy.swift in Sources */,
 				2274F498299F72C800B3DD90 /* KeyboardViewController.swift in Sources */,
 				2274F4A2299F741F00B3DD90 /* GiffyBoardView.swift in Sources */,
 			);
