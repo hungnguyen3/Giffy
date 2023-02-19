@@ -1,12 +1,9 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { logIn, logOut, UserAuth } from '../../slices/UserAuthSlice';
-import { getUserByFirebaseAuthId } from '../../API/userHooks';
 import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
 	CollectionDTO,
-	GetCollectionsByUserIdDTO,
 	GetPublicCollectionsDTO,
-	isGetCollectionsByUserIdDTO,
 	isGetPublicCollectionsDTO,
 } from '../../API/types/collections-types';
 import {
@@ -44,6 +41,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 				}
 
 				var collections = response.data;
+
 				var toStoreCollections: Collection[] = [];
 
 				const promises = collections.map((collection: CollectionDTO) => {
@@ -92,6 +90,7 @@ export const onDiscoveryRoutePopulation = (
 
 	onAuthStateChanged(getAuth(app), user => {
 		if (user) {
+			// TODO: handle idToken
 			const userAuth = {
 				uid: user.uid,
 				email: user.email,

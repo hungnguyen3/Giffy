@@ -1,19 +1,40 @@
 import { ErrorDTO } from './types/errors-types';
 import {
 	CreateUserDTO,
-	GetUserByFirebaseAuthIdDTO,
+	GetCurrentUserDTO,
+	GetUserByIdDTO,
 	UpdateUserByIdDTO,
 } from './types/users-types';
 
-export async function getUserByFirebaseAuthId(
-	firebaseAuthId: string
-): Promise<GetUserByFirebaseAuthIdDTO | ErrorDTO> {
+export async function getUserById(
+	userId: string
+): Promise<GetUserByIdDTO | ErrorDTO> {
 	try {
 		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserByFirebaseAuthId/${firebaseAuthId}`,
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserById/${userId}`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'GET',
+			}
+		);
+
+		return response.json();
+	} catch (e) {
+		return { error: 'unknown error' } as ErrorDTO;
+	}
+}
+
+export async function getCurrentUser(): Promise<GetCurrentUserDTO | ErrorDTO> {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getCurrentUser`,
+			{
+				cache: 'no-cache',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -29,7 +50,6 @@ export async function getUserByFirebaseAuthId(
 
 export async function createUser(data: {
 	userName: string;
-	firebaseAuthId: string;
 	profileImgUrl: string;
 }): Promise<CreateUserDTO | ErrorDTO> {
 	try {
@@ -38,7 +58,7 @@ export async function createUser(data: {
 			{
 				method: 'POST',
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -63,7 +83,7 @@ export async function updateUser(data: {
 			{
 				method: 'PUT',
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},

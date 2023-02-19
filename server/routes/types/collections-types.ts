@@ -16,7 +16,7 @@ export interface UpdateCollectionByIdDTO {
 	data: CollectionDTO;
 }
 
-export interface GetCollectionsByUserIdDTO {
+export interface GetCurrentUserCollectionsDTO {
 	data: CollectionDTO[];
 }
 

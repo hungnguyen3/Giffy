@@ -1,5 +1,5 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ErrorDTO } from '../API/types/errors-types';
 import { CreateUserDTO, isCreateUserDTO } from '../API/types/users-types';
@@ -13,25 +13,17 @@ import { googleSignIn, logOut, storage } from './Firebase/FirebaseInit';
 
 interface UserInfo {
 	userName: string;
-	firebaseAuthId: string;
 	profileImgUrl: string;
 }
 
 const Auth = () => {
 	const dispatch = useDispatch();
-	// TODO: firebaseAuthID might be null
-
 	const [userInfo, setUserInfo] = useState<UserInfo>({
 		userName: '',
-		firebaseAuthId: '',
 		profileImgUrl:
 			'https://raw.githubusercontent.com/hungnguyen3/Giffy/main/webapp/public/userProfile.png',
 	});
 	const [userImg, setUserImg] = useState<File | null>(null);
-
-	const firebaseAuthId = useAppSelector((state: RootState) =>
-		state.userAuth.value ? state.userAuth.value.uid : ''
-	);
 
 	const isLoggedIn = useAppSelector((state: RootState) =>
 		state.userAuth.value ? true : false
@@ -42,13 +34,6 @@ const Auth = () => {
 	);
 
 	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
-
-	useEffect(() => {
-		setUserInfo({
-			...userInfo,
-			firebaseAuthId: firebaseAuthId,
-		});
-	}, [firebaseAuthId]);
 
 	const uploadHandler = async () => {
 		if (userImg) {
@@ -64,7 +49,6 @@ const Auth = () => {
 				} else {
 					const createUserRes: ErrorDTO | CreateUserDTO = await createUser({
 						userName: userInfo.userName,
-						firebaseAuthId: userInfo.firebaseAuthId,
 						profileImgUrl: downloadURL,
 					});
 

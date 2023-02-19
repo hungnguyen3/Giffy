@@ -12,7 +12,7 @@ export interface DeleteCollectionDTO {
 	data: { successMessage: string };
 }
 
-export interface GetCollectionsByUserIdDTO {
+export interface GetCurrentUserCollectionsDTO {
 	data: CollectionDTO[];
 }
 
@@ -50,9 +50,9 @@ export function isDeleteCollectionDTO(obj: any): obj is DeleteCollectionDTO {
 	);
 }
 
-export function isGetCollectionsByUserIdDTO(
+export function isGetCurrentUserCollectionsDTO(
 	obj: any
-): obj is GetCollectionsByUserIdDTO {
+): obj is GetCurrentUserCollectionsDTO {
 	return (
 		obj &&
 		obj.hasOwnProperty('data') &&

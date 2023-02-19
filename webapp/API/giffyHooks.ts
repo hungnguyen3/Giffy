@@ -13,7 +13,7 @@ export async function getGiffiesByCollectionId(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/giffies/getGiffiesByCollectionId/${collectionId}`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -39,7 +39,7 @@ export async function createGiffy(data: {
 			{
 				method: 'POST',
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -62,7 +62,7 @@ export async function deleteGiffiesByIds(data: {
 			{
 				method: 'DELETE',
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},

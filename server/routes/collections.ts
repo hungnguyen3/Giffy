@@ -4,16 +4,37 @@ import {
 	deleteCollectionById,
 	getCollectionById,
 	updateCollectionById,
-	getCollectionsByUserId,
+	getCurrentUserCollections,
 	getPublicCollections,
-} from './route-helpers.ts/collections-helpers';
+} from './route-helpers/collections-helpers';
+import auth from './middleware/auth-middleware';
+import { checkCollectionsAccess } from './middleware/collections-middleware';
 const router = express.Router();
 
-router.post('/createCollection', createCollection);
-router.delete('/deleteCollectionById/:collectionId', deleteCollectionById);
-router.get('/getCollectionById/:collectionId', getCollectionById);
-router.put('/updateCollectionById/:collectionId', updateCollectionById);
-router.get('/getCollectionsByUserId/:userId', getCollectionsByUserId);
+router.post('/createCollection', auth, createCollection);
+router.delete(
+	'/deleteCollectionById/:collectionId',
+	auth,
+	async (req, res, next) =>
+		(await checkCollectionsAccess('admin'))(req, res, next),
+	deleteCollectionById
+);
+
+router.get(
+	'/getCollectionById/:collectionId',
+	auth,
+	async (req, res, next) =>
+		(await checkCollectionsAccess('read'))(req, res, next),
+	getCollectionById
+);
+router.put(
+	'/updateCollectionById/:collectionId',
+	auth,
+	async (req, res, next) =>
+		(await checkCollectionsAccess('write'))(req, res, next),
+	updateCollectionById
+);
+router.get('/getCurrentUserCollections', auth, getCurrentUserCollections);
 router.get('/getPublicCollections', getPublicCollections);
 
 module.exports = router;

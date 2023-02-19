@@ -1,11 +1,11 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { logIn, logOut, UserAuth } from '../../slices/UserAuthSlice';
-import { getUserByFirebaseAuthId } from '../../API/userHooks';
+import { getCurrentUser } from '../../API/userHooks';
 import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
 	CollectionDTO,
-	GetCollectionsByUserIdDTO,
-	isGetCollectionsByUserIdDTO,
+	GetCurrentUserCollectionsDTO,
+	isGetCurrentUserCollectionsDTO,
 } from '../../API/types/collections-types';
 import {
 	GetGiffiesByCollectionIdDTO,
@@ -22,11 +22,11 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { ErrorDTO } from '../../API/types/errors-types';
-import { getCollectionsByUserId } from '../../API/collectionHooks';
+import { getCurrentUserCollections } from '../../API/collectionHooks';
 import { getGiffiesByCollectionId } from '../../API/giffyHooks';
 import {
-	GetUserByFirebaseAuthIdDTO,
-	isGetUserByFirebaseAuthIdDTO,
+	GetCurrentUserDTO,
+	isGetCurrentUserDTO,
 } from '../../API/types/users-types';
 
 interface onCollectionsRoutePopulationProps {
@@ -45,9 +45,9 @@ export const populateUserInfo = (
 		userName: string;
 		profileImgUrl: string;
 	}>((resolve, reject) => {
-		getUserByFirebaseAuthId(userAuth.uid)
-			.then((response: ErrorDTO | GetUserByFirebaseAuthIdDTO) => {
-				if (!isGetUserByFirebaseAuthIdDTO(response)) {
+		getCurrentUser()
+			.then((response: ErrorDTO | GetCurrentUserDTO) => {
+				if (!isGetCurrentUserDTO(response)) {
 					return reject();
 				}
 
@@ -70,14 +70,11 @@ export const populateUserInfo = (
 };
 
 // Function to populate collections
-const populateCollectionsInfo = (
-	dispatch: ThunkDispatch<any, any, any>,
-	userId: number
-) => {
+const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise((resolve, reject) => {
-		getCollectionsByUserId(userId)
-			.then((response: GetCollectionsByUserIdDTO | ErrorDTO) => {
-				if (!isGetCollectionsByUserIdDTO(response)) {
+		getCurrentUserCollections()
+			.then((response: GetCurrentUserCollectionsDTO | ErrorDTO) => {
+				if (!isGetCurrentUserCollectionsDTO(response)) {
 					return reject();
 				}
 
@@ -131,6 +128,7 @@ export const onCollectionsRoutePopulation = (
 
 	onAuthStateChanged(getAuth(app), user => {
 		if (user) {
+			// TODO: handle idToken
 			const userAuth = {
 				uid: user.uid,
 				email: user.email,
@@ -143,7 +141,7 @@ export const onCollectionsRoutePopulation = (
 					if (!userInfo) {
 						return null;
 					}
-					return populateCollectionsInfo(dispatch, userInfo.userId);
+					return populateCollectionsInfo(dispatch);
 				})
 				.then(firstCollectionId => {
 					if (

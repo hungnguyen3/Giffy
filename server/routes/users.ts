@@ -1,17 +1,19 @@
 import express from 'express';
+import auth from './middleware/auth-middleware';
+import { verifyUser } from './middleware/users-middleware';
 import {
 	createUser,
 	deleteUserById,
+	getCurrentUser,
 	getUserById,
-	getUserByFirebaseAuthId,
 	updateUserById,
-} from './route-helpers.ts/users-helpers';
+} from './route-helpers/users-helpers';
 const router = express.Router();
 
-router.post('/createUser', createUser);
-router.delete('/deleteUserById/:userId', deleteUserById);
-router.get('/getUserById/:userId', getUserById);
-router.get('/getUserByFirebaseAuthId/:firebaseAuthId', getUserByFirebaseAuthId);
-router.put('/updateUserById/:userId', updateUserById);
+router.post('/createUser', auth, createUser);
+router.delete('/deleteUserById/:userId', auth, verifyUser, deleteUserById);
+router.get('/getUserById/:userId', auth, verifyUser, getUserById);
+router.get('/getCurrentUser', auth, getCurrentUser);
+router.put('/updateUserById/:userId', auth, verifyUser, updateUserById);
 
 module.exports = router;

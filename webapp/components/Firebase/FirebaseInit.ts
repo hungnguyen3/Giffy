@@ -23,19 +23,38 @@ export const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
 
-export const googleSignIn = () => {
-	signInWithPopup(auth, provider)
-		.then(result => {
-			const credential = GoogleAuthProvider.credentialFromResult(result);
-			const token = credential?.accessToken;
-			const user = result.user;
-		})
-		.catch(error => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			const email = error.customData.email;
-			const credential = GoogleAuthProvider.credentialFromError(error);
+export const googleSignIn = async () => {
+	try {
+		const result = await signInWithPopup(auth, provider);
+		const credential = GoogleAuthProvider.credentialFromResult(result);
+		const token = credential?.accessToken;
+		const user = result.user;
+
+		// TODO: handle csrf token
+		user.getIdToken().then(async idToken => {
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/sessionLogin`,
+				{
+					method: 'POST',
+					credentials: 'include',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ idToken }),
+				}
+			);
+
+			if (response.ok) {
+				// User is authenticated and session cookie is set
+			} else {
+				// Authentication failed
+				logOut();
+			}
 		});
+	} catch (error) {
+		// Handle error
+		console.log(error);
+	}
 };
 
 export const logOut = () => {
