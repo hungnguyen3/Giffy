@@ -72,7 +72,7 @@ export const logOut = async () => {
 			await signOut(auth);
 		} else {
 			// Failed to clear session cookie
-			alert('Failed to log out. Please report this bug to us.');
+			alert('Failed to log out. Please try again. Or contact us 🥺');
 		}
 	} catch (error) {
 		// Handle error

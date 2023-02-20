@@ -42,7 +42,6 @@ export function optionalAuthCheck(
 	if (!sessionCookie) {
 		return next();
 	} else {
-		console.log(sessionCookie);
 		admin
 			.auth()
 			.verifySessionCookie(sessionCookie, true)

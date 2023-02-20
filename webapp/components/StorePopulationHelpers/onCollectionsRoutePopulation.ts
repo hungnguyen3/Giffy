@@ -36,10 +36,7 @@ interface onCollectionsRoutePopulationProps {
 }
 
 // Function to populate user information
-export const populateUserInfo = (
-	dispatch: ThunkDispatch<any, any, any>,
-	userAuth: UserAuth
-) => {
+export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise<{
 		userId: number;
 		userName: string;
@@ -136,7 +133,7 @@ export const onCollectionsRoutePopulation = (
 				photoURL: user.photoURL,
 			};
 
-			populateUserInfo(dispatch, userAuth)
+			populateUserInfo(dispatch)
 				.then(userInfo => {
 					if (!userInfo) {
 						return null;

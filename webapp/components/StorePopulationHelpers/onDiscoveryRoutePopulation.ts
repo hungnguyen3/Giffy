@@ -98,7 +98,7 @@ export const onDiscoveryRoutePopulation = (
 				photoURL: user.photoURL,
 			};
 
-			populateUserInfo(dispatch, userAuth)
+			populateUserInfo(dispatch)
 				.then(() => {
 					return populateCollectionsInfo(dispatch);
 				})
