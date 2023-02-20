@@ -46,6 +46,7 @@ export const googleSignIn = async () => {
 
 			if (response.ok) {
 				// User is authenticated and session cookie is set
+				window.location.reload();
 			} else {
 				// Authentication failed
 				logOut();

@@ -30,8 +30,8 @@ const Layout = (props: LayoutProps) => {
 	let path = router.pathname.split('/')[1];
 	const isOnDiscoveryPage = path == 'discovery';
 	const isOnCollectionsPage = path == 'collections';
-	const [establishingUserSessionDelay, setEstablishingUserSessionDelay] =
-		useState(false);
+	const [establishingUserSessionLoading, setEstablishingUserSessionLoading] =
+		useState(true);
 
 	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
@@ -57,7 +57,7 @@ const Layout = (props: LayoutProps) => {
 
 	useEffect(() => {
 		onAuthStateChanged(getAuth(app), user => {
-			if (user) setEstablishingUserSessionDelay(true);
+			if (user) setEstablishingUserSessionLoading(true);
 		});
 
 		const handlePath = async () => {
@@ -111,10 +111,10 @@ const Layout = (props: LayoutProps) => {
 	// We need to delay the rendering of the auth window
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			setEstablishingUserSessionDelay(false);
+			setEstablishingUserSessionLoading(false);
 		}, 2000);
 		return () => clearTimeout(timer);
-	}, [establishingUserSessionDelay]);
+	}, [establishingUserSessionLoading]);
 
 	if ((loggedIn && hasAnAccount) || isOnDiscoveryPage) {
 		return (
@@ -153,7 +153,7 @@ const Layout = (props: LayoutProps) => {
 			</div>
 		);
 	} else {
-		if (!establishingUserSessionDelay) {
+		if (!establishingUserSessionLoading) {
 			return (
 				<div>
 					<Modal disableCloseButton={true}>
