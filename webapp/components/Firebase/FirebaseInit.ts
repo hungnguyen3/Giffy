@@ -57,10 +57,27 @@ export const googleSignIn = async () => {
 	}
 };
 
-export const logOut = () => {
-	signOut(auth)
-		.then(() => {})
-		.catch(error => {});
+export const logOut = async () => {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/sessionLogout`,
+			{
+				method: 'POST',
+				credentials: 'include',
+			}
+		);
+
+		if (response.ok) {
+			// Session cookie is cleared on the server
+			await signOut(auth);
+		} else {
+			// Failed to clear session cookie
+			alert('Failed to log out. Please report this bug to us.');
+		}
+	} catch (error) {
+		// Handle error
+		console.error(error);
+	}
 };
 
 export const storage = getStorage(app);

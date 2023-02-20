@@ -6,7 +6,11 @@ export interface AuthenticatedRequest extends Request {
 	user?: admin.auth.DecodedIdToken;
 }
 
-function auth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export function mandatoryAuthCheck(
+	req: AuthenticatedRequest,
+	res: Response,
+	next: NextFunction
+) {
 	const sessionCookie = req.cookies?.session;
 
 	if (!sessionCookie) {
@@ -28,4 +32,27 @@ function auth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
 		});
 }
 
-export default auth;
+export function optionalAuthCheck(
+	req: AuthenticatedRequest,
+	res: Response,
+	next: NextFunction
+) {
+	const sessionCookie = req.cookies?.session;
+
+	if (!sessionCookie) {
+		return next();
+	} else {
+		console.log(sessionCookie);
+		admin
+			.auth()
+			.verifySessionCookie(sessionCookie, true)
+			.then(decodedToken => {
+				req.user = decodedToken; // store the user information in the request object
+				next();
+			})
+			.catch(error => {
+				console.error('Error verifying Firebase session cookie:', error);
+				res.status(403).send({ error: 'Forbidden' } as ErrorDTO);
+			});
+	}
+}

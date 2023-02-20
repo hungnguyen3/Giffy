@@ -97,13 +97,15 @@ const Header = () => {
 											<DropdownItem icon={BiLogIn} text={'Log in'} />
 										</li>
 									)}
-									<li
-										onClick={() => {
-											dispatch(openAccountSetting());
-										}}
-									>
-										<DropdownItem icon={FiSettings} text={'Setting'} />
-									</li>
+									{userInfo && (
+										<li
+											onClick={() => {
+												dispatch(openAccountSetting());
+											}}
+										>
+											<DropdownItem icon={FiSettings} text={'Setting'} />
+										</li>
+									)}
 								</ul>
 							</div>
 						) : (

@@ -7,14 +7,14 @@ import {
 	getCurrentUserCollections,
 	getPublicCollections,
 } from './route-helpers/collections-helpers';
-import auth from './middleware/auth-middleware';
+import { mandatoryAuthCheck } from './middleware/auth-middleware';
 import { checkCollectionsAccess } from './middleware/collections-middleware';
 const router = express.Router();
 
-router.post('/createCollection', auth, createCollection);
+router.post('/createCollection', mandatoryAuthCheck, createCollection);
 router.delete(
 	'/deleteCollectionById/:collectionId',
-	auth,
+	mandatoryAuthCheck,
 	async (req, res, next) =>
 		(await checkCollectionsAccess('admin'))(req, res, next),
 	deleteCollectionById
@@ -22,19 +22,23 @@ router.delete(
 
 router.get(
 	'/getCollectionById/:collectionId',
-	auth,
+	mandatoryAuthCheck,
 	async (req, res, next) =>
 		(await checkCollectionsAccess('read'))(req, res, next),
 	getCollectionById
 );
 router.put(
 	'/updateCollectionById/:collectionId',
-	auth,
+	mandatoryAuthCheck,
 	async (req, res, next) =>
 		(await checkCollectionsAccess('write'))(req, res, next),
 	updateCollectionById
 );
-router.get('/getCurrentUserCollections', auth, getCurrentUserCollections);
+router.get(
+	'/getCurrentUserCollections',
+	mandatoryAuthCheck,
+	getCurrentUserCollections
+);
 router.get('/getPublicCollections', getPublicCollections);
 
 module.exports = router;

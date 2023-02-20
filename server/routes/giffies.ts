@@ -1,5 +1,8 @@
 import express from 'express';
-import auth from './middleware/auth-middleware';
+import {
+	mandatoryAuthCheck,
+	optionalAuthCheck,
+} from './middleware/auth-middleware';
 import { checkCollectionsAccess } from './middleware/collections-middleware';
 import { findCollectionIdsByGiffyIds } from './middleware/giffies-middleware';
 import {
@@ -11,10 +14,10 @@ import {
 } from './route-helpers/giffies-helpers';
 const router = express.Router();
 
-router.post('/createGiffy', auth, createGiffy);
+router.post('/createGiffy', mandatoryAuthCheck, createGiffy);
 router.delete(
 	'/deleteGiffiesByIds',
-	auth,
+	mandatoryAuthCheck,
 	findCollectionIdsByGiffyIds,
 	async (req, res, next) =>
 		(await checkCollectionsAccess('write'))(req, res, next),
@@ -22,7 +25,7 @@ router.delete(
 );
 router.get(
 	'/getGiffyById/:giffyId',
-	auth,
+	mandatoryAuthCheck,
 	findCollectionIdsByGiffyIds,
 	async (req, res, next) =>
 		(await checkCollectionsAccess('read'))(req, res, next),
@@ -30,7 +33,7 @@ router.get(
 );
 router.put(
 	'/updateGiffyById/:giffyId',
-	auth,
+	mandatoryAuthCheck,
 	findCollectionIdsByGiffyIds,
 	async (req, res, next) =>
 		(await checkCollectionsAccess('write'))(req, res, next),
@@ -38,9 +41,10 @@ router.put(
 );
 router.get(
 	'/getGiffiesByCollectionId/:collectionId',
-	auth,
+	optionalAuthCheck,
 	async (req, res, next) =>
 		(await checkCollectionsAccess('read'))(req, res, next),
 	getGiffiesByCollectionId
 );
+
 module.exports = router;

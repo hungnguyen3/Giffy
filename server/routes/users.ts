@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from './middleware/auth-middleware';
+import { mandatoryAuthCheck } from './middleware/auth-middleware';
 import { verifyUser } from './middleware/users-middleware';
 import {
 	createUser,
@@ -10,10 +10,20 @@ import {
 } from './route-helpers/users-helpers';
 const router = express.Router();
 
-router.post('/createUser', auth, createUser);
-router.delete('/deleteUserById/:userId', auth, verifyUser, deleteUserById);
-router.get('/getUserById/:userId', auth, verifyUser, getUserById);
-router.get('/getCurrentUser', auth, getCurrentUser);
-router.put('/updateUserById/:userId', auth, verifyUser, updateUserById);
+router.post('/createUser', mandatoryAuthCheck, createUser);
+router.delete(
+	'/deleteUserById/:userId',
+	mandatoryAuthCheck,
+	verifyUser,
+	deleteUserById
+);
+router.get('/getUserById/:userId', mandatoryAuthCheck, verifyUser, getUserById);
+router.get('/getCurrentUser', mandatoryAuthCheck, getCurrentUser);
+router.put(
+	'/updateUserById/:userId',
+	mandatoryAuthCheck,
+	verifyUser,
+	updateUserById
+);
 
 module.exports = router;

@@ -96,12 +96,18 @@ export const client = new Client({
 					// Set cookie policy for session cookie.
 					const options = { maxAge: expiresIn, httpOnly: true, secure: true };
 					res.cookie('session', sessionCookie, options);
-					res.status(200).send({ status: 'success' });
+					res.status(200).send({ status: 'success: create a login session' });
 				},
 				() => {
 					res.status(401).send({ error: 'UNAUTHORIZED REQUEST!' } as ErrorDTO);
 				}
 			);
+	});
+
+	app.post('/sessionLogout', (_, res) => {
+		// Clear the session cookie by setting it to an empty string with an expired date.
+		res.cookie('session', '', { expires: new Date(0) });
+		res.status(200).send({ status: 'success: clear login session' });
 	});
 
 	app.get('/', (_: express.Request, res: express.Response) => {
