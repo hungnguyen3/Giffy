@@ -7,6 +7,10 @@
 
 import Foundation
 
+struct ErrorDTO: Codable {
+    let error: String;
+}
+
 struct GiffyResponse: Codable {
     let data: [GiffyDTO]
 }
@@ -21,10 +25,10 @@ struct GiffyDTO: Codable {
 }
 
 struct GiffyCollectionsResponse: Codable {
-    let data: [GiffyCollection]
+    let data: [CollectionDTO]
 }
 
-struct GiffyCollection: Codable, Identifiable {
+struct CollectionDTO: Codable, Identifiable {
     let id = UUID()
     let collectionId: Int
     let collectionName: String

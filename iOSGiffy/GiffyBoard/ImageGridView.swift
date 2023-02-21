@@ -10,7 +10,7 @@ import SwiftUI
 struct ImageGridView: View {
     let images: [URL]
     let selectedCollectionId: Int?
-    let fetchImages: (GiffyCollection) -> Void
+    let fetchImages: (CollectionDTO) -> Void
 
     @State private var copiedImageURL: URL?
     @State private var isImageCopied = false

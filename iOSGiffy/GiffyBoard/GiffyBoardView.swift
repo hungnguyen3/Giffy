@@ -11,7 +11,7 @@ struct GiffyBoardView: View {
     @State var images: [URL] = []
     @State var isImageCopied = false
     @State var hasFullAccess = false
-    @State var collections: [GiffyCollection] = []
+    @State var collections: [CollectionDTO] = []
     @State var selectedCollectionId: Int?
     weak var keyboardViewController: KeyboardViewController?
 
@@ -53,7 +53,7 @@ struct GiffyBoardView: View {
         }
     }
 
-    private func fetchImages(forCollection collection: GiffyCollection) {
+    private func fetchImages(forCollection collection: CollectionDTO) {
         selectedCollectionId = collection.collectionId
         guard let url = URL(string: "API_LINK") else {
             return

@@ -70,6 +70,10 @@ export const client = new Client({
 	app.use('/giffies', giffyRoute);
 	// app.use('/collection_user_relationships', userRoute);
 
+	app.use('/mobile/users', userRoute);
+	app.use('/mobile/collections', collectionRoute);
+	app.use('/mobile/giffies', giffyRoute);
+
 	app.post('/sessionLogin', (req, res) => {
 		// Get the ID token passed and the CSRF token.
 		// TODO: handle the CSRF token check.
