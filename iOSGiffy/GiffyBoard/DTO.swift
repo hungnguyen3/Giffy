@@ -11,10 +11,6 @@ struct ErrorDTO: Codable {
     let error: String;
 }
 
-struct GiffyResponse: Codable {
-    let data: [GiffyDTO]
-}
-
 struct GiffyDTO: Codable {
     let giffyId: Int
     let collectionId: Int
@@ -22,10 +18,6 @@ struct GiffyDTO: Codable {
     let firebaseRef: String
     let giffyName: String
     let likes: Int
-}
-
-struct GiffyCollectionsResponse: Codable {
-    let data: [CollectionDTO]
 }
 
 struct CollectionDTO: Codable, Identifiable {
@@ -37,4 +29,12 @@ struct CollectionDTO: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case collectionId, collectionName, isPrivate = "private"
     }
+}
+
+struct GetGiffiesByCollectionIdDTO: Codable {
+    let data: [GiffyDTO]
+}
+
+struct GetCurrentUserCollectionsDTO: Codable {
+    let data: [CollectionDTO]
 }

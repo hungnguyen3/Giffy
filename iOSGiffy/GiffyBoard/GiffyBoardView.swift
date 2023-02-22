@@ -66,7 +66,7 @@ struct GiffyBoardView: View {
 
             let decoder = JSONDecoder()
             do {
-                let result = try decoder.decode(GiffyResponse.self, from: data)
+                let result = try decoder.decode(GetGiffiesByCollectionIdDTO.self, from: data)
                 DispatchQueue.main.async {
                     self.images = result.data.map { URL(string: $0.firebaseUrl)! }
                 }
@@ -88,7 +88,7 @@ struct GiffyBoardView: View {
 
             let decoder = JSONDecoder()
             do {
-                let result = try decoder.decode(GiffyCollectionsResponse.self, from: data)
+                let result = try decoder.decode(GetCurrentUserCollectionsDTO.self, from: data)
                 DispatchQueue.main.async {
                     self.collections = result.data
                     if let firstCollection = self.collections.first {

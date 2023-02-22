@@ -21,116 +21,81 @@ struct CollectionCardView: View {
                 .font(.subheadline)
         }
         .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(radius: 5)
         .frame(maxWidth: .infinity)
+        .frame(width: UIScreen.main.bounds.width * 0.8)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .stroke(Color.gray, lineWidth: 1)
         )
-        .frame(width: UIScreen.main.bounds.width * 0.8)
+        .background(Color.white)
+        .cornerRadius(10)
+        .shadow(radius: 5)
     }
 }
 
 struct CollectionsView: View {
     @State private var collections: [CollectionDTO] = []
-    @State private var images: [URL] = []
+    @State private var giffies: [GiffyDTO] = []
     @State private var selectedCollection: CollectionDTO?
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 15) {
-                Text("Collections")
-                    .font(.title)
-                    .bold()
-                    .padding()
-                
-                ForEach(collections) { collection in
-                    CollectionCardView(collection: collection)
-                        .onTapGesture {
-                            fetchImages(for: collection)
+        NavigationView {
+            if let collection = selectedCollection {
+                GiffiesView(giffies: giffies)
+                    .navigationTitle(collection.collectionName)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarItems(leading: Button(action: {
+                        selectedCollection = nil
+                        giffies = []
+                    }) {
+                        Text("Back")
+                    })
+            } else {
+                ScrollView {
+                    VStack(spacing: 15) {
+                        ForEach(collections) { collection in
+                            CollectionCardView(collection: collection)
+                                .onTapGesture {
+                                    selectedCollection = collection
+                                    getGiffiesByCollectionId(for: collection)
+                                }
                         }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                }
+                .navigationTitle("Collections")
+                .onAppear {
+                    getCurrentUserCollections()
                 }
             }
-            .padding()
-            .frame(maxWidth: .infinity)
-        }
-        .navigationTitle("Collections")
-        .onAppear {
-            fetchCollections()
         }
     }
     
-    private func fetchCollections() {
-        Auth.auth().currentUser?.getIDToken(completion: { idToken, error in
-            guard error == nil else {
-                print("Failed to get IDToken: \(String(describing: error))")
-                return
-            }
-            
-            guard let url = URL(string: "API_LINK") else {
-                print("Failed to create URL for fetchCollections()")
-                return
-            }
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
-            request.setValue("Bearer \(idToken!)", forHTTPHeaderField: "Authorization")
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard error == nil else {
-                    print("Error in fetchCollections(): \(String(describing: error))")
-                    return
-                }
-                
-                guard let data = data else {
-                    print("No data received in fetchCollections()")
-                    return
-                }
-                
-                let decoder = JSONDecoder()
-                
-                do {
-                    let result = try decoder.decode(GiffyCollectionsResponse.self, from: data)
-                    DispatchQueue.main.async {
-                        self.collections = result.data
-                        self.selectedCollection = self.collections.first
-                        self.fetchImages(for: self.selectedCollection!)
-                    }
-                } catch {
-                    // Attempt to decode as ErrorDTO
-                    if let errorDTO = try? decoder.decode(ErrorDTO.self, from: data) {
-                        print("Error in fetchCollections(): \(errorDTO.error)")
-                    } else {
-                        print("Error decoding data in fetchCollections(): \(error)")
-                    }
-                }
-            }.resume()
-        })
-    }
-    
-    private func fetchImages(for collection: CollectionDTO) {
-        selectedCollection = collection
-        guard let url = URL(string: "API_LINK") else {
-            return
-        }
-
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                return
-            }
-
-            let decoder = JSONDecoder()
-            do {
-                let result = try decoder.decode(GiffyResponse.self, from: data)
+    private func getCurrentUserCollections() {
+        NetworkManager.shared.getCurrentUserCollections { result in
+            switch result {
+            case .success(let collections):
                 DispatchQueue.main.async {
-                    self.images = result.data.map { URL(string: $0.firebaseUrl)! }
+                    self.collections = collections
                 }
-            } catch {
-                print(error)
+            case .failure(let error):
+                print("Error fetching collections: \(error.localizedDescription)")
             }
-        }.resume()
+        }
+    }
+    
+    private func getGiffiesByCollectionId(for collection: CollectionDTO) {
+        NetworkManager.shared.getGiffiesByCollectionId(for: collection) { result in
+            switch result {
+            case .success(let giffies):
+                DispatchQueue.main.async {
+                    self.giffies = giffies
+                }
+            case .failure(let error):
+                print("Error fetching giffies: \(error.localizedDescription)")
+            }
+        }
     }
 }
 

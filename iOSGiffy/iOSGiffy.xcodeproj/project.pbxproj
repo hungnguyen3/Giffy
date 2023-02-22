@@ -24,6 +24,8 @@
 		2274F498299F72C800B3DD90 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2274F497299F72C800B3DD90 /* KeyboardViewController.swift */; };
 		2274F49C299F72C800B3DD90 /* GiffyBoard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2274F495299F72C800B3DD90 /* GiffyBoard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2274F4A2299F741F00B3DD90 /* GiffyBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2274F4A1299F741F00B3DD90 /* GiffyBoardView.swift */; };
+		2295EFEB29A58771008CD151 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2295EFEA29A58771008CD151 /* NetworkManager.swift */; };
+		2295EFED29A597A0008CD151 /* GiffiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2295EFEC29A597A0008CD151 /* GiffiesView.swift */; };
 		22E7830029A4377000BE7F4B /* CollectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E782FF29A4377000BE7F4B /* CollectionsView.swift */; };
 		22E7830429A44CC500BE7F4B /* CustomFirebaseAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E7830329A44CC500BE7F4B /* CustomFirebaseAuth.swift */; };
 		22E7830629A4549900BE7F4B /* BottomNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E7830529A4549900BE7F4B /* BottomNavigationView.swift */; };
@@ -73,6 +75,8 @@
 		2274F497299F72C800B3DD90 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		2274F499299F72C800B3DD90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2274F4A1299F741F00B3DD90 /* GiffyBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiffyBoardView.swift; sourceTree = "<group>"; };
+		2295EFEA29A58771008CD151 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		2295EFEC29A597A0008CD151 /* GiffiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiffiesView.swift; sourceTree = "<group>"; };
 		22E782FF29A4377000BE7F4B /* CollectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsView.swift; sourceTree = "<group>"; };
 		22E7830329A44CC500BE7F4B /* CustomFirebaseAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFirebaseAuth.swift; sourceTree = "<group>"; };
 		22E7830529A4549900BE7F4B /* BottomNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNavigationView.swift; sourceTree = "<group>"; };
@@ -116,6 +120,7 @@
 			children = (
 				2268755929A3990700CDA5A1 /* +View.swift */,
 				22E7830329A44CC500BE7F4B /* CustomFirebaseAuth.swift */,
+				2295EFEA29A58771008CD151 /* NetworkManager.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -150,6 +155,7 @@
 				22E7830B29A4637400BE7F4B /* ContentView.swift */,
 				22E7830929A4620F00BE7F4B /* ProfileView.swift */,
 				22E782FF29A4377000BE7F4B /* CollectionsView.swift */,
+				2295EFEC29A597A0008CD151 /* GiffiesView.swift */,
 				2274F487299F721700B3DD90 /* Assets.xcassets */,
 				2274F489299F721700B3DD90 /* Preview Content */,
 			);
@@ -292,9 +298,11 @@
 				2268755429A3935100CDA5A1 /* SignInView.swift in Sources */,
 				22E7830429A44CC500BE7F4B /* CustomFirebaseAuth.swift in Sources */,
 				22E7830A29A4620F00BE7F4B /* ProfileView.swift in Sources */,
+				2295EFEB29A58771008CD151 /* NetworkManager.swift in Sources */,
 				2268755729A394F900CDA5A1 /* GoogleSignInBtn.swift in Sources */,
 				22E7830029A4377000BE7F4B /* CollectionsView.swift in Sources */,
 				22E7830C29A4637400BE7F4B /* ContentView.swift in Sources */,
+				2295EFED29A597A0008CD151 /* GiffiesView.swift in Sources */,
 				22E7830629A4549900BE7F4B /* BottomNavigationView.swift in Sources */,
 				2274F484299F721600B3DD90 /* iOSGiffyApp.swift in Sources */,
 				2268755A29A3990700CDA5A1 /* +View.swift in Sources */,
