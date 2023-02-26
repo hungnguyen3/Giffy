@@ -16,7 +16,7 @@
 	border-image-slice: 1;
 	border-width: 3px;
 	border-image-source: linear-gradient(to top right, $green300, $green50);
-	
+
 	.sidePanelContent {
 		display: flex;
 		flex-direction: column;
@@ -24,11 +24,12 @@
 		overflow-x: hidden;
 
 		a {
-			color: white;
 			width: 100%;
-			justify-content: center;
+			height: 50px;
+			color: white;
 			padding: 0.5em;
 			text-align: center;
+			justify-content: center;
 			&:hover {
 				background-color: $green100;
 			}

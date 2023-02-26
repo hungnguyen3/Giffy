@@ -51,21 +51,25 @@ const SidePanel = (props: SidePanelProps) => {
 				<h1>Collections</h1>
 				{collections?.map(collection => {
 					return (
-						<a
-							style={
-								collection.collectionId === Number(collectionId)
-									? { backgroundColor: '#7da79d' }
-									: undefined
-							}
+						<div
+							style={{
+								backgroundColor:
+									collection.collectionId === Number(collectionId)
+										? '#7da79d'
+										: undefined,
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+								width: '100%',
+								height: '50px',
+								marginBottom: '10px',
+							}}
 							key={collection.collectionId}
 						>
-							<Link
-								key={collection.collectionId}
-								href={`/collections/${collection.collectionId}`}
-							>
+							<Link href={`/collections/${collection.collectionId}`}>
 								{collection.collectionName}
 							</Link>
-						</a>
+						</div>
 					);
 				})}
 				<div className={styles.buttonContainer}>
