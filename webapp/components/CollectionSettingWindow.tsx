@@ -17,6 +17,9 @@ import {
 	openDeleteConfirmationWindow,
 	selectACollectionToDelete,
 } from '../slices/CollectionsSlice';
+import CollectionPermissionBox, {
+	UserPermission,
+} from './CollectionPermissionBox';
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
@@ -34,6 +37,14 @@ export const CollectionSettingWindow = () => {
 		collectionName: collection.collectionName,
 		private: collection.private,
 	});
+	const [users, setUsers] = useState<UserPermission[]>([
+		{ collectionId: 1, userEmail: 'abc@gmail.com', permission: 'read' },
+		{ collectionId: 2, userEmail: 'sbshaunnb@gmail.com', permission: 'write' },
+	]);
+
+	const handleAddUser = (user: UserPermission) => {
+		setUsers([...users, user]);
+	};
 
 	const handleSubmit = async () => {
 		// send API request with updateCollectionPayload
@@ -91,6 +102,9 @@ export const CollectionSettingWindow = () => {
 							<option value="private">Private</option>
 							<option value="public">Public</option>
 						</select>
+					</div>
+					<div>
+						<CollectionPermissionBox users={users} onAddUser={handleAddUser} />
 					</div>
 				</div>
 

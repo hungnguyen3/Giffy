@@ -1,0 +1,46 @@
+.permission-container {
+	font-family: Arial, sans-serif;
+	background-color: #f5f5f5;
+	padding: 0 20 20 20px;
+	margin-top: -1.5em;
+	border-radius: 10px;
+}
+
+.permission-container hr {
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.permission-container label {
+	font-weight: bold;
+}
+
+.permission-container input[type='text'],
+.permission-container select {
+	margin-right: 10px;
+	padding: 5px;
+	border: none;
+	border-radius: 3px;
+	font-size: 16px;
+}
+
+.permission-container button {
+	background-color: #0070f3;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	padding: 10px;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.permission-container ul {
+	list-style: none;
+	background-color: #f5f5f5;
+	font-weight: bold;
+	padding: 10px;
+}
+
+.permission-container li {
+	margin-bottom: 5px;
+}

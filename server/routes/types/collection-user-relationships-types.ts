@@ -1,7 +1,7 @@
 export interface CollectionUserRelationshipDTO {
 	collectionId: number;
 	userId: number;
-	permission: string;
+	permission: 'read' | 'write' | 'admin';
 }
 
 export interface AddCollectionUserRelationshipDTO {
