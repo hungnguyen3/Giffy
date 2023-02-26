@@ -1,7 +1,10 @@
 import { client } from '../../src/index';
 import express from 'express';
 import { ErrorDTO } from '../types/errors-types';
-import { AddCollectionUserRelationshipDTO } from '../types/collection-user-relationships-types';
+import {
+	AddCollectionUserRelationshipDTO,
+	GetUsersByCollectionIdDTO,
+} from '../types/collection-user-relationships-types';
 
 export const addCollectionUserRelationship = async (
 	req: express.Request,
@@ -43,7 +46,7 @@ export const addCollectionUserRelationship = async (
 			data: addingUser.rows,
 		} as AddCollectionUserRelationshipDTO);
 	} catch (error) {
-		console.log(error);
+		console.log('abc');
 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);
 	}
 };
@@ -68,7 +71,10 @@ export const getUsersByCollectionId = async (req: any, res: any) => {
 		if (getUserRes.rowCount <= 0)
 			return res.status(500).send({ error: 'There is no such collection' });
 
-		if (getUserRes.rowCount > 0) return res.status(200).send(getUserRes.rows);
+		if (getUserRes.rowCount > 0)
+			return res
+				.status(200)
+				.send({ data: getUserRes.rows } as GetUsersByCollectionIdDTO);
 	} catch (err) {
 		return res.status(500).send({ error: err });
 	}

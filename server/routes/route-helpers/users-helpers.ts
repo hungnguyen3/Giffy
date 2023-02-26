@@ -2,6 +2,7 @@ import { client } from '../../src/index';
 import { ErrorDTO } from '../types/errors-types';
 import {
 	CreateUserDTO,
+	GetUserByEmailDTO,
 	GetUserByFirebaseAuthIdDTO,
 	UpdateUserByIdDTO,
 } from '../types/users-types';
@@ -109,7 +110,7 @@ export const getUserById = async (req: any, res: any) => {
 
 export const getUserByEmail = async (req: any, res: any) => {
 	try {
-		if (!req.params.Email)
+		if (!req.params.email)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
 			});
@@ -118,14 +119,16 @@ export const getUserByEmail = async (req: any, res: any) => {
 			`
 		      SELECT* FROM users WHERE "userEmail" = $1;
 		    `,
-			[req.params.Email]
+			[req.params.email]
 		);
 
 		if (getUserRes.rowCount <= 0)
 			return res.status(500).send({ error: 'There is no such user' });
 
 		if (getUserRes.rowCount === 1)
-			return res.status(200).send(getUserRes.rows[0]);
+			return res
+				.status(200)
+				.send({ data: getUserRes.rows[0] as GetUserByEmailDTO });
 
 		if (getUserRes.rowCount > 1)
 			return res
