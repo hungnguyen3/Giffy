@@ -9,13 +9,13 @@ export interface Collection {
 	collectionName: string;
 	private: boolean;
 	giffies: GiffyDTO[];
-	users: { [userId: number]: UserAccess };
+	users: { [userEmail: string]: UserAccess };
 }
 
 export interface UserAccess {
 	collectionId: number;
 	user: UserDTO;
-	permission: string;
+	permission: 'read' | 'write' | 'admin';
 }
 
 interface CollectionsState {
@@ -110,7 +110,7 @@ export const collectionsSlice = createSlice({
 			}
 		) => {
 			state.value[action.payload.collectionId].users[
-				action.payload.user.userId
+				action.payload.user.userEmail
 			] = action.payload;
 		},
 		removeGiffyFromACollection: (

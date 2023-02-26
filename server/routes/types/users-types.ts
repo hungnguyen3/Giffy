@@ -1,6 +1,7 @@
 export interface UserDTO {
 	userId: number;
 	userName: string;
+	userEmail: string;
 	profileImgUrl: string;
 	firebaseAuthId: string;
 }

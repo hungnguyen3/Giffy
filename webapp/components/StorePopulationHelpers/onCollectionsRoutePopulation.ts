@@ -59,6 +59,7 @@ export const onCollectionsRoutePopulation = (
 					const userInfo = {
 						userId: user.userId,
 						userName: user.userName,
+						userEmail: user.userEmail,
 						profileImgUrl: user.profileImgUrl,
 					};
 
@@ -100,6 +101,7 @@ export const onCollectionsRoutePopulation = (
 														user: {
 															userId: 1,
 															userName: '',
+															userEmail: '',
 															profileImgUrl: '',
 															firebaseAuthId: '',
 														},

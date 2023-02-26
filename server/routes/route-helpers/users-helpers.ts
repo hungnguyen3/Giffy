@@ -10,6 +10,7 @@ export const createUser = async (req: any, res: any) => {
 	try {
 		if (
 			!req.body.userName ||
+			!req.body.userEmail ||
 			!req.body.firebaseAuthId ||
 			!req.body.profileImgUrl
 		)
@@ -19,11 +20,16 @@ export const createUser = async (req: any, res: any) => {
 
 		const insertUserRes = await client.query(
 			`
-        INSERT INTO users ("userName", "firebaseAuthId", "profileImgUrl")
-        VALUES ($1, $2, $3)
+        INSERT INTO users ("userName", "userEmail", "firebaseAuthId", "profileImgUrl")
+        VALUES ($1, $2, $3, $4)
 				RETURNING *;
       `,
-			[req.body.userName, req.body.firebaseAuthId, req.body.profileImgUrl]
+			[
+				req.body.userName,
+				req.body.userEmail,
+				req.body.firebaseAuthId,
+				req.body.profileImgUrl,
+			]
 		);
 
 		if (insertUserRes.rowCount === 1) {
@@ -84,6 +90,35 @@ export const getUserById = async (req: any, res: any) => {
 		      SELECT* FROM users WHERE "userId" = $1;
 		    `,
 			[req.params.userId]
+		);
+
+		if (getUserRes.rowCount <= 0)
+			return res.status(500).send({ error: 'There is no such user' });
+
+		if (getUserRes.rowCount === 1)
+			return res.status(200).send(getUserRes.rows[0]);
+
+		if (getUserRes.rowCount > 1)
+			return res
+				.status(500)
+				.send('error occurred, more than one user with the same id');
+	} catch (err) {
+		return res.status(500).send({ error: err });
+	}
+};
+
+export const getUserByEmail = async (req: any, res: any) => {
+	try {
+		if (!req.params.Email)
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
+
+		const getUserRes = await client.query(
+			`
+		      SELECT* FROM users WHERE "userEmail" = $1;
+		    `,
+			[req.params.Email]
 		);
 
 		if (getUserRes.rowCount <= 0)

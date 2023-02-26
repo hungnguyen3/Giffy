@@ -13,6 +13,7 @@ import { googleSignIn, logOut, storage } from './Firebase/FirebaseInit';
 
 interface UserInfo {
 	userName: string;
+	userEmail: string;
 	firebaseAuthId: string;
 	profileImgUrl: string;
 }
@@ -23,6 +24,7 @@ const Auth = () => {
 
 	const [userInfo, setUserInfo] = useState<UserInfo>({
 		userName: '',
+		userEmail: '',
 		firebaseAuthId: '',
 		profileImgUrl:
 			'https://raw.githubusercontent.com/hungnguyen3/Giffy/main/webapp/public/userProfile.png',
@@ -64,6 +66,7 @@ const Auth = () => {
 				} else {
 					const createUserRes: ErrorDTO | CreateUserDTO = await createUser({
 						userName: userInfo.userName,
+						userEmail: userAuth?.email as string,
 						firebaseAuthId: userInfo.firebaseAuthId,
 						profileImgUrl: downloadURL,
 					});
@@ -77,6 +80,7 @@ const Auth = () => {
 							populateUser({
 								userId: user.userId,
 								userName: user.userName,
+								userEmail: user.userEmail,
 								profileImgUrl: user.profileImgUrl,
 							})
 						);

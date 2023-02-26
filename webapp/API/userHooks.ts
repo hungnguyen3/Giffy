@@ -29,6 +29,7 @@ export async function getUserByFirebaseAuthId(
 
 export async function createUser(data: {
 	userName: string;
+	userEmail: string;
 	firebaseAuthId: string;
 	profileImgUrl: string;
 }): Promise<CreateUserDTO | ErrorDTO> {
@@ -55,6 +56,7 @@ export async function createUser(data: {
 export async function updateUser(data: {
 	userId: number;
 	userName: string;
+	userEmail: string;
 	profileImgUrl: string;
 }): Promise<UpdateUserByIdDTO | ErrorDTO> {
 	try {

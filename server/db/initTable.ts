@@ -49,6 +49,7 @@ const initUsers = async () => {
         CREATE TABLE IF NOT EXISTS users (
           "userId" SERIAL PRIMARY KEY,
           "userName" varchar(255) NOT NULL,
+          "userEmail" varchar(255) NOT NULL,
           "firebaseAuthId" varchar(255) NOT NULL,
           "profileImgUrl" varchar(255)
         );
