@@ -47,3 +47,29 @@ export const addCollectionUserRelationship = async (
 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);
 	}
 };
+
+export const getUsersByCollectionId = async (req: any, res: any) => {
+	try {
+		if (!req.params.collectionId)
+			return res.status(400).send({
+				error: 'missing required parameter(s)',
+			});
+
+		const getUserRes = await client.query(
+			`
+				SELECT u.*, r."collectionId", r."permission"
+				FROM users u
+				JOIN collection_user_relationships r ON u."userId" = r."userId"
+				WHERE r."collectionId" = $1;
+			`,
+			[req.params.collectionId]
+		);
+
+		if (getUserRes.rowCount <= 0)
+			return res.status(500).send({ error: 'There is no such collection' });
+
+		if (getUserRes.rowCount > 0) return res.status(200).send(getUserRes.rows);
+	} catch (err) {
+		return res.status(500).send({ error: err });
+	}
+};

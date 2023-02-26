@@ -8,6 +8,7 @@ import {
 	closeCreateNewCollectionWindow,
 	Collection,
 	updateCollection,
+	UserAccess,
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
 import { isUpdateCollectionByIdDTO } from '../API/types/collections-types';
@@ -27,6 +28,9 @@ export const CollectionSettingWindow = () => {
 	const collection: Collection = useAppSelector(
 		(state: RootState) => state.collections.value[Number(collectionId)]
 	);
+	const collectionUsers: { [userEmail: string]: UserAccess } = useAppSelector(
+		(state: RootState) => state.collections.value[Number(collectionId)].users
+	);
 	const [updateCollectionPayload, setUpdateCollectionPayload] = useState<{
 		collectionId: number;
 		collectionName: string;
@@ -37,10 +41,16 @@ export const CollectionSettingWindow = () => {
 		collectionName: collection.collectionName,
 		private: collection.private,
 	});
-	const [users, setUsers] = useState<UserPermission[]>([
-		{ collectionId: 1, userEmail: 'abc@gmail.com', permission: 'read' },
-		{ collectionId: 2, userEmail: 'sbshaunnb@gmail.com', permission: 'write' },
-	]);
+
+	const usersWithAccess = Object.keys(collectionUsers).map(userEmail => {
+		const collectionUser = collectionUsers[userEmail];
+		return {
+			collectionId: collectionUser.collectionId,
+			userEmail: collectionUser.user.userEmail,
+			permission: collectionUser.permission,
+		};
+	});
+	const [users, setUsers] = useState<UserPermission[]>(usersWithAccess);
 
 	const handleAddUser = (user: UserPermission) => {
 		setUsers([...users, user]);

@@ -44,3 +44,15 @@
 .permission-container li {
 	margin-bottom: 5px;
 }
+
+.permission-container .permission-read {
+	color: green;
+}
+
+.permission-container .permission-write {
+	color: blue;
+}
+
+.permission-container .permission-admin {
+	color: red;
+}

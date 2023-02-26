@@ -13,7 +13,7 @@ type PermissionProps = {
 	onAddUser: (user: UserPermission) => void;
 };
 
-const Permission: React.FC<PermissionProps> = ({ users, onAddUser }) => {
+const Permission: React.FC<PermissionProps> = (props: PermissionProps) => {
 	const { collectionId } = router.query;
 	const [newUserEmail, setNewUserEmail] = useState('');
 	const [newPermission, setNewPermission] = useState('read');
@@ -32,7 +32,8 @@ const Permission: React.FC<PermissionProps> = ({ users, onAddUser }) => {
 			userEmail: newUserEmail,
 			permission: newPermission as 'read' | 'write' | 'admin',
 		};
-		onAddUser(user);
+
+		props.onAddUser(user);
 		setNewUserEmail('');
 		setNewPermission('read');
 	};
@@ -62,9 +63,12 @@ const Permission: React.FC<PermissionProps> = ({ users, onAddUser }) => {
 			<br />
 			Users with permissions:
 			<ul>
-				{users.map(user => (
+				{props.users.map(user => (
 					<li key={user.userEmail}>
-						{user.userEmail} - {user.permission}
+						{user.userEmail} -{' '}
+						<span className={styles['permission-' + user.permission]}>
+							{user.permission}
+						</span>
 					</li>
 				))}
 			</ul>

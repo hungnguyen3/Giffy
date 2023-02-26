@@ -16,18 +16,20 @@ import {
 	clearCollections,
 	Collection,
 	populateCollections,
+	UserAccess,
 } from '../../slices/CollectionsSlice';
 import { app } from '../Firebase/FirebaseInit';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
-import { ErrorDTO } from '../../API/types/errors-types';
+import { ErrorDTO, isErrorDTO } from '../../API/types/errors-types';
 import { getCollectionsByUserId } from '../../API/collectionHooks';
 import { getGiffiesByCollectionId } from '../../API/giffyHooks';
 import {
 	GetUserByFirebaseAuthIdDTO,
 	isGetUserByFirebaseAuthIdDTO,
 } from '../../API/types/users-types';
+import { getUsersByCollectionId } from '../../API/collectionUserRelationshipsHooks';
 
 interface onCollectionsRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -80,7 +82,28 @@ export const onCollectionsRoutePopulation = (
 							var collections = response.data;
 							var toStoreCollections: Collection[] = [];
 
-							collections.map((collection: CollectionDTO) => {
+							collections.map(async (collection: CollectionDTO) => {
+								var users = await getUsersByCollectionId(
+									collection.collectionId
+								);
+								if (isErrorDTO(users)) return null;
+
+								const usersObject = users.reduce((acc, user) => {
+									(acc as { [userEmail: string]: UserAccess })[user.userEmail] =
+										{
+											collectionId: collection.collectionId,
+											user: {
+												userId: user.userId,
+												userName: user.userName,
+												userEmail: user.userEmail,
+												profileImgUrl: user.profileImgUrl,
+												firebaseAuthId: user.firebaseAuthId,
+											},
+											permission: user.permission,
+										};
+									return acc;
+								}, {});
+
 								getGiffiesByCollectionId(Number(collection.collectionId)).then(
 									(response: ErrorDTO | GetGiffiesByCollectionIdDTO) => {
 										if (!isGetGiffiesByCollectionIdDTO(response)) {
@@ -95,21 +118,10 @@ export const onCollectionsRoutePopulation = (
 												collectionName: collection.collectionName,
 												private: collection.private,
 												giffies: giffies,
-												users: {
-													1: {
-														collectionId: 1,
-														user: {
-															userId: 1,
-															userName: '',
-															userEmail: '',
-															profileImgUrl: '',
-															firebaseAuthId: '',
-														},
-														permission: 'admin',
-													},
-												},
+												users: usersObject,
 											},
 										];
+
 										dispatch(populateCollections(toStoreCollections));
 									}
 								);
