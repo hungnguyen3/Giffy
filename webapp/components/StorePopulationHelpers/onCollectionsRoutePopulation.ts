@@ -58,6 +58,7 @@ export const onCollectionsRoutePopulation = (
 					}
 
 					var user = response.data;
+
 					const userInfo = {
 						userId: user.userId,
 						userName: user.userName,
@@ -88,7 +89,7 @@ export const onCollectionsRoutePopulation = (
 								);
 								if (isErrorDTO(users)) return null;
 
-								const usersObject = users.reduce((acc, user) => {
+								const usersObject = users.data.reduce((acc, user) => {
 									(acc as { [userEmail: string]: UserAccess })[user.userEmail] =
 										{
 											collectionId: collection.collectionId,

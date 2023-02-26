@@ -14,6 +14,10 @@ export interface GetUserByFirebaseAuthIdDTO {
 	data: UserDTO;
 }
 
+export interface GetUserByEmailDTO {
+	data: UserDTO;
+}
+
 export interface UpdateUserByIdDTO {
 	data: UserDTO;
 }

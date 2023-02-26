@@ -1,6 +1,7 @@
 import { ErrorDTO } from './types/errors-types';
 import {
 	CreateUserDTO,
+	GetUserByEmailDTO,
 	GetUserByFirebaseAuthIdDTO,
 	UpdateUserByIdDTO,
 } from './types/users-types';
@@ -11,6 +12,28 @@ export async function getUserByFirebaseAuthId(
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserByFirebaseAuthId/${firebaseAuthId}`,
+			{
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'GET',
+			}
+		);
+
+		return response.json();
+	} catch (e) {
+		return { error: 'unknown error' } as ErrorDTO;
+	}
+}
+
+export async function getUserByEmail(
+	email: string
+): Promise<GetUserByEmailDTO | ErrorDTO> {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserByEmail/${email}`,
 			{
 				cache: 'no-cache',
 				credentials: 'same-origin',

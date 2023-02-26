@@ -1,11 +1,21 @@
-export type CollectionUserRelationshipsDTO = {
+export interface CollectionUserRelationshipDTO {
+	collectionId: number;
 	userId: number;
+	permission: 'read' | 'write' | 'admin';
+}
+
+export interface AddCollectionUserRelationshipDTO {
+	data: CollectionUserRelationshipDTO;
+}
+
+export interface CollectionUserRelationshipsDTO
+	extends CollectionUserRelationshipDTO {
 	userName: string;
 	userEmail: string;
 	firebaseAuthId: string;
 	profileImgUrl: string;
-	collectionId: number;
-	permission: 'read' | 'write' | 'admin';
-};
+}
 
-export type GetUsersByCollectionIdDTO = CollectionUserRelationshipsDTO[];
+export interface GetUsersByCollectionIdDTO {
+	data: CollectionUserRelationshipsDTO[];
+}
