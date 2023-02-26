@@ -1,11 +1,10 @@
 import router from 'next/router';
-import { KeyboardEvent, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateCollectionById } from '../API/collectionHooks';
 import { useAppSelector } from '../hooks';
 import {
 	closeCollectionSettingWindow,
-	closeCreateNewCollectionWindow,
 	Collection,
 	updateCollection,
 	UserAccess,
@@ -14,13 +13,16 @@ import { RootState } from '../store';
 import { isUpdateCollectionByIdDTO } from '../API/types/collections-types';
 import styles from '../styles/CollectionSettingWindow.module.scss';
 import {
-	openCreateNewCollectionWindow,
 	openDeleteConfirmationWindow,
 	selectACollectionToDelete,
 } from '../slices/CollectionsSlice';
 import CollectionPermissionBox, {
 	UserPermission,
 } from './CollectionPermissionBox';
+import { getUserByEmail } from '../API/userHooks';
+import { ErrorDTO, isErrorDTO } from '../API/types/errors-types';
+import { GetUserByEmailDTO } from '../API/types/users-types';
+import { addUserToACollection } from '../API/collectionUserRelationshipsHooks';
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
@@ -52,8 +54,31 @@ export const CollectionSettingWindow = () => {
 	});
 	const [users, setUsers] = useState<UserPermission[]>(usersWithAccess);
 
-	const handleAddUser = (user: UserPermission) => {
-		setUsers([...users, user]);
+	const handleAddUser = async (user: UserPermission) => {
+		const userInfo: GetUserByEmailDTO | ErrorDTO = await getUserByEmail(
+			user.userEmail
+		);
+
+		if (isErrorDTO(userInfo)) {
+			alert('Invalid User Email');
+			return null;
+		}
+
+		const userId = userInfo.data.userId;
+
+		const userProps = {
+			collectionId: user.collectionId,
+			userId: userId,
+			permission: user.permission,
+		};
+
+		const response = await addUserToACollection(userProps);
+		if (!isErrorDTO(response)) {
+			setUsers([...users, user]);
+			console.log(response);
+		} else {
+			alert('Adding user to collection failed!');
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -75,7 +100,8 @@ export const CollectionSettingWindow = () => {
 	return (
 		<div className={styles.centeredBox}>
 			<form
-				onSubmit={() => {
+				onSubmit={event => {
+					event.preventDefault(); // prevent page refresh
 					handleSubmit;
 				}}
 			>
