@@ -163,7 +163,7 @@ export const CollectionSettingWindow = () => {
 							dispatch(openDeleteConfirmationWindow());
 						}}
 					>
-						x
+						Delete
 					</button>
 				</div>
 			</form>

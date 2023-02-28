@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 const Register: NextPage = () => {
 	return (
 		<Layout>
-			<div>Register</div>
+			<div />
 		</Layout>
 	);
 };

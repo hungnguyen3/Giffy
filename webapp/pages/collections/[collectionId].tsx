@@ -19,19 +19,20 @@ const Collection: NextPage = () => {
 	const router = useRouter();
 	const { collectionId } = router.query;
 	const dispatch = useAppDispatch();
+
 	const giffies = useAppSelector((state: RootState) => {
 		if (Object.keys(state.collections.value).length !== 0) {
 			if (Number(collectionId) in state.collections.value) {
 				return state.collections.value[Number(collectionId)].giffies;
 			}
 		}
-		// return state.collections.value?.filter(
-		// 	curCollection => curCollection.collectionId === Number(collectionId)
-		// )[0]?.giffies;
 	});
+
 	const selectedGiffies = useAppSelector(
 		(state: RootState) => state.collections.selectedGiffyIds
 	);
+
+	const user = useAppSelector((state: RootState) => state.user.value);
 
 	useEffect(() => {
 		if (collectionId && !Number.isNaN(Number(collectionId))) {
@@ -60,7 +61,7 @@ const Collection: NextPage = () => {
 		return (
 			<Layout>
 				<div className={styles.centeredBox}>
-					<h1>Create a collection to get started</h1>
+					<h1>Hi {user?.userName}👋, create a collection to get started</h1>
 				</div>
 			</Layout>
 		);
@@ -92,7 +93,7 @@ const Collection: NextPage = () => {
 				</div>
 			) : (
 				<div className={styles.centeredBox}>
-					<h1>No items yet</h1>
+					<h1>Empty collection 👀</h1>
 				</div>
 			)}
 		</Layout>

@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { logIn, logOut } from '../../slices/UserAuthSlice';
+import { logIn, logOut, UserAuth } from '../../slices/UserAuthSlice';
 import { getUserByFirebaseAuthId } from '../../API/userHooks';
 import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
@@ -37,25 +37,21 @@ interface onCollectionsRoutePopulationProps {
 	setLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
-export const onCollectionsRoutePopulation = (
-	props: onCollectionsRoutePopulationProps
+// Function to populate user information
+export const populateUserInfo = (
+	dispatch: ThunkDispatch<any, any, any>,
+	userAuth: UserAuth
 ) => {
-	const { dispatch, router, setLoggedIn } = props;
-
-	onAuthStateChanged(getAuth(app), user => {
-		if (user) {
-			const userAuth = {
-				uid: user.uid,
-				email: user.email,
-				displayName: user.displayName,
-				photoURL: user.photoURL,
-			};
-
-			getUserByFirebaseAuthId(userAuth.uid)
-				.then((response: ErrorDTO | GetUserByFirebaseAuthIdDTO) => {
-					if (!isGetUserByFirebaseAuthIdDTO(response)) {
-						return null;
-					}
+	return new Promise<{
+		userId: number;
+		userName: string;
+		profileImgUrl: string;
+	}>((resolve, reject) => {
+		getUserByFirebaseAuthId(userAuth.uid)
+			.then((response: ErrorDTO | GetUserByFirebaseAuthIdDTO) => {
+				if (!isGetUserByFirebaseAuthIdDTO(response)) {
+					return reject();
+				}
 
 					var user = response.data;
 
@@ -66,22 +62,31 @@ export const onCollectionsRoutePopulation = (
 						profileImgUrl: user.profileImgUrl,
 					};
 
-					if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName)
-						props.dispatch(populateUser(userInfo));
-					return userInfo;
-				})
-				.then(userInfo => {
-					if (!userInfo) {
-						return null;
-					}
-					getCollectionsByUserId(userInfo.userId)
-						.then((response: GetCollectionsByUserIdDTO | ErrorDTO) => {
-							if (!isGetCollectionsByUserIdDTO(response)) {
-								return null;
-							}
+				if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName) {
+					dispatch(populateUser(userInfo));
+				}
+				return resolve(userInfo);
+			})
+			.catch(() => {
+				reject();
+			});
+	});
+};
 
-							var collections = response.data;
-							var toStoreCollections: Collection[] = [];
+// Function to populate collections
+const populateCollectionsInfo = (
+	dispatch: ThunkDispatch<any, any, any>,
+	userId: number
+) => {
+	return new Promise((resolve, reject) => {
+		getCollectionsByUserId(userId)
+			.then((response: GetCollectionsByUserIdDTO | ErrorDTO) => {
+				if (!isGetCollectionsByUserIdDTO(response)) {
+					return reject();
+				}
+
+				var collections = response.data;
+				var toStoreCollections: Collection[] = [];
 
 							collections.map(async (collection: CollectionDTO) => {
 								var users = await getUsersByCollectionId(
@@ -128,21 +133,54 @@ export const onCollectionsRoutePopulation = (
 								);
 							});
 
-							const collectionIds = collections.map(
-								(collection: CollectionDTO) => collection.collectionId
-							);
+					const collectionIds = collections.map(
+						(collection: CollectionDTO) => collection.collectionId
+					);
+					resolve(collectionIds.length > 0 ? Math.min(...collectionIds) : 0);
+				});
+			})
+			.catch(() => {
+				reject();
+			});
+	});
+};
 
-							return collectionIds.length > 0 ? Math.min(...collectionIds) : 0;
-						})
-						.then(firstCollectionId => {
-							if (
-								firstCollectionId !== null &&
-								firstCollectionId !== undefined &&
-								!router.route.includes('discovery')
-							) {
-								router.push(`/collections/${firstCollectionId}`);
-							}
-						});
+// Original function modified to call the new functions
+export const onCollectionsRoutePopulation = (
+	props: onCollectionsRoutePopulationProps
+) => {
+	const { dispatch, router, setLoggedIn } = props;
+
+	// clear collections every time we change route
+	dispatch(clearCollections());
+
+	onAuthStateChanged(getAuth(app), user => {
+		if (user) {
+			const userAuth = {
+				uid: user.uid,
+				email: user.email,
+				displayName: user.displayName,
+				photoURL: user.photoURL,
+			};
+
+			populateUserInfo(dispatch, userAuth)
+				.then(userInfo => {
+					if (!userInfo) {
+						return null;
+					}
+					return populateCollectionsInfo(dispatch, userInfo.userId);
+				})
+				.then(firstCollectionId => {
+					if (
+						firstCollectionId !== null &&
+						firstCollectionId !== undefined &&
+						!router.route.includes('discovery')
+					) {
+						router.push(`/collections/${firstCollectionId}`);
+					}
+				})
+				.catch(() => {
+					router.push(`/collections/0`);
 				});
 
 			dispatch(logIn(userAuth));
@@ -152,7 +190,6 @@ export const onCollectionsRoutePopulation = (
 			dispatch(clearUser());
 			dispatch(clearCollections());
 			setLoggedIn(false);
-			router.push('/auth');
 		}
 	});
 };
