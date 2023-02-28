@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { User } from 'firebase/auth';
 
-export type UserAuth = Pick<User, 'uid' | 'email' | 'displayName' | 'photoURL'>;
+export type UserAuth = Pick<User, 'email' | 'displayName' | 'photoURL'>;
 
 interface UserAuthState {
 	value: UserAuth | null;

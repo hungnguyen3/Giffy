@@ -3,14 +3,21 @@ export interface UserDTO {
 	userName: string;
 	userEmail: string;
 	profileImgUrl: string;
-	firebaseAuthId: string;
+}
+
+export interface DeleteUserDTO {
+	data: { successMessage: string };
 }
 
 export interface CreateUserDTO {
 	data: UserDTO;
 }
 
-export interface GetUserByFirebaseAuthIdDTO {
+export interface GetUserByIdDTO {
+	data: UserDTO;
+}
+
+export interface GetCurrentUserDTO {
 	data: UserDTO;
 }
 

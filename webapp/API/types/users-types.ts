@@ -3,14 +3,17 @@ export interface UserDTO {
 	userName: string;
 	userEmail: string;
 	profileImgUrl: string;
-	firebaseAuthId: string;
 }
 
 export interface CreateUserDTO {
 	data: UserDTO;
 }
 
-export interface GetUserByFirebaseAuthIdDTO {
+export interface GetUserByIdDTO {
+	data: UserDTO;
+}
+
+export interface GetCurrentUserDTO {
 	data: UserDTO;
 }
 
@@ -33,9 +36,7 @@ export function isUserDTO(obj: any): obj is UserDTO {
 		obj.hasOwnProperty('userEmail') &&
 		typeof obj.userEmail === 'string' &&
 		obj.hasOwnProperty('profileImgUrl') &&
-		typeof obj.profileImgUrl === 'string' &&
-		obj.hasOwnProperty('firebaseAuthId') &&
-		typeof obj.firebaseAuthId === 'string'
+		typeof obj.profileImgUrl === 'string'
 	);
 }
 
@@ -43,9 +44,11 @@ export function isCreateUserDTO(obj: any): obj is CreateUserDTO {
 	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
 }
 
-export function isGetUserByFirebaseAuthIdDTO(
-	obj: any
-): obj is GetUserByFirebaseAuthIdDTO {
+export function isGetUserByIdDTO(obj: any): obj is GetUserByIdDTO {
+	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
+}
+
+export function isGetCurrentUserDTO(obj: any): obj is GetCurrentUserDTO {
 	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
 }
 

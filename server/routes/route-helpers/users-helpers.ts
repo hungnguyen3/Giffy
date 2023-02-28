@@ -3,18 +3,15 @@ import { ErrorDTO } from '../types/errors-types';
 import {
 	CreateUserDTO,
 	GetUserByEmailDTO,
-	GetUserByFirebaseAuthIdDTO,
+	DeleteUserDTO,
+	GetCurrentUserDTO,
+	GetUserByIdDTO,
 	UpdateUserByIdDTO,
 } from '../types/users-types';
 
 export const createUser = async (req: any, res: any) => {
 	try {
-		if (
-			!req.body.userName ||
-			!req.body.userEmail ||
-			!req.body.firebaseAuthId ||
-			!req.body.profileImgUrl
-		)
+		if (!req.body.userName || !req.body.userEmail || !req.body.profileImgUrl)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
 			} as ErrorDTO);
@@ -53,7 +50,7 @@ export const deleteUserById = async (req: any, res: any) => {
 		if (!req.params.userId)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
-			});
+			} as ErrorDTO);
 
 		const deleteUserRes = await client.query(
 			`
@@ -63,19 +60,24 @@ export const deleteUserById = async (req: any, res: any) => {
 		);
 
 		if (deleteUserRes.rowCount <= 0)
-			return res.status(500).send({ error: 'There is no such user' });
+			return res
+				.status(500)
+				.send({ error: 'There is no such user' } as ErrorDTO);
 
 		if (deleteUserRes.rowCount === 1)
-			return res
-				.status(200)
-				.send('you have successfully deleted a user uid: ' + req.params.userId);
+			return res.status(200).send({
+				data: {
+					successMessage:
+						'you have successfully deleted a user uid: ' + req.params.userId,
+				},
+			} as DeleteUserDTO);
 
 		if (deleteUserRes.rowCount > 1)
 			return res
 				.status(500)
 				.send({ error: 'error occurred, more than one user with the same id' });
 	} catch (err) {
-		return res.status(500).send({ error: err });
+		return res.status(500).send({ error: err } as ErrorDTO);
 	}
 };
 
@@ -84,7 +86,7 @@ export const getUserById = async (req: any, res: any) => {
 		if (!req.params.userId)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
-			});
+			} as ErrorDTO);
 
 		const getUserRes = await client.query(
 			`
@@ -94,17 +96,21 @@ export const getUserById = async (req: any, res: any) => {
 		);
 
 		if (getUserRes.rowCount <= 0)
-			return res.status(500).send({ error: 'There is no such user' });
-
-		if (getUserRes.rowCount === 1)
-			return res.status(200).send(getUserRes.rows[0]);
-
-		if (getUserRes.rowCount > 1)
 			return res
 				.status(500)
-				.send('error occurred, more than one user with the same id');
+				.send({ error: 'There is no such user' } as ErrorDTO);
+
+		if (getUserRes.rowCount === 1)
+			return res
+				.status(200)
+				.send({ data: getUserRes.rows[0] } as GetUserByIdDTO);
+
+		if (getUserRes.rowCount > 1)
+			return res.status(500).send({
+				error: 'error occurred, more than one user with the same id',
+			} as ErrorDTO);
 	} catch (err) {
-		return res.status(500).send({ error: err });
+		return res.status(500).send({ error: err } as ErrorDTO);
 	}
 };
 
@@ -139,34 +145,36 @@ export const getUserByEmail = async (req: any, res: any) => {
 	}
 };
 
-export const getUserByFirebaseAuthId = async (req: any, res: any) => {
+export const getCurrentUser = async (req: any, res: any) => {
 	try {
-		if (!req.params.firebaseAuthId)
+		if (!req.user?.uid) {
 			return res.status(400).send({
 				error: 'Missing required parameter(s)',
 			} as ErrorDTO);
+		}
 
 		const getUserRes = await client.query(
 			`
-		      SELECT* FROM users WHERE "firebaseAuthId" = $1;
-		    `,
-			[req.params.firebaseAuthId]
+      SELECT * FROM users WHERE "firebaseAuthId" = $1;
+    `,
+			[req.user.uid]
 		);
 
-		if (getUserRes.rowCount <= 0)
-			return res
-				.status(500)
-				.send({ error: 'There is no such user' } as ErrorDTO);
+		if (getUserRes.rowCount <= 0) {
+			return res.status(404).send({ error: 'User not found' } as ErrorDTO);
+		}
 
-		if (getUserRes.rowCount === 1)
+		if (getUserRes.rowCount === 1) {
 			return res
 				.status(200)
-				.send({ data: getUserRes.rows[0] } as GetUserByFirebaseAuthIdDTO);
+				.send({ data: getUserRes.rows[0] } as GetCurrentUserDTO);
+		}
 
-		if (getUserRes.rowCount > 1)
+		if (getUserRes.rowCount > 1) {
 			return res.status(500).send({
 				error: 'Error occurred, more than one user with the same id',
 			} as ErrorDTO);
+		}
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send({
@@ -180,7 +188,7 @@ export const updateUserById = async (req: any, res: any) => {
 		if (!req.params.userId || !req.body.userName || !req.body.profileImgUrl)
 			return res.status(400).send({
 				error: 'missing required parameter(s)',
-			});
+			} as ErrorDTO);
 
 		const updateUserRes = await client.query(
 			`
@@ -192,7 +200,9 @@ export const updateUserById = async (req: any, res: any) => {
 			[req.body.userName, req.body.profileImgUrl, req.params.userId]
 		);
 		if (updateUserRes.rowCount <= 0)
-			return res.status(500).send({ error: 'There is no such user' });
+			return res
+				.status(500)
+				.send({ error: 'There is no such user' } as ErrorDTO);
 
 		if (updateUserRes.rowCount === 1)
 			return res.send({
@@ -200,10 +210,10 @@ export const updateUserById = async (req: any, res: any) => {
 			} as UpdateUserByIdDTO);
 
 		if (updateUserRes.rowCount > 1)
-			return res
-				.status(500)
-				.send({ error: 'error occurred, more than one user with the same id' });
+			return res.status(500).send({
+				error: 'error occurred, more than one user with the same id',
+			} as ErrorDTO);
 	} catch (err) {
-		return res.status(500).send({ error: err });
+		return res.status(500).send({ error: err } as ErrorDTO);
 	}
 };

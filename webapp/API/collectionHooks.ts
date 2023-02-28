@@ -1,7 +1,7 @@
 import {
 	CreateCollectionDTO,
 	DeleteCollectionDTO,
-	GetCollectionsByUserIdDTO,
+	GetCurrentUserCollectionsDTO,
 	GetPublicCollectionsDTO,
 	UpdateCollectionByIdDTO,
 } from './types/collections-types';
@@ -18,7 +18,7 @@ export async function createCollection(data: {
 			{
 				method: 'POST',
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -41,7 +41,7 @@ export async function deleteCollectionsByCollectionId(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/deleteCollectionById/${collectionId}`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -56,15 +56,15 @@ export async function deleteCollectionsByCollectionId(
 	}
 }
 
-export async function getCollectionsByUserId(
-	userId: number
-): Promise<GetCollectionsByUserIdDTO | ErrorDTO> {
+export async function getCurrentUserCollections(): Promise<
+	GetCurrentUserCollectionsDTO | ErrorDTO
+> {
 	try {
 		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/getCollectionsByUserId/${userId}`,
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/getCurrentUserCollections`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -89,7 +89,7 @@ export async function updateCollectionById(data: {
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/updateCollectionById/${data.collectionId}`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -119,7 +119,7 @@ export async function getPublicCollections(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/getPublicCollections?${queryString}`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},

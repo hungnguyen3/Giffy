@@ -3,11 +3,12 @@ import express from 'express';
 import {
 	CreateCollectionDTO,
 	DeleteCollectionDTO,
-	GetCollectionsByUserIdDTO,
+	GetCurrentUserCollectionsDTO,
 	GetPublicCollectionsDTO,
 	UpdateCollectionByIdDTO,
 } from '../types/collections-types';
 import { ErrorDTO } from '../types/errors-types';
+import { AuthenticatedRequest } from '../middleware/auth-middleware';
 
 export const createCollection = async (
 	req: express.Request,
@@ -224,32 +225,48 @@ export const updateCollectionById = async (
 	}
 };
 
-export const getCollectionsByUserId = async (
-	req: express.Request,
+export const getCurrentUserCollections = async (
+	req: AuthenticatedRequest,
 	res: express.Response
 ) => {
 	try {
-		const userId = parseInt(req.params.userId);
+		const firebaseAuthId = req.user?.uid;
 
-		if (isNaN(userId)) {
-			return res.status(400).send({
-				error: 'userId must be a valid integer',
+		if (!firebaseAuthId)
+			return res.status(401).send({ error: 'user not found' });
+
+		// Retrieve the user's userId from the database using their firebaseAuthId
+		const getUserIdRes = await client.query(
+			`
+				SELECT "userId" FROM users WHERE "firebaseAuthId" = $1;
+			`,
+			[firebaseAuthId]
+		);
+
+		// Check if the user exists in the database
+		if (getUserIdRes.rowCount <= 0) {
+			return res.status(404).send({
+				error: 'User not found',
 			} as ErrorDTO);
 		}
 
-		let getCollectionsRes = await client.query(
+		// Extract the userId from the result
+		const userId = getUserIdRes.rows[0].userId;
+
+		// Query the collection_user_relationships table to get the collections
+		const getCollectionsRes = await client.query(
 			`
-							SELECT collections.*
-							FROM collection_user_relationships as cur
-							INNER JOIN collections ON cur."collectionId" = collections."collectionId"
-							WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
-					`,
+				SELECT collections.*
+				FROM collection_user_relationships as cur
+				INNER JOIN collections ON cur."collectionId" = collections."collectionId"
+				WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
+			`,
 			[userId]
 		);
 
 		res.status(200).send({
 			data: getCollectionsRes.rows,
-		} as GetCollectionsByUserIdDTO);
+		} as GetCurrentUserCollectionsDTO);
 	} catch (error) {
 		console.log(error);
 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);

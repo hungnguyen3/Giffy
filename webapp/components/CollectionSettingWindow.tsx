@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { updateCollectionById } from '../API/collectionHooks';
 import { useAppSelector } from '../hooks';
 import {
+	addUsersToACollection,
 	closeCollectionSettingWindow,
 	Collection,
 	updateCollection,
@@ -54,9 +55,9 @@ export const CollectionSettingWindow = () => {
 	});
 	const [users, setUsers] = useState<UserPermission[]>(usersWithAccess);
 
-	const handleAddUser = async (user: UserPermission) => {
+	const handleAddUser = async (userPermission: UserPermission) => {
 		const userInfo: GetUserByEmailDTO | ErrorDTO = await getUserByEmail(
-			user.userEmail
+			userPermission.userEmail
 		);
 
 		if (isErrorDTO(userInfo)) {
@@ -67,15 +68,19 @@ export const CollectionSettingWindow = () => {
 		const userId = userInfo.data.userId;
 
 		const userProps = {
-			collectionId: user.collectionId,
+			collectionId: userPermission.collectionId,
 			userId: userId,
-			permission: user.permission,
+			permission: userPermission.permission,
 		};
 
 		const response = await addUserToACollection(userProps);
 		if (!isErrorDTO(response)) {
-			setUsers([...users, user]);
-			console.log(response);
+			setUsers([...users, userPermission]);
+			addUsersToACollection({
+				collectionId: userPermission.collectionId,
+				user: userInfo.data,
+				permission: userPermission.permission,
+			});
 		} else {
 			alert('Adding user to collection failed!');
 		}

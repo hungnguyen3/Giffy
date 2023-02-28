@@ -23,25 +23,62 @@ export const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
 
-export const googleSignIn = () => {
-	signInWithPopup(auth, provider)
-		.then(result => {
-			const credential = GoogleAuthProvider.credentialFromResult(result);
-			const token = credential?.accessToken;
-			const user = result.user;
-		})
-		.catch(error => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			const email = error.customData.email;
-			const credential = GoogleAuthProvider.credentialFromError(error);
+export const googleSignIn = async () => {
+	try {
+		const result = await signInWithPopup(auth, provider);
+		const credential = GoogleAuthProvider.credentialFromResult(result);
+		const token = credential?.accessToken;
+		const user = result.user;
+
+		// TODO: handle csrf token
+		user.getIdToken().then(async idToken => {
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/sessionLogin`,
+				{
+					method: 'POST',
+					credentials: 'include',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ idToken }),
+				}
+			);
+
+			if (response.ok) {
+				// User is authenticated and session cookie is set
+				window.location.reload();
+			} else {
+				// Authentication failed
+				logOut();
+			}
 		});
+	} catch (error) {
+		// Handle error
+		console.log(error);
+	}
 };
 
-export const logOut = () => {
-	signOut(auth)
-		.then(() => {})
-		.catch(error => {});
+export const logOut = async () => {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/sessionLogout`,
+			{
+				method: 'POST',
+				credentials: 'include',
+			}
+		);
+
+		if (response.ok) {
+			// Session cookie is cleared on the server
+			await signOut(auth);
+		} else {
+			// Failed to clear session cookie
+			alert('Failed to log out. Please try again. Or contact us 🥺');
+		}
+	} catch (error) {
+		// Handle error
+		console.error(error);
+	}
 };
 
 export const storage = getStorage(app);

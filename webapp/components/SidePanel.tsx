@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store';
 import { openCreateNewCollectionWindow } from '../slices/CollectionsSlice';
 import { useRouter } from 'next/router';
-
 import Link from 'next/link';
 
 interface SidePanelProps {
@@ -65,21 +64,21 @@ const SidePanel = (props: SidePanelProps) => {
 				<div className={styles.collectionsContainer}>
 					{collections?.map(collection => {
 						return (
-							<a
-								style={
-									collection.collectionId === Number(collectionId)
-										? { backgroundColor: '#7da79d' }
-										: undefined
-								}
+							<Link
 								key={collection.collectionId}
+								href={`/${path}/${collection.collectionId}`}
 							>
-								<Link
+								<a
+									style={
+										collection.collectionId === Number(collectionId)
+											? { backgroundColor: '#7da79d' }
+											: undefined
+									}
 									key={collection.collectionId}
-									href={`/${path}/${collection.collectionId}`}
 								>
 									{collection.collectionName}
-								</Link>
-							</a>
+								</a>
+							</Link>
 						);
 					})}
 				</div>

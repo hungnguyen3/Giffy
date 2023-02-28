@@ -63,14 +63,17 @@ const Permission: React.FC<PermissionProps> = (props: PermissionProps) => {
 			<br />
 			Users with permissions:
 			<ul>
-				{props.users.map(user => (
-					<li key={user.userEmail}>
-						{user.userEmail} -{' '}
-						<span className={styles['permission-' + user.permission]}>
-							{user.permission}
-						</span>
-					</li>
-				))}
+				{props.users.map(user => {
+					if (user.collectionId === Number(collectionId))
+						return (
+							<li key={user.userEmail}>
+								{user.userEmail} -{' '}
+								<span className={styles['permission-' + user.permission]}>
+									{user.permission}
+								</span>
+							</li>
+						);
+				})}
 			</ul>
 		</div>
 	);

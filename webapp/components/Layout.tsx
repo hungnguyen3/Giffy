@@ -1,12 +1,10 @@
 import layoutStyles from '../styles/Layout.module.scss';
 import SidePanel from './SidePanel';
 import Header from './Header';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useEffect, useState } from 'react';
 import { RootState } from '../store';
 import AccountSettings from './AccountSettings';
-import { app } from './Firebase/FirebaseInit';
 import { Collection } from '../slices/CollectionsSlice';
 import UploadGiffy from '../components/UploadGiffy';
 import { useRouter } from 'next/router';
@@ -17,6 +15,8 @@ import { DeleteConfirmationWindow } from './DeleteConfirmationWindow';
 import { onCollectionsRoutePopulation } from './StorePopulationHelpers/onCollectionsRoutePopulation';
 import { CollectionSettingWindow } from './CollectionSettingWindow';
 import { onDiscoveryRoutePopulation } from './StorePopulationHelpers/onDiscoveryRoutePopulation';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { app } from './Firebase/FirebaseInit';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -24,13 +24,14 @@ interface LayoutProps {
 
 const Layout = (props: LayoutProps) => {
 	const [loggedIn, setLoggedIn] = useState(false);
-	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const { collectionId } = router.query;
 	let path = router.pathname.split('/')[1];
 	const isOnDiscoveryPage = path == 'discovery';
 	const isOnCollectionsPage = path == 'collections';
+	const [establishingUserSessionLoading, setEstablishingUserSessionLoading] =
+		useState(true);
 
 	const isAccountSettingOpen = useAppSelector(
 		(state: RootState) => state.accountSetting.isAccountSettingOpen
@@ -55,6 +56,10 @@ const Layout = (props: LayoutProps) => {
 	);
 
 	useEffect(() => {
+		onAuthStateChanged(getAuth(app), user => {
+			if (user) setEstablishingUserSessionLoading(true);
+		});
+
 		const handlePath = async () => {
 			switch (path) {
 				case '':
@@ -65,7 +70,6 @@ const Layout = (props: LayoutProps) => {
 						router: router,
 						setLoggedIn: setLoggedIn,
 					});
-					setLoading(false);
 					break;
 				case 'auth':
 					// TO DO: add auth route population
@@ -74,7 +78,6 @@ const Layout = (props: LayoutProps) => {
 						router: router,
 						setLoggedIn: setLoggedIn,
 					});
-					setLoading(false);
 					break;
 				default:
 					await onCollectionsRoutePopulation({
@@ -82,7 +85,6 @@ const Layout = (props: LayoutProps) => {
 						router: router,
 						setLoggedIn: setLoggedIn,
 					});
-					setLoading(false);
 					break;
 			}
 		};
@@ -105,9 +107,16 @@ const Layout = (props: LayoutProps) => {
 		}
 	}, [collections.length]);
 
-	if (loading) {
-		return <Loading />;
-	} else if ((loggedIn && hasAnAccount) || isOnDiscoveryPage) {
+	// Because the user session is established asynchronously
+	// We need to delay the rendering of the auth window
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setEstablishingUserSessionLoading(false);
+		}, 2000);
+		return () => clearTimeout(timer);
+	}, [establishingUserSessionLoading]);
+
+	if ((loggedIn && hasAnAccount) || isOnDiscoveryPage) {
 		return (
 			<div className={layoutStyles.background}>
 				{/* if change the value 20%, change the width of flexView class too*/}
@@ -144,13 +153,17 @@ const Layout = (props: LayoutProps) => {
 			</div>
 		);
 	} else {
-		return (
-			<div>
-				<Modal disableCloseButton={true}>
-					<Auth />
-				</Modal>
-			</div>
-		);
+		if (!establishingUserSessionLoading) {
+			return (
+				<div>
+					<Modal disableCloseButton={true}>
+						<Auth />
+					</Modal>
+				</div>
+			);
+		} else {
+			return <Loading />;
+		}
 	}
 };
 
@@ -160,7 +173,7 @@ const Loading = () => {
 			className={layoutStyles.centeredBox}
 			style={{ width: '100vw', height: '100vh' }}
 		>
-			<h3>Loading...</h3>
+			<h3>Loading...🚀🚀</h3>
 		</div>
 	);
 };

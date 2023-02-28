@@ -1,11 +1,11 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { logIn, logOut, UserAuth } from '../../slices/UserAuthSlice';
-import { getUserByFirebaseAuthId } from '../../API/userHooks';
+import { getCurrentUser } from '../../API/userHooks';
 import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
 	CollectionDTO,
-	GetCollectionsByUserIdDTO,
-	isGetCollectionsByUserIdDTO,
+	GetCurrentUserCollectionsDTO,
+	isGetCurrentUserCollectionsDTO,
 } from '../../API/types/collections-types';
 import {
 	GetGiffiesByCollectionIdDTO,
@@ -23,11 +23,11 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { ErrorDTO, isErrorDTO } from '../../API/types/errors-types';
-import { getCollectionsByUserId } from '../../API/collectionHooks';
+import { getCurrentUserCollections } from '../../API/collectionHooks';
 import { getGiffiesByCollectionId } from '../../API/giffyHooks';
 import {
-	GetUserByFirebaseAuthIdDTO,
-	isGetUserByFirebaseAuthIdDTO,
+	GetCurrentUserDTO,
+	isGetCurrentUserDTO,
 } from '../../API/types/users-types';
 import { getUsersByCollectionId } from '../../API/collectionUserRelationshipsHooks';
 
@@ -38,18 +38,15 @@ interface onCollectionsRoutePopulationProps {
 }
 
 // Function to populate user information
-export const populateUserInfo = (
-	dispatch: ThunkDispatch<any, any, any>,
-	userAuth: UserAuth
-) => {
+export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise<{
 		userId: number;
 		userName: string;
 		profileImgUrl: string;
 	}>((resolve, reject) => {
-		getUserByFirebaseAuthId(userAuth.uid)
-			.then((response: ErrorDTO | GetUserByFirebaseAuthIdDTO) => {
-				if (!isGetUserByFirebaseAuthIdDTO(response)) {
+		getCurrentUser()
+			.then((response: ErrorDTO | GetCurrentUserDTO) => {
+				if (!isGetCurrentUserDTO(response)) {
 					return reject();
 				}
 
@@ -74,14 +71,11 @@ export const populateUserInfo = (
 };
 
 // Function to populate collections
-const populateCollectionsInfo = (
-	dispatch: ThunkDispatch<any, any, any>,
-	userId: number
-) => {
+const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise((resolve, reject) => {
-		getCollectionsByUserId(userId)
-			.then((response: GetCollectionsByUserIdDTO | ErrorDTO) => {
-				if (!isGetCollectionsByUserIdDTO(response)) {
+		getCurrentUserCollections()
+			.then((response: GetCurrentUserCollectionsDTO | ErrorDTO) => {
+				if (!isGetCurrentUserCollectionsDTO(response)) {
 					return reject();
 				}
 
@@ -100,7 +94,6 @@ const populateCollectionsInfo = (
 								userName: user.userName,
 								userEmail: user.userEmail,
 								profileImgUrl: user.profileImgUrl,
-								firebaseAuthId: user.firebaseAuthId,
 							},
 							permission: user.permission,
 						};
@@ -152,6 +145,7 @@ export const onCollectionsRoutePopulation = (
 
 	onAuthStateChanged(getAuth(app), user => {
 		if (user) {
+			// TODO: handle idToken
 			const userAuth = {
 				uid: user.uid,
 				email: user.email,
@@ -159,12 +153,12 @@ export const onCollectionsRoutePopulation = (
 				photoURL: user.photoURL,
 			};
 
-			populateUserInfo(dispatch, userAuth)
+			populateUserInfo(dispatch)
 				.then(userInfo => {
 					if (!userInfo) {
 						return null;
 					}
-					return populateCollectionsInfo(dispatch, userInfo.userId);
+					return populateCollectionsInfo(dispatch);
 				})
 				.then(firstCollectionId => {
 					if (
