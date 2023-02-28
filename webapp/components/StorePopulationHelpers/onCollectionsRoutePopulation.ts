@@ -53,14 +53,14 @@ export const populateUserInfo = (
 					return reject();
 				}
 
-					var user = response.data;
+				var user = response.data;
 
-					const userInfo = {
-						userId: user.userId,
-						userName: user.userName,
-						userEmail: user.userEmail,
-						profileImgUrl: user.profileImgUrl,
-					};
+				const userInfo = {
+					userId: user.userId,
+					userName: user.userName,
+					userEmail: user.userEmail,
+					profileImgUrl: user.profileImgUrl,
+				};
 
 				if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName) {
 					dispatch(populateUser(userInfo));
@@ -88,56 +88,52 @@ const populateCollectionsInfo = (
 				var collections = response.data;
 				var toStoreCollections: Collection[] = [];
 
-							collections.map(async (collection: CollectionDTO) => {
-								var users = await getUsersByCollectionId(
-									collection.collectionId
-								);
-								if (isErrorDTO(users)) return null;
+				collections.map(async (collection: CollectionDTO) => {
+					var users = await getUsersByCollectionId(collection.collectionId);
+					if (isErrorDTO(users)) return null;
 
-								const usersObject = users.data.reduce((acc, user) => {
-									(acc as { [userEmail: string]: UserAccess })[user.userEmail] =
-										{
-											collectionId: collection.collectionId,
-											user: {
-												userId: user.userId,
-												userName: user.userName,
-												userEmail: user.userEmail,
-												profileImgUrl: user.profileImgUrl,
-												firebaseAuthId: user.firebaseAuthId,
-											},
-											permission: user.permission,
-										};
-									return acc;
-								}, {});
+					const usersObject = users.data.reduce((acc, user) => {
+						(acc as { [userEmail: string]: UserAccess })[user.userEmail] = {
+							collectionId: collection.collectionId,
+							user: {
+								userId: user.userId,
+								userName: user.userName,
+								userEmail: user.userEmail,
+								profileImgUrl: user.profileImgUrl,
+								firebaseAuthId: user.firebaseAuthId,
+							},
+							permission: user.permission,
+						};
+						return acc;
+					}, {});
 
-								getGiffiesByCollectionId(Number(collection.collectionId)).then(
-									(response: ErrorDTO | GetGiffiesByCollectionIdDTO) => {
-										if (!isGetGiffiesByCollectionIdDTO(response)) {
-											return null;
-										}
-										var giffies: GiffyDTO[] = response.data;
+					getGiffiesByCollectionId(Number(collection.collectionId)).then(
+						(response: ErrorDTO | GetGiffiesByCollectionIdDTO) => {
+							if (!isGetGiffiesByCollectionIdDTO(response)) {
+								return null;
+							}
+							var giffies: GiffyDTO[] = response.data;
 
-										toStoreCollections = [
-											...toStoreCollections,
-											{
-												collectionId: collection.collectionId,
-												collectionName: collection.collectionName,
-												private: collection.private,
-												giffies: giffies,
-												users: usersObject,
-											},
-										];
+							toStoreCollections = [
+								...toStoreCollections,
+								{
+									collectionId: collection.collectionId,
+									collectionName: collection.collectionName,
+									private: collection.private,
+									giffies: giffies,
+									users: usersObject,
+								},
+							];
 
-										dispatch(populateCollections(toStoreCollections));
-									}
-								);
-							});
-
-					const collectionIds = collections.map(
-						(collection: CollectionDTO) => collection.collectionId
+							dispatch(populateCollections(toStoreCollections));
+						}
 					);
-					resolve(collectionIds.length > 0 ? Math.min(...collectionIds) : 0);
 				});
+
+				const collectionIds = collections.map(
+					(collection: CollectionDTO) => collection.collectionId
+				);
+				resolve(collectionIds.length > 0 ? Math.min(...collectionIds) : 0);
 			})
 			.catch(() => {
 				reject();
