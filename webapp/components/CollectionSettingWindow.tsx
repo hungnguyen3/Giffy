@@ -76,11 +76,13 @@ export const CollectionSettingWindow = () => {
 		const response = await addUserToACollection(userProps);
 		if (!isErrorDTO(response)) {
 			setUsers([...users, userPermission]);
-			addUsersToACollection({
-				collectionId: userPermission.collectionId,
-				user: userInfo.data,
-				permission: userPermission.permission,
-			});
+			dispatch(
+				addUsersToACollection({
+					collectionId: userPermission.collectionId,
+					user: userInfo.data,
+					permission: userPermission.permission,
+				})
+			);
 		} else {
 			alert('Adding user to collection failed!');
 		}
