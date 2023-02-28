@@ -46,7 +46,6 @@ export const addCollectionUserRelationship = async (
 			data: addingUser.rows,
 		} as AddCollectionUserRelationshipDTO);
 	} catch (error) {
-		console.log('abc');
 		res.status(500).send({ error: 'something went wrong' } as ErrorDTO);
 	}
 };
