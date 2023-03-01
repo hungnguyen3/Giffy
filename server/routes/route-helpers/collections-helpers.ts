@@ -259,7 +259,7 @@ export const getCurrentUserCollections = async (
 				SELECT collections.*
 				FROM collection_user_relationships as cur
 				INNER JOIN collections ON cur."collectionId" = collections."collectionId"
-				WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' );
+				WHERE cur."userId" = $1 AND ( cur.permission = 'admin'  OR cur.permission = 'write' OR cur.permission = 'read');
 			`,
 			[userId]
 		);

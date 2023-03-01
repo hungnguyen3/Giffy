@@ -25,7 +25,7 @@ export const createUser = async (req: any, res: any) => {
 			[
 				req.body.userName,
 				req.body.userEmail,
-				req.body.firebaseAuthId,
+				req.user.uid,
 				req.body.profileImgUrl,
 			]
 		);

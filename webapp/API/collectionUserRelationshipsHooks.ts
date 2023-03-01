@@ -12,7 +12,7 @@ export async function getUsersByCollectionId(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/collection-user-relationships/getUsersByCollectionId/${collectionId}`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -38,7 +38,7 @@ export async function addUserToACollection(data: {
 			{
 				method: 'POST',
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},

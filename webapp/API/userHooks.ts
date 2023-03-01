@@ -57,7 +57,7 @@ export async function getUserByEmail(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserByEmail/${email}`,
 			{
 				cache: 'no-cache',
-				credentials: 'same-origin',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
 				},
