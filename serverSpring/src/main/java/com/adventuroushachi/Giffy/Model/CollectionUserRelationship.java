@@ -14,12 +14,12 @@ public class CollectionUserRelationship {
     @EmbeddedId
     private CollectionUserRelationshipId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @MapsId("collection_id")
     @JoinColumn(name = "collection_id")
     private Collection collection;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @MapsId("user_id")
     @JoinColumn(name = "user_id")
     private User user;

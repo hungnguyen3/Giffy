@@ -30,20 +30,21 @@ public class UserControllerTest {
         User user = new User();
         user.setUserName("Test User");
         user.setProfileImgUrl("http://example.com/test.jpg");
+        user.setFirebaseAuthId("firebase_auth_id");
 
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
-        ResponseEntity<User> response = userController.createUser(user);
+        ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(user, response.getBody());
+        assertEquals(user, response.getBody().getData());
     }
 
     @Test
     public void testCreateUserWithInvalidData() {
         User user = new User();
 
-        ResponseEntity<User> response = userController.createUser(user);
+        ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -54,7 +55,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
 
-        ResponseEntity<?> response = userController.deleteUserById(userId);
+        ResponseEntity<ResponseMessage<Void>> response = userController.deleteUserById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -65,7 +66,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<?> response = userController.deleteUserById(userId);
+        ResponseEntity<ResponseMessage<Void>> response = userController.deleteUserById(userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -79,10 +80,10 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        ResponseEntity<User> response = userController.getUserById(userId);
+        ResponseEntity<ResponseMessage<User>> response = userController.getUserById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(user, response.getBody());
+        assertEquals(user, response.getBody().getData());
     }
 
     @Test
@@ -91,7 +92,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<User> response = userController.getUserById(userId);
+        ResponseEntity<ResponseMessage<User>> response = userController.getUserById(userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -102,18 +103,20 @@ public class UserControllerTest {
         User userToUpdate = new User();
         userToUpdate.setUserName("Test User");
         userToUpdate.setProfileImgUrl("http://example.com/test.jpg");
+        userToUpdate.setFirebaseAuthId("firebase_auth_id");
 
         User updatedUser = new User();
         updatedUser.setUserName("Updated User");
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
+        updatedUser.setFirebaseAuthId("updated_firebase_auth_id");
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(userToUpdate));
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(updatedUser);
 
-        ResponseEntity<User> response = userController.updateUserById(userId, updatedUser);
+        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedUser, response.getBody());
+        assertEquals(updatedUser, response.getBody().getData());
     }
 
     @Test
@@ -122,12 +125,72 @@ public class UserControllerTest {
         User updatedUser = new User();
         updatedUser.setUserName("Updated User");
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
+        updatedUser.setFirebaseAuthId("updated_firebase_auth_id");
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<User> response = userController.updateUserById(userId, updatedUser);
+        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @Test
+    public void testCreateUserWithNullFields() {
+        User user = new User();
+        user.setUserName(null);
+        user.setProfileImgUrl(null);
+        user.setFirebaseAuthId(null);
+
+        ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testDeleteUserByIdWithNullId() {
+        ResponseEntity<ResponseMessage<Void>> response = userController.deleteUserById(null);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetUserByIdWithNullId() {
+        ResponseEntity<ResponseMessage<User>> response = userController.getUserById(null);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateUserByIdWithNullId() {
+        User updatedUser = new User();
+        updatedUser.setUserName("Updated User");
+        updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
+        updatedUser.setFirebaseAuthId("updated_firebase_auth_id");
+
+        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(null, updatedUser);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateUserByIdWithNullFields() {
+        Long userId = 1L;
+        User userToUpdate = new User();
+        userToUpdate.setUserName("Test User");
+        userToUpdate.setProfileImgUrl("http://example.com/test.jpg");
+        userToUpdate.setFirebaseAuthId("firebase_auth_id");
+
+        User updatedUser = new User();
+        updatedUser.setUserName(null);
+        updatedUser.setProfileImgUrl(null);
+        updatedUser.setFirebaseAuthId(null);
+
+        Mockito.lenient().when(userRepository.findById(userId)).thenReturn(Optional.of(userToUpdate));
+
+        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
 }
+

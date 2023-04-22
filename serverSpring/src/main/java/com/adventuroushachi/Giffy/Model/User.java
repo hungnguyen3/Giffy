@@ -19,7 +19,7 @@ public class User {
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @Column(name = "firebase_auth_id", nullable = false)
+    @Column(name = "firebase_auth_id", nullable = false, unique = true)
     private String firebaseAuthId;
 
     @Column(name = "profile_img_url")

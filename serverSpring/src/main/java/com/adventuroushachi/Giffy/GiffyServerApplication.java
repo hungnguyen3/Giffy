@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories("com.adventuroushachi.Giffy.Repository")
 @EntityScan("com.adventuroushachi.Giffy.Model")
-public class GiffyApplication {
+public class GiffyServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GiffyApplication.class, args);
+        SpringApplication.run(GiffyServerApplication.class, args);
     }
 }
