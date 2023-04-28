@@ -1,5 +1,8 @@
 package com.adventuroushachi.Giffy.Model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.*;
 
 import lombok.Data;
@@ -14,14 +17,16 @@ public class CollectionUserRelationship {
     @EmbeddedId
     private CollectionUserRelationshipId id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("collection_id")
     @JoinColumn(name = "collection_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection collection;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("user_id")
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @Enumerated(EnumType.STRING)

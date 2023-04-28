@@ -37,6 +37,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
         assertEquals(user, response.getBody().getData());
     }
 
@@ -47,6 +48,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -58,6 +60,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<Void>> response = userController.deleteUserById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -69,6 +72,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<Void>> response = userController.deleteUserById(userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -83,6 +87,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.getUserById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
         assertEquals(user, response.getBody().getData());
     }
 
@@ -95,6 +100,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.getUserById(userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -116,6 +122,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
         assertEquals(updatedUser, response.getBody().getData());
     }
 
@@ -132,6 +139,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -144,6 +152,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -151,6 +160,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<Void>> response = userController.deleteUserById(null);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -158,6 +168,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.getUserById(null);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -170,6 +181,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(null, updatedUser);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
     @Test
@@ -190,6 +202,7 @@ public class UserControllerTest {
         ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
     }
 
 }
