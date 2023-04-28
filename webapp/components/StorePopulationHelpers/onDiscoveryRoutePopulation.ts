@@ -59,6 +59,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 									collectionName: collection.collectionName,
 									private: collection.private,
 									giffies: giffies,
+									users: {},
 								},
 							];
 						}

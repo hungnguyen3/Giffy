@@ -74,6 +74,7 @@ const AccountSettings = () => {
 		const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser({
 			userId: user?.userId as number,
 			userName: userName,
+			userEmail: user?.userEmail as string,
 			profileImgUrl: imgURL ? imgURL : (user?.profileImgUrl as string),
 		});
 
@@ -85,6 +86,7 @@ const AccountSettings = () => {
 				populateUser({
 					userId: updateUserRes.data.userId,
 					userName: updateUserRes.data.userName,
+					userEmail: userAuth?.email as string,
 					profileImgUrl: updateUserRes.data.profileImgUrl,
 				})
 			);
