@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseMessage<User>> createUser(@RequestBody User user) {
-        if (user == null || user.getUserName() == null || user.getFirebaseAuthId() == null || user.getProfileImgUrl() == null) {
+        if (user == null || user.getUserName() == null || user.getCognitoSub() == null || user.getProfileImgUrl() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
         User createdUser = userRepository.save(user);
@@ -71,14 +71,14 @@ public class UserController {
         if (userId == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
-        if (user == null || user.getUserName() == null || user.getFirebaseAuthId() == null || user.getProfileImgUrl() == null) {
+        if (user == null || user.getUserName() == null || user.getCognitoSub() == null || user.getProfileImgUrl() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
         Optional<User> userToUpdate = userRepository.findById(userId);
         if(userToUpdate.isPresent()) {
             User existingUser = userToUpdate.get();
             existingUser.setUserName(user.getUserName());
-            existingUser.setFirebaseAuthId(user.getFirebaseAuthId());
+            existingUser.setCognitoSub(user.getCognitoSub());
             existingUser.setProfileImgUrl(user.getProfileImgUrl());
             User updatedUser = userRepository.save(existingUser);
             return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User updated", updatedUser));

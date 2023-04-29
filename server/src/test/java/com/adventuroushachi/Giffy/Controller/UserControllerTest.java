@@ -30,7 +30,7 @@ public class UserControllerTest {
         User user = new User();
         user.setUserName("Test User");
         user.setProfileImgUrl("http://example.com/test.jpg");
-        user.setFirebaseAuthId("firebase_auth_id");
+        user.setCognitoSub("cognito_sub");
 
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
@@ -109,12 +109,12 @@ public class UserControllerTest {
         User userToUpdate = new User();
         userToUpdate.setUserName("Test User");
         userToUpdate.setProfileImgUrl("http://example.com/test.jpg");
-        userToUpdate.setFirebaseAuthId("firebase_auth_id");
+        userToUpdate.setCognitoSub("cognito_sub");
 
         User updatedUser = new User();
         updatedUser.setUserName("Updated User");
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
-        updatedUser.setFirebaseAuthId("updated_firebase_auth_id");
+        updatedUser.setCognitoSub("updated_cognito_sub");
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(userToUpdate));
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(updatedUser);
@@ -132,7 +132,7 @@ public class UserControllerTest {
         User updatedUser = new User();
         updatedUser.setUserName("Updated User");
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
-        updatedUser.setFirebaseAuthId("updated_firebase_auth_id");
+        updatedUser.setCognitoSub("updated_cognito_sub");
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
@@ -147,7 +147,7 @@ public class UserControllerTest {
         User user = new User();
         user.setUserName(null);
         user.setProfileImgUrl(null);
-        user.setFirebaseAuthId(null);
+        user.setCognitoSub(null);
 
         ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
 
@@ -176,7 +176,7 @@ public class UserControllerTest {
         User updatedUser = new User();
         updatedUser.setUserName("Updated User");
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
-        updatedUser.setFirebaseAuthId("updated_firebase_auth_id");
+        updatedUser.setCognitoSub("updated_cognito_sub");
 
         ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(null, updatedUser);
 
@@ -190,12 +190,12 @@ public class UserControllerTest {
         User userToUpdate = new User();
         userToUpdate.setUserName("Test User");
         userToUpdate.setProfileImgUrl("http://example.com/test.jpg");
-        userToUpdate.setFirebaseAuthId("firebase_auth_id");
+        userToUpdate.setCognitoSub("cognito_sub");
 
         User updatedUser = new User();
         updatedUser.setUserName(null);
         updatedUser.setProfileImgUrl(null);
-        updatedUser.setFirebaseAuthId(null);
+        updatedUser.setCognitoSub(null);
 
         Mockito.lenient().when(userRepository.findById(userId)).thenReturn(Optional.of(userToUpdate));
 

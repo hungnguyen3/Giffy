@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import com.adventuroushachi.Giffy.DTO.CollectionDTO;
 import com.adventuroushachi.Giffy.Model.Collection;
 import com.adventuroushachi.Giffy.Model.CollectionUserRelationship;
 import com.adventuroushachi.Giffy.Model.Permission;
@@ -51,11 +53,11 @@ public class CollectionControllerTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(collectionRepository.save(any(Collection.class))).thenReturn(collection);
 
-        ResponseEntity<ResponseMessage<Collection>> response = collectionController.createCollectionByUser(userId, collection);
+        ResponseEntity<ResponseMessage<CollectionDTO>> response = collectionController.createCollectionByUser(userId, collection);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(collection, response.getBody().getData());
+        assertEquals(CollectionDTO.fromEntity(collection), response.getBody().getData());
     }
 
     @Test
@@ -67,7 +69,7 @@ public class CollectionControllerTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<ResponseMessage<Collection>> response = collectionController.createCollectionByUser(userId, collection);
+        ResponseEntity<ResponseMessage<CollectionDTO>> response = collectionController.createCollectionByUser(userId, collection);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -83,11 +85,11 @@ public class CollectionControllerTest {
 
         when(collectionRepository.findById(collectionId)).thenReturn(Optional.of(collection));
 
-        ResponseEntity<ResponseMessage<Collection>> response = collectionController.getCollectionById(collectionId);
+        ResponseEntity<ResponseMessage<CollectionDTO>> response = collectionController.getCollectionById(collectionId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(collection, response.getBody().getData());
+        assertEquals(CollectionDTO.fromEntity(collection), response.getBody().getData());
     }
 
     @Test
@@ -96,7 +98,7 @@ public class CollectionControllerTest {
 
         when(collectionRepository.findById(collectionId)).thenReturn(Optional.empty());
 
-        ResponseEntity<ResponseMessage<Collection>> response = collectionController.getCollectionById(collectionId);
+        ResponseEntity<ResponseMessage<CollectionDTO>> response = collectionController.getCollectionById(collectionId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -118,11 +120,11 @@ public class CollectionControllerTest {
         when(collectionRepository.findById(collectionId)).thenReturn(Optional.of(collection));
         when(collectionRepository.save(any(Collection.class))).thenReturn(updatedCollection);
 
-        ResponseEntity<ResponseMessage<Collection>> response = collectionController.updateCollectionById(collectionId, updatedCollection);
+        ResponseEntity<ResponseMessage<CollectionDTO>> response = collectionController.updateCollectionById(collectionId, updatedCollection);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(updatedCollection, response.getBody().getData());
+        assertEquals(CollectionDTO.fromEntity(updatedCollection), response.getBody().getData());
     }
 
     @Test
@@ -134,7 +136,7 @@ public class CollectionControllerTest {
 
         when(collectionRepository.findById(collectionId)).thenReturn(Optional.empty());
 
-        ResponseEntity<ResponseMessage<Collection>> response = collectionController.updateCollectionById(collectionId, updatedCollection);
+        ResponseEntity<ResponseMessage<CollectionDTO>> response = collectionController.updateCollectionById(collectionId, updatedCollection);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -180,11 +182,11 @@ public class CollectionControllerTest {
 
         when(collectionRepository.findByIsPrivateFalse()).thenReturn(publicCollections);
 
-        ResponseEntity<ResponseMessage<List<Collection>>> response = collectionController.getPublicCollections();
+        ResponseEntity<ResponseMessage<List<CollectionDTO>>> response = collectionController.getPublicCollections();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(publicCollections, response.getBody().getData());
+        assertEquals(CollectionDTO.fromEntities(publicCollections), response.getBody().getData());
     }
 
     @Test
@@ -213,10 +215,10 @@ public class CollectionControllerTest {
         when(collectionRepository.findById(1L)).thenReturn(Optional.of(collection1));
         when(collectionRepository.findById(2L)).thenReturn(Optional.of(collection2));
 
-        ResponseEntity<ResponseMessage<List<Collection>>> response = collectionController.getCollectionsByUserId(userId);
+        ResponseEntity<ResponseMessage<List<CollectionDTO>>> response = collectionController.getCollectionsByUserId(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(collections, response.getBody().getData());
+        assertEquals(CollectionDTO.fromEntities(collections), response.getBody().getData());
     }
 }

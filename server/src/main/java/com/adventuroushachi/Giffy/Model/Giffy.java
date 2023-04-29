@@ -19,11 +19,11 @@ public class Giffy {
     @Column(name = "collection_id", nullable = false)
     private Long collectionId;
 
-    @Column(name = "firebase_url", nullable = false)
-    private String firebaseUrl;
+    @Column(name = "s3_url", nullable = false)
+    private String s3Url;
 
-    @Column(name = "firebase_ref", nullable = false)
-    private String firebaseRef;
+    @Column(name = "s3_key", nullable = false)
+    private String s3Key;
 
     @Column(name = "giffy_name")
     private String giffyName;
