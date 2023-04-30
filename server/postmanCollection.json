@@ -6,305 +6,502 @@
 	},
 	"item": [
 		{
-			"name": "Create User",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"userName\": \"your_username\",\n    \"firebaseAuthId\": \"your_firebase_auth_id\",\n    \"profileImgUrl\": \"your_profile_image_url\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"your_username\",\n    \"cognitoSub\": \"your_cognito_sub\",\n    \"profileImgUrl\": \"your_profile_image_url\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/createUser",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"createUser"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/users/createUser",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"users",
-						"createUser"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete User by ID",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/users/deleteUserById/:userId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"users",
-						"deleteUserById",
-						":userId"
-					],
-					"variable": [
-						{
-							"key": "userId",
-							"value": "1"
+				{
+					"name": "Delete User by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/deleteUserById/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"deleteUserById",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get User by ID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/users/getUserById/:userId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"users",
-						"getUserById",
-						":userId"
-					],
-					"variable": [
-						{
-							"key": "userId",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Current User",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/users/getCurrentUser",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"users",
-						"getCurrentUser"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update User by ID",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"userName\": \"updated_username\",\n    \"firebaseAuthId\": \"updated_your_firebase_auth_id\",\n    \"profileImgUrl\": \"updated_profile_image_url\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/users/updateUserById/:userId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"users",
-						"updateUserById",
-						":userId"
-					],
-					"variable": [
-						{
-							"key": "userId",
-							"value": "1"
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/getUserById/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"getUserById",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create Collection by User",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"collectionName\": \"your_collection_name\",\n    \"isPrivate\": false\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/collections/createCollectionByUser/:userId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"collections",
-						"createCollectionByUser",
-						":userId"
-					],
-					"variable": [
-						{
-							"key": "userId",
-							"value": "1"
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/getCurrentUser",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"getCurrentUser"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Collection by ID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/collections/getCollectionById/:id",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"collections",
-						"getCollectionById",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Collection by ID",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"collectionName\": \"updated_collection_name\",\n    \"isPrivate\": true\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/collections/updateCollectionById/:id",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"collections",
-						"updateCollectionById",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1"
+				{
+					"name": "Update User by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"updated_username\",\n    \"cognitoSub\": \"updated_cognito_sub\",\n    \"profileImgUrl\": \"updated_profile_image_url\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/updateUserById/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"updateUserById",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
 						}
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Delete Collection by ID",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/collections/deleteCollectionById/:id",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"collections",
-						"deleteCollectionById",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1"
+			"name": "collections",
+			"item": [
+				{
+					"name": "Create Collection by User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"collectionName\": \"your_collection_name\",\n    \"isPrivate\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/collections/createCollectionByUser/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"createCollectionByUser",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collection by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/collections/getCollectionById/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"getCollectionById",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Collection by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"collectionName\": \"updated_collection_name\",\n    \"isPrivate\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/collections/updateCollectionById/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"updateCollectionById",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Collection by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/collections/deleteCollectionById/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"deleteCollectionById",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Collections",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/collections/getPublicCollections",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"getPublicCollections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collections by User ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/collections/getCollectionsByUserId/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"getCollectionsByUserId",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Get Public Collections",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/collections/getPublicCollections",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"collections",
-						"getPublicCollections"
-					]
+			"name": "userCollectionInteractions",
+			"item": [
+				{
+					"name": "Toggle Like",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/collectionUserInteractions/toggleLike/:userId/:collectionId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"collectionUserInteractions",
+								"toggleLike",
+								":userId",
+								":collectionId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								},
+								{
+									"key": "collectionId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Get Collections by User ID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/collections/getCollectionsByUserId/:userId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"collections",
-						"getCollectionsByUserId",
-						":userId"
-					],
-					"variable": [
-						{
-							"key": "userId",
-							"value": "1"
+			"name": "giffies",
+			"item": [
+				{
+					"name": "Create Giffy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"collectionId\": 1,\n    \"s3Url\": \"giffy_s3_url\",\n    \"s3Key\": \"giffy_s3_key\",\n    \"giffyName\": \"giffy_name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/giffies/createGiffy",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"giffies",
+								"createGiffy"
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Giffy by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/giffies/deleteGiffyById/:giffyId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"giffies",
+								"deleteGiffyById",
+								":giffyId"
+							],
+							"variable": [
+								{
+									"key": "giffyId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Giffy by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/giffies/getGiffyById/:giffyId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"giffies",
+								"getGiffyById",
+								":giffyId"
+							],
+							"variable": [
+								{
+									"key": "giffyId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Giffy by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"collectionId\": 2,\n    \"s3Url\": \"updated_giffy_s3_url\",\n    \"s3Key\": \"updated_giffy_s3_key\",\n    \"giffyName\": \"updated_giffy_name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/giffies/updateGiffyById/:giffyId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"giffies",
+								"updateGiffyById",
+								":giffyId"
+							],
+							"variable": [
+								{
+									"key": "giffyId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Giffies by Collection ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/giffies/byCollectionId/:collectionId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"giffies",
+								"byCollectionId",
+								":collectionId"
+							],
+							"variable": [
+								{
+									"key": "collectionId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [

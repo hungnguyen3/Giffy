@@ -39,7 +39,7 @@ public class CollectionController {
     private CollectionUserRelationshipRepository collectionUserRelationshipRepository;
 
     @PostMapping("/createCollectionByUser/{userId}")
-    public ResponseEntity<ResponseMessage<CollectionDTO>> createCollectionByUser(@PathVariable("userId") Long userId, @RequestBody Collection collection) {
+    public ResponseEntity<ResponseMessage<CollectionDTO>> createCollectionByUser(@PathVariable Long userId, @RequestBody Collection collection) {
         if (userId == null || collection == null || collection.getCollectionName() == null || collection.getIsPrivate() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
@@ -61,7 +61,7 @@ public class CollectionController {
     }
 
     @GetMapping("/getCollectionById/{id}")
-    public ResponseEntity<ResponseMessage<CollectionDTO>> getCollectionById(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseMessage<CollectionDTO>> getCollectionById(@PathVariable Long id) {
         if (id == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid collection ID", null));
         }
@@ -78,7 +78,7 @@ public class CollectionController {
     }
 
     @PutMapping("/updateCollectionById/{id}")
-    public ResponseEntity<ResponseMessage<CollectionDTO>> updateCollectionById(@PathVariable("id") Long id, @RequestBody Collection updatedCollection) {
+    public ResponseEntity<ResponseMessage<CollectionDTO>> updateCollectionById(@PathVariable Long id, @RequestBody Collection updatedCollection) {
         if (id == null || updatedCollection == null || updatedCollection.getCollectionName() == null || updatedCollection.getIsPrivate() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
@@ -100,7 +100,7 @@ public class CollectionController {
     }
 
     @DeleteMapping("/deleteCollectionById/{id}")
-    public ResponseEntity<ResponseMessage<Void>> deleteCollectionById(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseMessage<Void>> deleteCollectionById(@PathVariable Long id) {
         if (id == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid collection ID", null));
         }
@@ -130,7 +130,7 @@ public class CollectionController {
     }
 
     @GetMapping("/getCollectionsByUserId/{userId}")
-    public ResponseEntity<ResponseMessage<List<CollectionDTO>>> getCollectionsByUserId(@PathVariable("userId") Long userId) {
+    public ResponseEntity<ResponseMessage<List<CollectionDTO>>> getCollectionsByUserId(@PathVariable Long userId) {
         if (userId == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }

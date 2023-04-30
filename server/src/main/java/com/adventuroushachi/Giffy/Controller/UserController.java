@@ -18,7 +18,7 @@ import com.adventuroushachi.Giffy.Model.User;
 import com.adventuroushachi.Giffy.Repository.UserRepository;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
