@@ -78,8 +78,8 @@ public class CollectionController {
     }
 
     @PutMapping("/updateCollectionById/{id}")
-    public ResponseEntity<ResponseMessage<CollectionDTO>> updateCollectionById(@PathVariable Long id, @RequestBody Collection updatedCollection) {
-        if (id == null || updatedCollection == null || updatedCollection.getCollectionName() == null || updatedCollection.getIsPrivate() == null) {
+    public ResponseEntity<ResponseMessage<CollectionDTO>> updateCollectionById(@PathVariable Long id, @RequestBody Collection updatedCollectionBody) {
+        if (id == null || updatedCollectionBody == null || updatedCollectionBody.getCollectionName() == null || updatedCollectionBody.getIsPrivate() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
 
@@ -90,8 +90,8 @@ public class CollectionController {
 
         Collection collection = optionalCollection.get();
 
-        collection.setCollectionName(updatedCollection.getCollectionName());
-        collection.setIsPrivate(updatedCollection.getIsPrivate());
+        collection.setCollectionName(updatedCollectionBody.getCollectionName());
+        collection.setIsPrivate(updatedCollectionBody.getIsPrivate());
         Collection savedCollection = collectionRepository.save(collection);
         
         CollectionDTO collectionDTO = CollectionDTO.fromEntity(savedCollection);

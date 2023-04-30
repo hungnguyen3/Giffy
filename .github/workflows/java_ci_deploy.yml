@@ -1,0 +1,85 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI Deploy
+
+on:
+  workflow_run:
+    workflows: ["Java CI Test"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: self-hosted
+    env:
+        SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+        SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+        SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+        SPRING_JPA_HIBERNATE_DDL_AUTO: create
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 50MB
+        SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 50MB
+        SPRING_SERVLET_MULTIPART_ENABLED: "true"
+        SPRING_MVC_CORS_ALLOWED_ORIGINS: ${{ secrets.SPRING_MVC_CORS_ALLOWED_ORIGINS }}
+        SPRING_MVC_CORS_ALLOWED_METHODS: "GET,POST,DELETE,PUT"
+        SPRING_MVC_CORS_ALLOWED_HEADERS: "*"
+        SPRING_MVC_CORS_ALLOW_CREDENTIALS: "true"
+        
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: make application.properties
+      run: |
+        cd server
+        pwd
+
+        mkdir -p ./src/main/resources
+        cd ./src/main/resources
+        touch ./application.properties
+
+        echo "copy properties"
+        echo "spring.datasource.url=$SPRING_DATASOURCE_URL" >> ./application.properties
+        echo "spring.datasource.username=$SPRING_DATASOURCE_USERNAME" >> ./application.properties
+        echo "spring.datasource.password=$SPRING_DATASOURCE_PASSWORD" >> ./application.properties
+        echo "spring.jpa.hibernate.ddl-auto=$SPRING_JPA_HIBERNATE_DDL_AUTO" >> ./application.properties
+        echo "server.port=$SERVER_PORT" >> ./application.properties
+        echo "spring.servlet.multipart.max-file-size=$SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE" >> ./application.properties
+        echo "spring.servlet.multipart.max-request-size=$SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE" >> ./application.properties
+        echo "spring.servlet.multipart.enabled=$SPRING_SERVLET_MULTIPART_ENABLED" >> ./application.properties
+        echo "spring.mvc.cors.allowed-origins=$SPRING_MVC_CORS_ALLOWED_ORIGINS" >> ./application.properties
+        echo "spring.mvc.cors.allowed-methods=$SPRING_MVC_CORS_ALLOWED_METHODS" >> ./application.properties
+        echo "spring.mvc.cors.allowed-headers=$SPRING_MVC_CORS_ALLOWED_HEADERS" >> ./application.properties
+        echo "spring.mvc.cors.allow-credentials=$SPRING_MVC_CORS_ALLOW_CREDENTIALS" >> ./application.properties
+      shell: bash
+      env:
+        SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+        SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+        SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+        SPRING_JPA_HIBERNATE_DDL_AUTO: create
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 50MB
+        SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 50MB
+        SPRING_SERVLET_MULTIPART_ENABLED: "true"
+        SPRING_MVC_CORS_ALLOWED_ORIGINS: ${{ secrets.SPRING_MVC_CORS_ALLOWED_ORIGINS }}
+        SPRING_MVC_CORS_ALLOWED_METHODS: "GET,POST,DELETE,PUT"
+        SPRING_MVC_CORS_ALLOWED_HEADERS: "*"
+        SPRING_MVC_CORS_ALLOW_CREDENTIALS: "true"
+    - name: Build with Maven
+      run: mvn -B package -f server/pom.xml
+    - name: Kill Running Process
+      run: sudo pkill -f "java -jar /home/ubuntu/actions-runner/_work/Giffy/Giffy/server/target/Giffy-0.0.1-SNAPSHOT.jar"
+    - name: Execute Jar File
+      run: sudo java -jar /home/ubuntu/actions-runner/_work/Giffy/Giffy/server/target/Giffy-0.0.1-SNAPSHOT.jar &

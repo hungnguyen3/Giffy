@@ -47,4 +47,5 @@ public class CollectionUserRelationship {
         this.permission = permission;
         this.id = new CollectionUserId(collection.getCollectionId(), user.getUserId());
     }
+
 }
