@@ -28,7 +28,4 @@ public class Giffy {
     @Column(name = "giffy_name")
     private String giffyName;
 
-    @Column(name = "likes", nullable = false)
-    private int likes;
-
 }

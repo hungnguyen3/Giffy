@@ -6,8 +6,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,10 +15,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "collection_user_relationships")
+@Table(name = "collection_user_interactions")
 @Data
 @NoArgsConstructor
-public class CollectionUserRelationship {
+public class CollectionUserInteraction {
 
     @EmbeddedId
     private CollectionUserId id;
@@ -37,14 +35,13 @@ public class CollectionUserRelationship {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "permission", nullable = false)
-    private Permission permission;
+    @Column(name = "liked", nullable = false, columnDefinition = "boolean default false")
+    private Boolean liked;
 
-    public CollectionUserRelationship(Collection collection, User user, Permission permission) {
+    public CollectionUserInteraction(Collection collection, User user) {
         this.collection = collection;
         this.user = user;
-        this.permission = permission;
+        this.liked = false;
         this.id = new CollectionUserId(collection.getCollectionId(), user.getUserId());
     }
 }
