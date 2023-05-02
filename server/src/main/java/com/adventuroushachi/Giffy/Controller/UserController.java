@@ -26,9 +26,15 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseMessage<User>> createUser(@RequestBody User user) {
-        if (user == null || user.getUserName() == null || user.getCognitoSub() == null || user.getProfileImgUrl() == null) {
+        if(user == null || user.getUserName() == null || user.getCognitoSub() == null || user.getProfileImgUrl() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
+       
+        User existingUserWithSameCognitoSub = userRepository.findByCognitoSub(user.getCognitoSub());
+        if(existingUserWithSameCognitoSub != null) {
+            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated cognito identity", null));
+        }
+
         User createdUser = userRepository.save(user);
         return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User created", createdUser));
     }

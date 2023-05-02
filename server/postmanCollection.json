@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userName\": \"your_username\",\n    \"cognitoSub\": \"your_cognito_sub\",\n    \"profileImgUrl\": \"your_profile_image_url\"\n}",
+							"raw": "{\n    \"userName\": \"your_username\",\n    \"cognitoSub\": \"your_cognito_sub1\",\n    \"profileImgUrl\": \"your_profile_image_url\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -206,7 +206,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
@@ -357,22 +357,24 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[1,2]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/api/giffies/deleteGiffyById/:giffyId",
+							"raw": "{{baseUrl}}/api/giffies/deleteGiffiesByIds",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"giffies",
-								"deleteGiffyById",
-								":giffyId"
-							],
-							"variable": [
-								{
-									"key": "giffyId",
-									"value": "1"
-								}
+								"deleteGiffiesByIds"
 							]
 						}
 					},

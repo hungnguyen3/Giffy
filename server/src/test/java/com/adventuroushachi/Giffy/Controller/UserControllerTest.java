@@ -52,6 +52,27 @@ public class UserControllerTest {
     }
 
     @Test
+    public void testCreateUserWithDuplicatedCognitoIdentity() {
+        User existingUser = new User();
+        existingUser.setUserName("Existing User");
+        existingUser.setProfileImgUrl("http://example.com/existing.jpg");
+        existingUser.setCognitoSub("cognito_sub");
+
+        User newUser = new User();
+        newUser.setUserName("New User");
+        newUser.setProfileImgUrl("http://example.com/new.jpg");
+        newUser.setCognitoSub("cognito_sub");
+
+        Mockito.when(userRepository.findByCognitoSub(newUser.getCognitoSub())).thenReturn(existingUser);
+
+        ResponseEntity<ResponseMessage<User>> response = userController.createUser(newUser);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
+        assertEquals("Duplicated cognito identity", response.getBody().getMessage());
+    }
+
+    @Test
     public void testDeleteUserById() {
         Long userId = 1L;
 

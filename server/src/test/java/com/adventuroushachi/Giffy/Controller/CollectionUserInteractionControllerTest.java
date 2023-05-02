@@ -16,9 +16,11 @@ import org.springframework.http.ResponseEntity;
 
 import com.adventuroushachi.Giffy.Model.Collection;
 import com.adventuroushachi.Giffy.Model.CollectionUserInteraction;
+import com.adventuroushachi.Giffy.Model.CollectionUserRelationship;
 import com.adventuroushachi.Giffy.Model.User;
 import com.adventuroushachi.Giffy.Repository.CollectionRepository;
 import com.adventuroushachi.Giffy.Repository.CollectionUserInteractionRepository;
+import com.adventuroushachi.Giffy.Repository.CollectionUserRelationshipRepository;
 import com.adventuroushachi.Giffy.Repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,6 +37,9 @@ public class CollectionUserInteractionControllerTest {
 
     @Mock
     private CollectionUserInteractionRepository collectionUserInteractionRepository;
+
+    @Mock
+    private CollectionUserRelationshipRepository collectionUserRelationshipRepository;
 
     private CollectionUserInteraction interaction;
 
@@ -106,27 +111,6 @@ public class CollectionUserInteractionControllerTest {
     }
 
     @Test
-    public void testToggleLikeForPrivateCollectionWithoutExistingInteraction() {
-        Long userId = 1L;
-        Long collectionId = 1L;
-        User user = new User();
-        user.setUserId(userId);
-        Collection collection = new Collection();
-        collection.setCollectionId(collectionId);
-        collection.setIsPrivate(true);
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(collectionRepository.findById(collectionId)).thenReturn(Optional.of(collection));
-        when(collectionUserInteractionRepository.findByCollectionAndUser(collection, user)).thenReturn(null);
-
-        ResponseEntity<ResponseMessage<String>> response = collectionController.toggleLike(userId, collectionId);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
-        assertEquals("User does not have access to this collection", response.getBody().getMessage());
-    }
-
-    @Test
     public void testToggleLikeForNonPrivateCollectionWithExistingInteraction() {
         Long userId = 1L;
         Long collectionId = 1L;
@@ -160,6 +144,51 @@ public class CollectionUserInteractionControllerTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(collectionRepository.findById(collectionId)).thenReturn(Optional.of(collection));
         when(collectionUserInteractionRepository.findByCollectionAndUser(collection, user)).thenReturn(interaction);
+
+        ResponseEntity<ResponseMessage<String>> response = collectionController.toggleLike(userId, collectionId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
+        assertEquals("Collection liked", response.getBody().getMessage());
+    }
+
+    @Test
+    public void testToggleLikeForPrivateCollectionWithoutExistingInteractionAndNoRelationship() {
+        Long userId = 1L;
+        Long collectionId = 1L;
+        User user = new User();
+        user.setUserId(userId);
+        Collection collection = new Collection();
+        collection.setCollectionId(collectionId);
+        collection.setIsPrivate(true);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(collectionRepository.findById(collectionId)).thenReturn(Optional.of(collection));
+        when(collectionUserInteractionRepository.findByCollectionAndUser(collection, user)).thenReturn(null);
+        when(collectionUserRelationshipRepository.findByCollectionAndUser(collection, user)).thenReturn(null);
+
+        ResponseEntity<ResponseMessage<String>> response = collectionController.toggleLike(userId, collectionId);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
+        assertEquals("User does not have access to this collection", response.getBody().getMessage());
+    }
+
+    @Test
+    public void testToggleLikeForPrivateCollectionWithoutExistingInteractionWithRelationship() {
+        Long userId = 1L;
+        Long collectionId = 1L;
+        User user = new User();
+        user.setUserId(userId);
+        Collection collection = new Collection();
+        collection.setCollectionId(collectionId);
+        collection.setIsPrivate(true);
+        CollectionUserRelationship relationship = new CollectionUserRelationship();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(collectionRepository.findById(collectionId)).thenReturn(Optional.of(collection));
+        when(collectionUserInteractionRepository.findByCollectionAndUser(collection, user)).thenReturn(null);
+        when(collectionUserRelationshipRepository.findByCollectionAndUser(collection, user)).thenReturn(relationship);
 
         ResponseEntity<ResponseMessage<String>> response = collectionController.toggleLike(userId, collectionId);
 
