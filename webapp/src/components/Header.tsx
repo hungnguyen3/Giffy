@@ -1,6 +1,5 @@
 import styles from '../styles/Header.module.scss';
 import { useEffect, useRef, useState } from 'react';
-import { logOut } from './Firebase/FirebaseInit';
 import { VscAccount } from 'react-icons/vsc';
 import { BiEditAlt, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { FiSettings } from 'react-icons/fi';
@@ -10,6 +9,7 @@ import { open as openAccountSetting } from '../slices/AccountSettingSlice';
 import { RootState } from '../store';
 import { useRouter } from 'next/router';
 import { openCollectionSettingWindow } from '../slices/CollectionsSlice';
+import { signOut } from './Utilities/Cognito';
 
 const Header = () => {
 	const router = useRouter();
@@ -84,17 +84,17 @@ const Header = () => {
 							<div className={styles.dropdown}>
 								<ul>
 									{userInfo ? (
-										<li onClick={logOut} className={styles.login}>
-											<DropdownItem icon={BiLogOut} text={'Log out'} />
+										<li className={styles.login}>
+											<DropdownItem icon={BiLogOut} text={'Log in'} />
 										</li>
 									) : (
 										<li
 											onClick={() => {
-												router.push('/auth');
+												signOut();
 											}}
 											className={styles.login}
 										>
-											<DropdownItem icon={BiLogIn} text={'Log in'} />
+											<DropdownItem icon={BiLogOut} text={'Log out'} />
 										</li>
 									)}
 									{userInfo && (

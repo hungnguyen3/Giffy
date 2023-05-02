@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { User } from 'firebase/auth';
 import { GiffyDTO } from '../API/types/giffies-types';
 import { UserDTO } from '../API/types/users-types';
-import { userSlice } from './UserSlice';
 
 export interface Collection {
 	collectionId: number;

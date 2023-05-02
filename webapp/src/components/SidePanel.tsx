@@ -114,7 +114,7 @@ const SidePanel = (props: SidePanelProps) => {
 						</button>
 					</div>
 				)}
-				{isOnDiscoveryPage && hasAnAccount && (
+				{isOnDiscoveryPage && (
 					<div className={styles.buttonContainer}>
 						<button
 							className={styles.goToDiscoveryBtn}

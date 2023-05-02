@@ -2,8 +2,6 @@ import styles from '../styles/UploadGiffy.module.scss';
 import { addGiffyToACollection } from '../slices/CollectionsSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState } from 'react';
-import { storage } from './Firebase/FirebaseInit';
-import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import FileUploadBox from './FileUploadBox';
 import { RootState } from '../store';
 import { createGiffy } from '../API/giffyHooks';
@@ -26,43 +24,9 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 		collectionId: props.currentCollectionId,
 		giffyName: '',
 	});
-	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
 
 	const uploadHandler = async () => {
-		if (giffy) {
-			try {
-				const giffyFirebaseRef = `giffies/${userAuth?.email}/${
-					giffy.name
-				}${new Date().getTime()}`;
-				const storageRef = ref(storage, giffyFirebaseRef);
-				const snapshot = await uploadBytes(storageRef, giffy);
-				const downloadURL = await getDownloadURL(snapshot.ref);
-
-				if (!downloadURL) {
-					alert(
-						'Failed to save image to firebase therefore failed to create a new giffy 1'
-					);
-				} else {
-					const createGiffyRes: CreateGiffyDTO | ErrorDTO = await createGiffy({
-						collectionId: Number(giffyInfo.collectionId),
-						firebaseUrl: downloadURL,
-						firebaseRef: giffyFirebaseRef,
-						giffyName: giffyInfo.giffyName,
-					});
-
-					if (!isCreateGiffyDTO(createGiffyRes)) {
-						alert('Something went wrong creating the giffy');
-					} else {
-						dispatch(addGiffyToACollection(createGiffyRes.data));
-						alert('Upload successfully');
-					}
-				}
-			} catch (err) {
-				alert('Upload unsuccessfully');
-			}
-		} else {
-			alert('Select a file first');
-		}
+		// TODO: upload image to AWS
 	};
 
 	return (

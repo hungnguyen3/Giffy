@@ -1,4 +1,3 @@
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useState } from 'react';
 import { ErrorDTO } from '../API/types/errors-types';
 import {
@@ -11,13 +10,11 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { populateUser } from '../slices/UserSlice';
 import { RootState } from '../store';
 import styles from '../styles/AccountSettings.module.scss';
-import { storage } from './Firebase/FirebaseInit';
 import { FaCameraRetro } from 'react-icons/fa';
 
 const AccountSettings = () => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector((state: RootState) => state.user?.value);
-	const userAuth = useAppSelector((state: RootState) => state.userAuth.value);
 	const [profileImage, setProfileImage] = useState<File | null>(null);
 	const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 	const [userName, setUserName] = useState<string>(user?.userName as string);
@@ -39,27 +36,7 @@ const AccountSettings = () => {
 	};
 
 	const uploadImage = async (profileImage: File) => {
-		if (profileImage) {
-			try {
-				const imageFirebaseRef = `/userProfilePics/${userAuth?.email}`;
-				const snapshot = await uploadBytes(
-					ref(storage, imageFirebaseRef),
-					profileImage
-				);
-
-				const downloadURL = await getDownloadURL(snapshot.ref);
-
-				if (!downloadURL) {
-					alert('Failed to save image to firebase');
-				} else {
-					return downloadURL;
-				}
-			} catch (error) {
-				alert('Upload unsuccessfully');
-				return null;
-			}
-		}
-
+		// TODO: upload image to AWS
 		return null;
 	};
 
@@ -67,7 +44,7 @@ const AccountSettings = () => {
 		if (isSaveButtonDisabled) return;
 		if (!profileImage && userName === user?.userName) return; // return if no change
 
-		// upload image to firebase
+		// TODO: upload image to AWS
 		const imgURL = await uploadImage(profileImage as File);
 
 		// API call to backend
@@ -86,7 +63,7 @@ const AccountSettings = () => {
 				populateUser({
 					userId: updateUserRes.data.userId,
 					userName: updateUserRes.data.userName,
-					userEmail: userAuth?.email as string,
+					userEmail: 'TODO: userEmail',
 					profileImgUrl: updateUserRes.data.profileImgUrl,
 				})
 			);
