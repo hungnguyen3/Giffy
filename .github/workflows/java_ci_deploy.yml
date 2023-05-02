@@ -24,7 +24,6 @@ jobs:
         SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
         SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
         SPRING_JPA_HIBERNATE_DDL_AUTO: create
-        SERVER_PORT: ${{ secrets.SERVER_PORT }}
         SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 50MB
         SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 50MB
         SPRING_SERVLET_MULTIPART_ENABLED: "true"
@@ -32,6 +31,8 @@ jobs:
         SPRING_MVC_CORS_ALLOWED_METHODS: "GET,POST,DELETE,PUT"
         SPRING_MVC_CORS_ALLOWED_HEADERS: "*"
         SPRING_MVC_CORS_ALLOW_CREDENTIALS: "true"
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
         
     steps:
     - uses: actions/checkout@v3
@@ -55,7 +56,6 @@ jobs:
         echo "spring.datasource.username=$SPRING_DATASOURCE_USERNAME" >> ./application.properties
         echo "spring.datasource.password=$SPRING_DATASOURCE_PASSWORD" >> ./application.properties
         echo "spring.jpa.hibernate.ddl-auto=$SPRING_JPA_HIBERNATE_DDL_AUTO" >> ./application.properties
-        echo "server.port=$SERVER_PORT" >> ./application.properties
         echo "spring.servlet.multipart.max-file-size=$SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE" >> ./application.properties
         echo "spring.servlet.multipart.max-request-size=$SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE" >> ./application.properties
         echo "spring.servlet.multipart.enabled=$SPRING_SERVLET_MULTIPART_ENABLED" >> ./application.properties
@@ -63,13 +63,14 @@ jobs:
         echo "spring.mvc.cors.allowed-methods=$SPRING_MVC_CORS_ALLOWED_METHODS" >> ./application.properties
         echo "spring.mvc.cors.allowed-headers=$SPRING_MVC_CORS_ALLOWED_HEADERS" >> ./application.properties
         echo "spring.mvc.cors.allow-credentials=$SPRING_MVC_CORS_ALLOW_CREDENTIALS" >> ./application.properties
+        echo "server.port=$SERVER_PORT" >> ./application.properties
+        echo "giphy.apiKey=$GIPHY_API_KEY" >> ./application.properties
       shell: bash
       env:
         SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
         SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
         SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
         SPRING_JPA_HIBERNATE_DDL_AUTO: create
-        SERVER_PORT: ${{ secrets.SERVER_PORT }}
         SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 50MB
         SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 50MB
         SPRING_SERVLET_MULTIPART_ENABLED: "true"
@@ -77,6 +78,8 @@ jobs:
         SPRING_MVC_CORS_ALLOWED_METHODS: "GET,POST,DELETE,PUT"
         SPRING_MVC_CORS_ALLOWED_HEADERS: "*"
         SPRING_MVC_CORS_ALLOW_CREDENTIALS: "true"
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
     - name: Build with Maven
       run: mvn -B package -f server/pom.xml
     - name: Kill Running Process
