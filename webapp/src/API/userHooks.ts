@@ -77,8 +77,9 @@ export async function createUser(data: {
 	profileImgUrl: string;
 }): Promise<CreateUserDTO | ErrorDTO> {
 	try {
+		console.log(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/createUser`);
 		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/users/createUser`,
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/createUser`,
 			{
 				method: 'POST',
 				cache: 'no-cache',

@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByCognitoSub(String cognitoSub);
+    User findByUserUsername(String cognitoSub);
+    User findByUserEmail(String cognitoSub);
 }

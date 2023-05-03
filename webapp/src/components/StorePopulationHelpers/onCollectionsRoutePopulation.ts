@@ -1,5 +1,3 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { logIn, logOut, UserAuth } from '../../slices/UserAuthSlice';
 import { getCurrentUser } from '../../API/userHooks';
 import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
@@ -18,7 +16,6 @@ import {
 	populateCollections,
 	UserAccess,
 } from '../../slices/CollectionsSlice';
-import { app } from '../Firebase/FirebaseInit';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
@@ -143,43 +140,5 @@ export const onCollectionsRoutePopulation = (
 	// clear collections every time we change route
 	dispatch(clearCollections());
 
-	onAuthStateChanged(getAuth(app), user => {
-		if (user) {
-			// TODO: handle idToken
-			const userAuth = {
-				uid: user.uid,
-				email: user.email,
-				displayName: user.displayName,
-				photoURL: user.photoURL,
-			};
-
-			populateUserInfo(dispatch)
-				.then(userInfo => {
-					if (!userInfo) {
-						return null;
-					}
-					return populateCollectionsInfo(dispatch);
-				})
-				.then(firstCollectionId => {
-					if (
-						firstCollectionId !== null &&
-						firstCollectionId !== undefined &&
-						!router.route.includes('discovery')
-					) {
-						router.push(`/collections/${firstCollectionId}`);
-					}
-				})
-				.catch(() => {
-					router.push(`/collections/0`);
-				});
-
-			dispatch(logIn(userAuth));
-			setLoggedIn(true);
-		} else {
-			dispatch(logOut());
-			dispatch(clearUser());
-			dispatch(clearCollections());
-			setLoggedIn(false);
-		}
-	});
+	// TODO!
 };

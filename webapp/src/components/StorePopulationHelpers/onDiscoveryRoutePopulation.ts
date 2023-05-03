@@ -1,6 +1,3 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { logIn, logOut, UserAuth } from '../../slices/UserAuthSlice';
-import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
 	CollectionDTO,
 	GetPublicCollectionsDTO,
@@ -16,7 +13,6 @@ import {
 	Collection,
 	populateCollections,
 } from '../../slices/CollectionsSlice';
-import { app } from '../Firebase/FirebaseInit';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
@@ -89,41 +85,5 @@ export const onDiscoveryRoutePopulation = (
 	// clear collections every time we change route
 	dispatch(clearCollections());
 
-	onAuthStateChanged(getAuth(app), user => {
-		if (user) {
-			// TODO: handle idToken
-			const userAuth = {
-				uid: user.uid,
-				email: user.email,
-				displayName: user.displayName,
-				photoURL: user.photoURL,
-			};
-
-			populateUserInfo(dispatch)
-				.then(() => {
-					return populateCollectionsInfo(dispatch);
-				})
-				.then(firstCollectionId => {
-					if (
-						firstCollectionId !== null &&
-						firstCollectionId !== undefined &&
-						!router.route.includes('discovery')
-					) {
-						router.push(`/discovery/${firstCollectionId}`);
-					}
-				})
-				.catch(() => {
-					// TODO: need better logic here
-					dispatch(clearCollections());
-				});
-
-			dispatch(logIn(userAuth));
-			setLoggedIn(true);
-		} else {
-			populateCollectionsInfo(dispatch);
-			dispatch(logOut());
-			dispatch(clearUser());
-			setLoggedIn(false);
-		}
-	});
+	//  TODO: on auth change, discovery page should be populated with user's collections
 };

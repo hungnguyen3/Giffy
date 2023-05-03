@@ -9,14 +9,11 @@ import { Collection } from '../slices/CollectionsSlice';
 import UploadGiffy from '../components/UploadGiffy';
 import { useRouter } from 'next/router';
 import Modal from './Modal';
-import Auth from './Auth';
 import CreateNewCollection from './CreateNewCollection';
 import { DeleteConfirmationWindow } from './DeleteConfirmationWindow';
 import { onCollectionsRoutePopulation } from './StorePopulationHelpers/onCollectionsRoutePopulation';
 import { CollectionSettingWindow } from './CollectionSettingWindow';
 import { onDiscoveryRoutePopulation } from './StorePopulationHelpers/onDiscoveryRoutePopulation';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { app } from './Firebase/FirebaseInit';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -56,9 +53,7 @@ const Layout = (props: LayoutProps) => {
 	);
 
 	useEffect(() => {
-		onAuthStateChanged(getAuth(app), user => {
-			if (user) setEstablishingUserSessionLoading(true);
-		});
+		// TODO: on auth change, update the user state
 
 		const handlePath = async () => {
 			switch (path) {
@@ -116,55 +111,41 @@ const Layout = (props: LayoutProps) => {
 		return () => clearTimeout(timer);
 	}, [establishingUserSessionLoading]);
 
-	if ((loggedIn && hasAnAccount) || isOnDiscoveryPage) {
-		return (
-			<div className={layoutStyles.background}>
-				{/* if change the value 20%, change the width of flexView class too*/}
-				<SidePanel width={'20%'} />
-				<div className={layoutStyles.flexView}>
-					<Header />
-					<div className={layoutStyles.pageContent}>{props.children}</div>
-				</div>
-				{isAccountSettingOpen && (
-					<Modal disableCloseButton={false}>
-						<AccountSettings />
-					</Modal>
-				)}
-				{isUploadGiffyWindowOpen && (
-					<Modal disableCloseButton={false}>
-						<UploadGiffy currentCollectionId={Number(collectionId)} />
-					</Modal>
-				)}
-				{isCreateNewCollectionWindowOpen && (
-					<Modal disableCloseButton={false}>
-						<CreateNewCollection />
-					</Modal>
-				)}
-				{isDeleteConfirmationWindowOpen && (
-					<Modal disableCloseButton={false}>
-						<DeleteConfirmationWindow />
-					</Modal>
-				)}
-				{isCollectionSettingWindowOpen && (
-					<Modal disableCloseButton={false}>
-						<CollectionSettingWindow />
-					</Modal>
-				)}
+	return (
+		<div className={layoutStyles.background}>
+			{/* if change the value 20%, change the width of flexView class too*/}
+			<SidePanel width={'20%'} />
+			<div className={layoutStyles.flexView}>
+				<Header />
+				<div className={layoutStyles.pageContent}>{props.children}</div>
 			</div>
-		);
-	} else {
-		if (!establishingUserSessionLoading) {
-			return (
-				<div>
-					<Modal disableCloseButton={true}>
-						<Auth />
-					</Modal>
-				</div>
-			);
-		} else {
-			return <Loading />;
-		}
-	}
+			{isAccountSettingOpen && (
+				<Modal disableCloseButton={false}>
+					<AccountSettings />
+				</Modal>
+			)}
+			{isUploadGiffyWindowOpen && (
+				<Modal disableCloseButton={false}>
+					<UploadGiffy currentCollectionId={Number(collectionId)} />
+				</Modal>
+			)}
+			{isCreateNewCollectionWindowOpen && (
+				<Modal disableCloseButton={false}>
+					<CreateNewCollection />
+				</Modal>
+			)}
+			{isDeleteConfirmationWindowOpen && (
+				<Modal disableCloseButton={false}>
+					<DeleteConfirmationWindow />
+				</Modal>
+			)}
+			{isCollectionSettingWindowOpen && (
+				<Modal disableCloseButton={false}>
+					<CollectionSettingWindow />
+				</Modal>
+			)}
+		</div>
+	);
 };
 
 const Loading = () => {

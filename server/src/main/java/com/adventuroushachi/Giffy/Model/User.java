@@ -25,10 +25,16 @@ public class User {
     @Column(name = "user_name", nullable = false)
     private String userName;
 
+    @Column(name = "user_username", nullable = false, unique = true)
+    private String userUsername;
+
+    @Column(name = "user_email", nullable = false, unique = true)
+    private String userEmail;
+
     @Column(name = "cognito_sub", nullable = false, unique = true)
     private String cognitoSub;
 
-    @Column(name = "profile_img_url")
+    @Column(name = "profile_img_url", nullable = false)
     private String profileImgUrl;
 
 }

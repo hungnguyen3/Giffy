@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userAuthReducer from './slices/UserAuthSlice';
 import userReducer from './slices/UserSlice';
 import accountSettingReducer from './slices/AccountSettingSlice';
 import collectionsReducer from './slices/CollectionsSlice';
@@ -8,7 +7,6 @@ import discoveryReducer from './slices/DiscoverySlice';
 export const store = configureStore({
 	reducer: {
 		user: userReducer,
-		userAuth: userAuthReducer,
 		collections: collectionsReducer,
 		discovery: discoveryReducer,
 		accountSetting: accountSettingReducer,
