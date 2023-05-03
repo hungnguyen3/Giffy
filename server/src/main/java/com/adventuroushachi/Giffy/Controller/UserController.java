@@ -26,13 +26,29 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseMessage<User>> createUser(@RequestBody User user) {
-        if(user == null || user.getUserName() == null || user.getCognitoSub() == null || user.getProfileImgUrl() == null) {
+        if (user == null || 
+            user.getUserName() == null || 
+            user.getUserUsername() == null || 
+            user.getUserEmail() == null || 
+            user.getCognitoSub() == null || 
+            user.getProfileImgUrl() == null) 
+        {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
        
+        User existingUserWithSameUserUsername = userRepository.findByUserUsername(user.getUserUsername());
+        if(existingUserWithSameUserUsername != null) {
+            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated username found!", null));
+        }
+        
+        User existingUserWithSameUserEmail = userRepository.findByUserEmail(user.getUserEmail());
+        if(existingUserWithSameUserEmail != null) {
+            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated email found!", null));
+        }
+
         User existingUserWithSameCognitoSub = userRepository.findByCognitoSub(user.getCognitoSub());
         if(existingUserWithSameCognitoSub != null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated cognito identity", null));
+            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated cognito identity found!", null));
         }
 
         User createdUser = userRepository.save(user);
@@ -77,13 +93,21 @@ public class UserController {
         if (userId == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
-        if (user == null || user.getUserName() == null || user.getCognitoSub() == null || user.getProfileImgUrl() == null) {
+        if (user == null || 
+            user.getUserName() == null || 
+            user.getUserUsername() == null || 
+            user.getUserEmail() == null || 
+            user.getCognitoSub() == null || 
+            user.getProfileImgUrl() == null) 
+        {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
         Optional<User> userToUpdate = userRepository.findById(userId);
         if(userToUpdate.isPresent()) {
             User existingUser = userToUpdate.get();
             existingUser.setUserName(user.getUserName());
+            existingUser.setUserUsername(user.getUserUsername());
+            existingUser.setUserEmail(user.getUserEmail());
             existingUser.setCognitoSub(user.getCognitoSub());
             existingUser.setProfileImgUrl(user.getProfileImgUrl());
             User updatedUser = userRepository.save(existingUser);
