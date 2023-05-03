@@ -5,28 +5,17 @@ import {
 	GetCurrentUserCollectionsDTO,
 	isGetCurrentUserCollectionsDTO,
 } from '../../API/types/collections-types';
-import {
-	GetGiffiesByCollectionIdDTO,
-	GiffyDTO,
-	isGetGiffiesByCollectionIdDTO,
-} from '../../API/types/giffies-types';
-import {
-	clearCollections,
-	Collection,
-	populateCollections,
-	UserAccess,
-} from '../../slices/CollectionsSlice';
+import { GetGiffiesByCollectionIdDTO, GiffyDTO, isGetGiffiesByCollectionIdDTO } from '../../API/types/giffies-types';
+import { clearCollections, Collection, populateCollections, UserAccess } from '../../slices/CollectionsSlice';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { ErrorDTO, isErrorDTO } from '../../API/types/errors-types';
 import { getCurrentUserCollections } from '../../API/collectionHooks';
 import { getGiffiesByCollectionId } from '../../API/giffyHooks';
-import {
-	GetCurrentUserDTO,
-	isGetCurrentUserDTO,
-} from '../../API/types/users-types';
+import { GetCurrentUserDTO, isGetCurrentUserDTO } from '../../API/types/users-types';
 import { getUsersByCollectionId } from '../../API/collectionUserRelationshipsHooks';
+import { Auth, Hub } from 'aws-amplify';
 
 interface onCollectionsRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -120,9 +109,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 					);
 				});
 
-				const collectionIds = collections.map(
-					(collection: CollectionDTO) => collection.collectionId
-				);
+				const collectionIds = collections.map((collection: CollectionDTO) => collection.collectionId);
 				resolve(collectionIds.length > 0 ? Math.min(...collectionIds) : 0);
 			})
 			.catch(() => {
@@ -132,9 +119,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 };
 
 // Original function modified to call the new functions
-export const onCollectionsRoutePopulation = (
-	props: onCollectionsRoutePopulationProps
-) => {
+export const onCollectionsRoutePopulation = (props: onCollectionsRoutePopulationProps) => {
 	const { dispatch, router, setLoggedIn } = props;
 
 	// clear collections every time we change route

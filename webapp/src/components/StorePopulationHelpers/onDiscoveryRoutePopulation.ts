@@ -1,18 +1,6 @@
-import {
-	CollectionDTO,
-	GetPublicCollectionsDTO,
-	isGetPublicCollectionsDTO,
-} from '../../API/types/collections-types';
-import {
-	GetGiffiesByCollectionIdDTO,
-	GiffyDTO,
-	isGetGiffiesByCollectionIdDTO,
-} from '../../API/types/giffies-types';
-import {
-	clearCollections,
-	Collection,
-	populateCollections,
-} from '../../slices/CollectionsSlice';
+import { CollectionDTO, GetPublicCollectionsDTO, isGetPublicCollectionsDTO } from '../../API/types/collections-types';
+import { GetGiffiesByCollectionIdDTO, GiffyDTO, isGetGiffiesByCollectionIdDTO } from '../../API/types/giffies-types';
+import { clearCollections, Collection, populateCollections } from '../../slices/CollectionsSlice';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
@@ -20,6 +8,7 @@ import { ErrorDTO } from '../../API/types/errors-types';
 import { getPublicCollections } from '../../API/collectionHooks';
 import { getGiffiesByCollectionId } from '../../API/giffyHooks';
 import { populateUserInfo } from './onCollectionsRoutePopulation';
+import { Auth, Hub } from 'aws-amplify';
 
 interface onDiscoveryRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -65,9 +54,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 				Promise.all(promises).then(() => {
 					dispatch(populateCollections(toStoreCollections));
 
-					const collectionIds = collections.map(
-						(collection: CollectionDTO) => collection.collectionId
-					);
+					const collectionIds = collections.map((collection: CollectionDTO) => collection.collectionId);
 					resolve(collectionIds.length > 0 ? Math.min(...collectionIds) : 0);
 				});
 			})
@@ -77,9 +64,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	});
 };
 
-export const onDiscoveryRoutePopulation = (
-	props: onDiscoveryRoutePopulationProps
-) => {
+export const onDiscoveryRoutePopulation = (props: onDiscoveryRoutePopulationProps) => {
 	const { dispatch, router, setLoggedIn } = props;
 
 	// clear collections every time we change route

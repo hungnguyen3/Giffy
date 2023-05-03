@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.adventuroushachi.Giffy.DTO.UserDTO;
 import com.adventuroushachi.Giffy.Model.User;
 import com.adventuroushachi.Giffy.Repository.UserRepository;
 
@@ -36,18 +37,18 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
-        ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(user, response.getBody().getData());
+        assertEquals(UserDTO.fromEntity(user), response.getBody().getData());
     }
 
     @Test
     public void testCreateUserWithInvalidData() {
         User user = new User();
 
-        ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -71,7 +72,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findByUserUsername(newUser.getUserUsername())).thenReturn(existingUser);
 
-        ResponseEntity<ResponseMessage<User>> response = userController.createUser(newUser);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.createUser(newUser);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -96,7 +97,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findByUserEmail(newUser.getUserEmail())).thenReturn(existingUser);
 
-        ResponseEntity<ResponseMessage<User>> response = userController.createUser(newUser);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.createUser(newUser);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -121,7 +122,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findByCognitoSub(newUser.getCognitoSub())).thenReturn(existingUser);
 
-        ResponseEntity<ResponseMessage<User>> response = userController.createUser(newUser);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.createUser(newUser);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -161,11 +162,11 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        ResponseEntity<ResponseMessage<User>> response = userController.getUserById(userId);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.getUserById(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(user, response.getBody().getData());
+        assertEquals(UserDTO.fromEntity(user), response.getBody().getData());
     }
 
     @Test
@@ -174,7 +175,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<ResponseMessage<User>> response = userController.getUserById(userId);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.getUserById(userId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -200,11 +201,11 @@ public class UserControllerTest {
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(userToUpdate));
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(updatedUser);
 
-        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseMessageStatus.SUCCESS.getStatus(), response.getBody().getStatus());
-        assertEquals(updatedUser, response.getBody().getData());
+        assertEquals(UserDTO.fromEntity(updatedUser), response.getBody().getData());
     }
 
     @Test
@@ -219,7 +220,7 @@ public class UserControllerTest {
 
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -232,7 +233,7 @@ public class UserControllerTest {
         user.setProfileImgUrl(null);
         user.setCognitoSub(null);
 
-        ResponseEntity<ResponseMessage<User>> response = userController.createUser(user);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.createUser(user);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -248,7 +249,7 @@ public class UserControllerTest {
 
     @Test
     public void testGetUserByIdWithNullId() {
-        ResponseEntity<ResponseMessage<User>> response = userController.getUserById(null);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.getUserById(null);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -261,7 +262,7 @@ public class UserControllerTest {
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
         updatedUser.setCognitoSub("updated_cognito_sub");
 
-        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(null, updatedUser);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.updateUserById(null, updatedUser);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
@@ -282,7 +283,7 @@ public class UserControllerTest {
 
         Mockito.lenient().when(userRepository.findById(userId)).thenReturn(Optional.of(userToUpdate));
 
-        ResponseEntity<ResponseMessage<User>> response = userController.updateUserById(userId, updatedUser);
+        ResponseEntity<ResponseMessage<UserDTO>> response = userController.updateUserById(userId, updatedUser);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());

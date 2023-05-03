@@ -27,18 +27,10 @@ const Layout = (props: LayoutProps) => {
 	let path = router.pathname.split('/')[1];
 	const isOnDiscoveryPage = path == 'discovery';
 	const isOnCollectionsPage = path == 'collections';
-	const [establishingUserSessionLoading, setEstablishingUserSessionLoading] =
-		useState(true);
 
-	const isAccountSettingOpen = useAppSelector(
-		(state: RootState) => state.accountSetting.isAccountSettingOpen
-	);
-	const isUploadGiffyWindowOpen = useAppSelector(
-		(state: RootState) => state.collections.isUploadGiffyWindowOpen
-	);
-	const hasAnAccount = useAppSelector((state: RootState) =>
-		state.user.value ? true : false
-	);
+	const isAccountSettingOpen = useAppSelector((state: RootState) => state.accountSetting.isAccountSettingOpen);
+	const isUploadGiffyWindowOpen = useAppSelector((state: RootState) => state.collections.isUploadGiffyWindowOpen);
+	const hasAnAccount = useAppSelector((state: RootState) => (state.user.value ? true : false));
 	const isCreateNewCollectionWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isCreateNewCollectionWindowOpen
 	);
@@ -48,13 +40,9 @@ const Layout = (props: LayoutProps) => {
 	const isCollectionSettingWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isCollectionSettingWindowOpen
 	);
-	const collections = useAppSelector((state: RootState) =>
-		Object.values(state.collections.value)
-	);
+	const collections = useAppSelector((state: RootState) => Object.values(state.collections.value));
 
 	useEffect(() => {
-		// TODO: on auth change, update the user state
-
 		const handlePath = async () => {
 			switch (path) {
 				case '':
@@ -89,27 +77,13 @@ const Layout = (props: LayoutProps) => {
 
 	// handling collection deletion
 	useEffect(() => {
-		var collectionIds = collections.map(
-			(collection: Collection) => collection.collectionId
-		);
+		var collectionIds = collections.map((collection: Collection) => collection.collectionId);
 
-		if (
-			!collectionIds.includes(Number(collectionId)) &&
-			(isOnCollectionsPage || isOnDiscoveryPage)
-		) {
+		if (!collectionIds.includes(Number(collectionId)) && (isOnCollectionsPage || isOnDiscoveryPage)) {
 			const minId = collectionIds.length > 0 ? Math.min(...collectionIds) : 0;
 			router.push(`/${path}/${minId}`);
 		}
 	}, [collections.length]);
-
-	// Because the user session is established asynchronously
-	// We need to delay the rendering of the auth window
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setEstablishingUserSessionLoading(false);
-		}, 2000);
-		return () => clearTimeout(timer);
-	}, [establishingUserSessionLoading]);
 
 	return (
 		<div className={layoutStyles.background}>
@@ -150,10 +124,7 @@ const Layout = (props: LayoutProps) => {
 
 const Loading = () => {
 	return (
-		<div
-			className={layoutStyles.centeredBox}
-			style={{ width: '100vw', height: '100vh' }}
-		>
+		<div className={layoutStyles.centeredBox} style={{ width: '100vw', height: '100vh' }}>
 			<h3>Loading...🚀🚀</h3>
 		</div>
 	);
