@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.adventuroushachi.Giffy.DTO.UserDTO;
 import com.adventuroushachi.Giffy.Model.User;
 import com.adventuroushachi.Giffy.Repository.UserRepository;
 
@@ -25,7 +26,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/createUser")
-    public ResponseEntity<ResponseMessage<User>> createUser(@RequestBody User user) {
+    public ResponseEntity<ResponseMessage<UserDTO>> createUser(@RequestBody User user) {
         if (user == null || 
             user.getUserName() == null || 
             user.getUserUsername() == null || 
@@ -52,7 +53,7 @@ public class UserController {
         }
 
         User createdUser = userRepository.save(user);
-        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User created", createdUser));
+        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User created", UserDTO.fromEntity(createdUser)));
     }
 
     @DeleteMapping("/deleteUserById/{userId}")
@@ -70,26 +71,26 @@ public class UserController {
     }
 
     @GetMapping("/getUserById/{userId}")
-    public ResponseEntity<ResponseMessage<User>> getUserById(@PathVariable Long userId) {
+    public ResponseEntity<ResponseMessage<UserDTO>> getUserById(@PathVariable Long userId) {
         if (userId == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
-            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User found", user.get()));
+            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User found", UserDTO.fromEntity(user.get())));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
         }
     }
 
     @GetMapping("/getCurrentUser")
-    public ResponseEntity<ResponseMessage<User>> getCurrentUser() {
+    public ResponseEntity<ResponseMessage<UserDTO>> getCurrentUser() {
         // code to get current user
         return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Current user found", null));
     }
 
     @PutMapping("/updateUserById/{userId}")
-    public ResponseEntity<ResponseMessage<User>> updateUserById(@PathVariable Long userId, @RequestBody User user) {
+    public ResponseEntity<ResponseMessage<UserDTO>> updateUserById(@PathVariable Long userId, @RequestBody User user) {
         if (userId == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
@@ -111,7 +112,7 @@ public class UserController {
             existingUser.setCognitoSub(user.getCognitoSub());
             existingUser.setProfileImgUrl(user.getProfileImgUrl());
             User updatedUser = userRepository.save(existingUser);
-            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User updated", updatedUser));
+            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User updated", UserDTO.fromEntity(updatedUser)));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
         }
