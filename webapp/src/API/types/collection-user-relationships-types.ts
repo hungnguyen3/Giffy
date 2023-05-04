@@ -8,8 +8,7 @@ export interface AddCollectionUserRelationshipDTO {
 	data: CollectionUserRelationshipDTO;
 }
 
-export interface CollectionUserRelationshipsDTO
-	extends CollectionUserRelationshipDTO {
+export interface CollectionUserRelationshipsDTO extends CollectionUserRelationshipDTO {
 	userName: string;
 	userEmail: string;
 	firebaseAuthId: string;

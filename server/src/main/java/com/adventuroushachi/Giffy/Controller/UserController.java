@@ -1,5 +1,8 @@
 package com.adventuroushachi.Giffy.Controller;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +16,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.adventuroushachi.Giffy.DTO.UserDTO;
 import com.adventuroushachi.Giffy.Model.User;
 import com.adventuroushachi.Giffy.Repository.UserRepository;
+import com.adventuroushachi.Giffy.Utils.Exception.InvalidAuthorizationException;
+import com.adventuroushachi.Giffy.Utils.Jwt.JwtUtils;
+import com.google.gson.Gson;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
     @Autowired
     private UserRepository userRepository;
 
@@ -85,8 +92,32 @@ public class UserController {
 
     @GetMapping("/getCurrentUser")
     public ResponseEntity<ResponseMessage<UserDTO>> getCurrentUser() {
-        // code to get current user
-        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Current user found", null));
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+        Map<String, String> headers = new HashMap<>();
+        Enumeration<String> headerNames = attrs.getRequest().getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            headers.put(headerName, attrs.getRequest().getHeader(headerName));
+        }
+
+        String cognitoSub = null;
+        try {
+            cognitoSub = JwtUtils.getCognitoSubFromHeader(headers, new Gson());
+        } catch (InvalidAuthorizationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, e.getMessage(), null));
+        }
+
+        if (cognitoSub == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Unauthorized", null));
+        }
+
+        User existingUser = userRepository.findByCognitoSub(cognitoSub);
+        if (existingUser != null) {
+            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Current user found", UserDTO.fromEntity(existingUser)));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found in the database", null));
+        }
     }
 
     @PutMapping("/updateUserById/{userId}")

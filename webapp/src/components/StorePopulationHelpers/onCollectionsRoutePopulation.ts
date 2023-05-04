@@ -1,4 +1,4 @@
-import { getCurrentUser } from '../../API/userHooks';
+import UserService from '../../API/UserService';
 import { clearUser, populateUser } from '../../slices/UserSlice';
 import {
 	CollectionDTO,
@@ -20,7 +20,6 @@ import { Auth, Hub } from 'aws-amplify';
 interface onCollectionsRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
 	router: NextRouter;
-	setLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
 // Function to populate user information
@@ -28,9 +27,10 @@ export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise<{
 		userId: number;
 		userName: string;
+		userEmail: string;
 		profileImgUrl: string;
 	}>((resolve, reject) => {
-		getCurrentUser()
+		UserService.getCurrentUser()
 			.then((response: ErrorDTO | GetCurrentUserDTO) => {
 				if (!isGetCurrentUserDTO(response)) {
 					return reject();
@@ -45,7 +45,7 @@ export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 					profileImgUrl: user.profileImgUrl,
 				};
 
-				if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName) {
+				if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName && userInfo.userEmail) {
 					dispatch(populateUser(userInfo));
 				}
 				return resolve(userInfo);
@@ -126,4 +126,10 @@ export const onCollectionsRoutePopulation = (props: onCollectionsRoutePopulation
 	dispatch(clearCollections());
 
 	// TODO!
+	Auth.currentAuthenticatedUser()
+		.then((currentUser) => {
+			console.log(currentUser);
+			populateUserInfo(dispatch);
+		})
+		.catch(() => console.log('Not signed in'));
 };

@@ -29,7 +29,7 @@ export const userSlice = createSlice({
 			const userValue: User | null = action.payload;
 			state.value = userValue;
 		},
-		clearUser: state => {
+		clearUser: (state) => {
 			state.value = null;
 		},
 	},

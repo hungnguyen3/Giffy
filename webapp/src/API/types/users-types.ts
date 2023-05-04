@@ -11,22 +11,32 @@ export interface User extends UserDTO {
 }
 
 export interface CreateUserDTO {
-	data: User;
+	status: string;
+	message: string;
+	data: UserDTO;
 }
 
 export interface GetUserByIdDTO {
+	status: string;
+	message: string;
 	data: UserDTO;
 }
 
 export interface GetCurrentUserDTO {
+	status: string;
+	message: string;
 	data: UserDTO;
 }
 
 export interface GetUserByUserEmailDTO {
+	status: string;
+	message: string;
 	data: UserDTO;
 }
 
 export interface GetUserByUserUsernameDTO {
+	status: string;
+	message: string;
 	data: UserDTO;
 }
 
@@ -42,6 +52,10 @@ export function isUserDTO(obj: any): obj is UserDTO {
 		typeof obj.userId === 'number' &&
 		obj.hasOwnProperty('userName') &&
 		typeof obj.userName === 'string' &&
+		obj.hasOwnProperty('userUsername') &&
+		typeof obj.userUsername === 'string' &&
+		obj.hasOwnProperty('userEmail') &&
+		typeof obj.userEmail === 'string' &&
 		obj.hasOwnProperty('cognitoSub') &&
 		typeof obj.cognitoSub === 'string' &&
 		obj.hasOwnProperty('profileImgUrl') &&
@@ -50,7 +64,15 @@ export function isUserDTO(obj: any): obj is UserDTO {
 }
 
 export function isCreateUserDTO(obj: any): obj is CreateUserDTO {
-	return obj && obj.hasOwnProperty('data') && isUserDTO(obj.data);
+	return (
+		obj &&
+		obj.hasOwnProperty('status') &&
+		typeof obj.status === 'string' &&
+		obj.hasOwnProperty('message') &&
+		typeof obj.message === 'string' &&
+		obj.hasOwnProperty('data') &&
+		isUserDTO(obj.data)
+	);
 }
 
 export function isGetUserByIdDTO(obj: any): obj is GetUserByIdDTO {

@@ -13,7 +13,6 @@ import { Auth, Hub } from 'aws-amplify';
 interface onDiscoveryRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
 	router: NextRouter;
-	setLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
 // Function to populate collections
@@ -65,7 +64,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 };
 
 export const onDiscoveryRoutePopulation = (props: onDiscoveryRoutePopulationProps) => {
-	const { dispatch, router, setLoggedIn } = props;
+	const { dispatch, router } = props;
 
 	// clear collections every time we change route
 	dispatch(clearCollections());

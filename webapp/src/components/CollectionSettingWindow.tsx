@@ -13,24 +13,17 @@ import {
 import { RootState } from '../store';
 import { isUpdateCollectionByIdDTO } from '../API/types/collections-types';
 import styles from '../styles/CollectionSettingWindow.module.scss';
-import {
-	openDeleteConfirmationWindow,
-	selectACollectionToDelete,
-} from '../slices/CollectionsSlice';
-import CollectionPermissionBox, {
-	UserPermission,
-} from './CollectionPermissionBox';
-import { getUserByEmail } from '../API/userHooks';
+import { openDeleteConfirmationWindow, selectACollectionToDelete } from '../slices/CollectionsSlice';
+import CollectionPermissionBox, { UserPermission } from './CollectionPermissionBox';
+import UserService from '../API/UserService';
 import { ErrorDTO, isErrorDTO } from '../API/types/errors-types';
-import { GetUserByEmailDTO } from '../API/types/users-types';
+import { GetUserByUserEmailDTO } from '../API/types/users-types';
 import { addUserToACollection } from '../API/collectionUserRelationshipsHooks';
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
 	const dispatch = useDispatch();
-	const collection: Collection = useAppSelector(
-		(state: RootState) => state.collections.value[Number(collectionId)]
-	);
+	const collection: Collection = useAppSelector((state: RootState) => state.collections.value[Number(collectionId)]);
 	const collectionUsers: { [userEmail: string]: UserAccess } = useAppSelector(
 		(state: RootState) => state.collections.value[Number(collectionId)].users
 	);
@@ -45,7 +38,7 @@ export const CollectionSettingWindow = () => {
 		private: collection.private,
 	});
 
-	const usersWithAccess = Object.keys(collectionUsers).map(userEmail => {
+	const usersWithAccess = Object.keys(collectionUsers).map((userEmail) => {
 		const collectionUser = collectionUsers[userEmail];
 		return {
 			collectionId: collectionUser.collectionId,
@@ -56,9 +49,7 @@ export const CollectionSettingWindow = () => {
 	const [users, setUsers] = useState<UserPermission[]>(usersWithAccess);
 
 	const handleAddUser = async (userPermission: UserPermission) => {
-		const userInfo: GetUserByEmailDTO | ErrorDTO = await getUserByEmail(
-			userPermission.userEmail
-		);
+		const userInfo: GetUserByUserEmailDTO | ErrorDTO = await UserService.getUserByEmail(userPermission.userEmail);
 
 		if (isErrorDTO(userInfo)) {
 			alert('Invalid User Email');
@@ -107,7 +98,7 @@ export const CollectionSettingWindow = () => {
 	return (
 		<div className={styles.centeredBox}>
 			<form
-				onSubmit={event => {
+				onSubmit={(event) => {
 					event.preventDefault(); // prevent page refresh
 					handleSubmit;
 				}}
@@ -118,13 +109,13 @@ export const CollectionSettingWindow = () => {
 						<input
 							type="text"
 							value={updateCollectionPayload.collectionName}
-							onChange={event => {
+							onChange={(event) => {
 								setUpdateCollectionPayload({
 									...updateCollectionPayload,
 									collectionName: event.target.value,
 								});
 							}}
-							onKeyDown={event => {
+							onKeyDown={(event) => {
 								if (event.key === 'Enter') {
 									handleSubmit();
 								}
@@ -135,7 +126,7 @@ export const CollectionSettingWindow = () => {
 						Visibility: &nbsp;
 						<select
 							value={updateCollectionPayload.private ? 'private' : 'public'}
-							onChange={event => {
+							onChange={(event) => {
 								setUpdateCollectionPayload({
 									...updateCollectionPayload,
 									private: event.target.value === 'private',
@@ -156,7 +147,7 @@ export const CollectionSettingWindow = () => {
 						className={styles.saveBtn}
 						type="submit"
 						value="Save"
-						onClick={e => {
+						onClick={(e) => {
 							e.preventDefault();
 							handleSubmit();
 							dispatch(closeCollectionSettingWindow());

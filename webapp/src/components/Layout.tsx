@@ -20,7 +20,6 @@ interface LayoutProps {
 }
 
 const Layout = (props: LayoutProps) => {
-	const [loggedIn, setLoggedIn] = useState(false);
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const { collectionId } = router.query;
@@ -48,29 +47,28 @@ const Layout = (props: LayoutProps) => {
 				case '':
 					router.push('/discovery/0');
 				case 'discovery':
-					await onDiscoveryRoutePopulation({
+					onDiscoveryRoutePopulation({
 						dispatch: dispatch,
 						router: router,
-						setLoggedIn: setLoggedIn,
 					});
 					break;
 				case 'auth':
 					// TO DO: add auth route population
-					await onCollectionsRoutePopulation({
+					onCollectionsRoutePopulation({
 						dispatch: dispatch,
 						router: router,
-						setLoggedIn: setLoggedIn,
 					});
 					break;
 				default:
-					await onCollectionsRoutePopulation({
+					onCollectionsRoutePopulation({
 						dispatch: dispatch,
 						router: router,
-						setLoggedIn: setLoggedIn,
 					});
 					break;
 			}
 		};
+
+		console.log('populating pages');
 
 		handlePath();
 	}, [hasAnAccount, isOnCollectionsPage, isOnDiscoveryPage]); // rerun the entire flow

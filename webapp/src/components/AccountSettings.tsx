@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { ErrorDTO } from '../API/types/errors-types';
-import {
-	isUpdateUserByIdDTO,
-	isUserDTO,
-	UpdateUserByIdDTO,
-} from '../API/types/users-types';
-import { updateUser } from '../API/userHooks';
+import { isUpdateUserByIdDTO, isUserDTO, UpdateUserByIdDTO } from '../API/types/users-types';
+import UserService from '../API/UserService';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { populateUser } from '../slices/UserSlice';
 import { RootState } from '../store';
@@ -18,8 +14,7 @@ const AccountSettings = () => {
 	const [profileImage, setProfileImage] = useState<File | null>(null);
 	const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 	const [userName, setUserName] = useState<string>(user?.userName as string);
-	const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
-		useState<boolean>(true);
+	const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 	const handleImageChange = (file: File) => {
@@ -48,7 +43,7 @@ const AccountSettings = () => {
 		const imgURL = await uploadImage(profileImage as File);
 
 		// API call to backend
-		const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await updateUser({
+		const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await UserService.updateUser({
 			userId: user?.userId as number,
 			userName: userName,
 			userEmail: user?.userEmail as string,
@@ -61,10 +56,10 @@ const AccountSettings = () => {
 		} else {
 			dispatch(
 				populateUser({
-					userId: updateUserRes.data.userId,
-					userName: updateUserRes.data.userName,
+					userId: updateUserRes.data.userId!,
+					userName: updateUserRes.data.userName!,
 					userEmail: 'TODO: userEmail',
-					profileImgUrl: updateUserRes.data.profileImgUrl,
+					profileImgUrl: updateUserRes.data.profileImgUrl!,
 				})
 			);
 		}
@@ -75,15 +70,13 @@ const AccountSettings = () => {
 			<h1>Account Settings</h1>
 			<form className={styles.profileSettingForm}>
 				<div className={styles.profileImgContainer}>
-					<h4 style={{ paddingRight: '37px', marginTop: '-17px' }}>
-						Profile Picture:
-					</h4>
+					<h4 style={{ paddingRight: '37px', marginTop: '-17px' }}>Profile Picture:</h4>
 					<div className={styles.profileImgBox}>
 						<input
 							type="file"
 							accept="image/*"
 							value=""
-							onChange={event => {
+							onChange={(event) => {
 								if (event.target.files) {
 									handleImageChange(event.target.files?.[0]);
 								} else setSelectedFile(null);
@@ -91,9 +84,7 @@ const AccountSettings = () => {
 							className={styles.profileImgUploadInput}
 						/>
 						<img
-							src={
-								previewImageUrl === null ? user?.profileImgUrl : previewImageUrl
-							}
+							src={previewImageUrl === null ? user?.profileImgUrl : previewImageUrl}
 							className={styles.profileImg}
 							alt={'Preview'}
 						/>
@@ -108,12 +99,9 @@ const AccountSettings = () => {
 					<input
 						type="text"
 						value={userName}
-						onChange={event => {
+						onChange={(event) => {
 							setUserName(event.target.value);
-							if (
-								event.target.value === user?.userName &&
-								selectedFile === null
-							) {
+							if (event.target.value === user?.userName && selectedFile === null) {
 								setIsSaveButtonDisabled(true);
 							} else {
 								setUserName(event.target.value);
