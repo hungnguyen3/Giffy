@@ -2,12 +2,12 @@ import type { NextPage } from 'next';
 import Layout from '../../components/Layout';
 import Card from '../../components/Card';
 import { useEffect, useState } from 'react';
-import { GiffyDTO } from '../../API/types/giffies-types';
 import CardDistributor from '../../components/CardDistributor';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../../hooks';
 import { RootState } from '../../store';
 import styles from '../../styles/Collections.module.scss';
+import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
 
 const Collection: NextPage = () => {
 	const [cards, setCards] = useState<JSX.Element[] | null>(null);

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { ErrorDTO } from '../API/types/errors-types';
-import { isUpdateUserByIdDTO, isUserDTO, UpdateUserByIdDTO } from '../API/types/users-types';
 import UserService from '../API/UserService';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { populateUser } from '../slices/UserSlice';
 import { RootState } from '../store';
 import styles from '../styles/AccountSettings.module.scss';
 import { FaCameraRetro } from 'react-icons/fa';
+import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
+import { UserDTO } from '../types/DTOs/UserDTOs';
 
 const AccountSettings = () => {
 	const dispatch = useAppDispatch();
@@ -43,7 +43,7 @@ const AccountSettings = () => {
 		const imgURL = await uploadImage(profileImage as File);
 
 		// API call to backend
-		const updateUserRes: UpdateUserByIdDTO | ErrorDTO = await UserService.updateUser({
+		const updateUserRes: ResponseMessage<UserDTO> = await UserService.updateUser({
 			userId: user?.userId as number,
 			userName: userName,
 			userEmail: user?.userEmail as string,
@@ -51,15 +51,16 @@ const AccountSettings = () => {
 		});
 
 		// update user at the frontend
-		if (!isUpdateUserByIdDTO(updateUserRes)) {
-			alert('Something went wrong updating profile data!');
+		if (!isResponseMessageSuccess(updateUserRes)) {
+			alert(updateUserRes.message);
 		} else {
+			const updatedUser: UserDTO = updateUserRes.data!;
 			dispatch(
 				populateUser({
-					userId: updateUserRes.data.userId!,
-					userName: updateUserRes.data.userName!,
-					userEmail: 'TODO: userEmail',
-					profileImgUrl: updateUserRes.data.profileImgUrl!,
+					userId: updatedUser.userId,
+					userName: updatedUser.userName,
+					userEmail: updatedUser.userEmail,
+					profileImgUrl: updatedUser.profileImgUrl!,
 				})
 			);
 		}

@@ -30,7 +30,6 @@ public class UserControllerTest {
     public void testCreateUser() {
         User user = new User();
         user.setUserName("Test User");
-        user.setUserUsername("user_name");
         user.setUserEmail("user_email");
         user.setProfileImgUrl("http://example.com/test.jpg");
         user.setCognitoSub("cognito_sub");
@@ -55,42 +54,15 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testCreateUserWithDuplicatedUserUsername() {
-        User existingUser = new User();
-        existingUser.setUserName("Existing User");
-        existingUser.setUserUsername("user_name");
-        existingUser.setUserEmail("existing_user_email");
-        existingUser.setProfileImgUrl("http://example.com/existing.jpg");
-        existingUser.setCognitoSub("existing_cognito_sub");
-
-        User newUser = new User();
-        newUser.setUserName("New User");
-        newUser.setUserUsername("user_name");
-        newUser.setUserEmail("new_user_email");
-        newUser.setProfileImgUrl("http://example.com/new.jpg");
-        newUser.setCognitoSub("new_cognito_sub");
-
-        Mockito.when(userRepository.findByUserUsername(newUser.getUserUsername())).thenReturn(existingUser);
-
-        ResponseEntity<ResponseMessage<UserDTO>> response = userController.createUser(newUser);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(ResponseMessageStatus.ERROR.getStatus(), response.getBody().getStatus());
-        assertEquals("Duplicated username found!", response.getBody().getMessage());
-    }
-
-    @Test
     public void testCreateUserWithDuplicatedUserEmail() {
         User existingUser = new User();
         existingUser.setUserName("Existing User");
-        existingUser.setUserUsername("existing_user_name");
         existingUser.setUserEmail("user_email");
         existingUser.setProfileImgUrl("http://example.com/existing.jpg");
         existingUser.setCognitoSub("existing_cognito_sub");
 
         User newUser = new User();
         newUser.setUserName("New User");
-        newUser.setUserUsername("new_user_name");
         newUser.setUserEmail("user_email");
         newUser.setProfileImgUrl("http://example.com/new.jpg");
         newUser.setCognitoSub("new_cognito_sub");
@@ -108,14 +80,12 @@ public class UserControllerTest {
     public void testCreateUserWithDuplicatedCognitoIdentity() {
         User existingUser = new User();
         existingUser.setUserName("Existing User");
-        existingUser.setUserUsername("existing_user_name");
         existingUser.setUserEmail("existing_user_email");
         existingUser.setProfileImgUrl("http://example.com/existing.jpg");
         existingUser.setCognitoSub("cognito_sub");
 
         User newUser = new User();
         newUser.setUserName("New User");
-        newUser.setUserUsername("new_user_name");
         newUser.setUserEmail("new_user_email");
         newUser.setProfileImgUrl("http://example.com/new.jpg");
         newUser.setCognitoSub("cognito_sub");
@@ -186,14 +156,12 @@ public class UserControllerTest {
         Long userId = 1L;
         User userToUpdate = new User();
         userToUpdate.setUserName("Test User");
-        userToUpdate.setUserUsername("user_username");
         userToUpdate.setUserEmail("user_email");
         userToUpdate.setProfileImgUrl("http://example.com/test.jpg");
         userToUpdate.setCognitoSub("cognito_sub");
 
         User updatedUser = new User();
         updatedUser.setUserName("Updated User");
-        updatedUser.setUserUsername("updated_user_username");
         updatedUser.setUserEmail("updated_user_email");
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
         updatedUser.setCognitoSub("updated_cognito_sub");
@@ -213,7 +181,6 @@ public class UserControllerTest {
         Long userId = 1L;
         User updatedUser = new User();
         updatedUser.setUserName("Updated User");
-        updatedUser.setUserUsername("user_username");
         updatedUser.setUserEmail("user_email");
         updatedUser.setProfileImgUrl("http://example.com/updated.jpg");
         updatedUser.setCognitoSub("updated_cognito_sub");

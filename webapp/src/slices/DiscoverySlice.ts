@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { GiffyDTO } from '../API/types/giffies-types';
+import { GiffyDTO } from '../types/DTOs/GiffyDTOs';
 
 export interface Collection {
 	collectionId: number;

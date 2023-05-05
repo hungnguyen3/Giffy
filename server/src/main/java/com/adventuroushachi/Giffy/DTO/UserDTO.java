@@ -12,7 +12,6 @@ import lombok.Setter;
 public class UserDTO {
     private Long userId;
     private String userName;
-    private String userUsername;
     private String userEmail;
     private String profileImgUrl;
 
@@ -20,7 +19,6 @@ public class UserDTO {
         UserDTO dto = new UserDTO();
         dto.setUserId(user.getUserId());
         dto.setUserName(user.getUserName());
-        dto.setUserUsername(user.getUserUsername());
         dto.setUserEmail(user.getUserEmail());
         dto.setProfileImgUrl(user.getProfileImgUrl());
         return dto;
@@ -33,13 +31,12 @@ public class UserDTO {
         UserDTO that = (UserDTO) o;
         return Objects.equals(userId, that.userId) &&
                 Objects.equals(userName, that.userName) &&
-                Objects.equals(userUsername, that.userUsername) &&
                 Objects.equals(userEmail, that.userEmail) &&
                 Objects.equals(profileImgUrl, that.profileImgUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userName, userUsername, userEmail, profileImgUrl);
+        return Objects.hash(userId, userName, userEmail, profileImgUrl);
     }
 }

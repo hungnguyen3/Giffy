@@ -36,17 +36,11 @@ public class UserController {
     public ResponseEntity<ResponseMessage<UserDTO>> createUser(@RequestBody User user) {
         if (user == null || 
             user.getUserName() == null || 
-            user.getUserUsername() == null || 
             user.getUserEmail() == null || 
             user.getCognitoSub() == null || 
             user.getProfileImgUrl() == null) 
         {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
-        }
-       
-        User existingUserWithSameUserUsername = userRepository.findByUserUsername(user.getUserUsername());
-        if(existingUserWithSameUserUsername != null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated username found!", null));
         }
         
         User existingUserWithSameUserEmail = userRepository.findByUserEmail(user.getUserEmail());
@@ -127,7 +121,6 @@ public class UserController {
         }
         if (user == null || 
             user.getUserName() == null || 
-            user.getUserUsername() == null || 
             user.getUserEmail() == null || 
             user.getCognitoSub() == null || 
             user.getProfileImgUrl() == null) 
@@ -138,7 +131,6 @@ public class UserController {
         if(userToUpdate.isPresent()) {
             User existingUser = userToUpdate.get();
             existingUser.setUserName(user.getUserName());
-            existingUser.setUserUsername(user.getUserUsername());
             existingUser.setUserEmail(user.getUserEmail());
             existingUser.setCognitoSub(user.getCognitoSub());
             existingUser.setProfileImgUrl(user.getProfileImgUrl());

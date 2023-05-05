@@ -1,12 +1,7 @@
 import styles from '../styles/UploadGiffy.module.scss';
-import { addGiffyToACollection } from '../slices/CollectionsSlice';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppDispatch } from '../hooks';
 import { useState } from 'react';
 import FileUploadBox from './FileUploadBox';
-import { RootState } from '../store';
-import { createGiffy } from '../API/giffyHooks';
-import { CreateGiffyDTO, isCreateGiffyDTO } from '../API/types/giffies-types';
-import { ErrorDTO } from '../API/types/errors-types';
 
 interface GiffyInfo {
 	collectionId: number | null;
@@ -35,23 +30,20 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 				Giffy name (Optional): &nbsp;
 				<input
 					type="text"
-					onChange={event => {
+					onChange={(event) => {
 						setGiffyInfo({
 							...giffyInfo,
 							giffyName: event.target.value,
 						});
 					}}
-					onKeyDown={event => {
+					onKeyDown={(event) => {
 						if (event.key === 'Enter') {
 							uploadHandler();
 						}
 					}}
 				></input>
 			</div>
-			<FileUploadBox
-				setFileHolderForParent={setGiffy}
-				displayText={'Drag and drop an img/gif or click here'}
-			/>
+			<FileUploadBox setFileHolderForParent={setGiffy} displayText={'Drag and drop an img/gif or click here'} />
 			<div className={styles.buttonContainer}>
 				<button className={styles.createBtn} onClick={uploadHandler}>
 					Upload
