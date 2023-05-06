@@ -20,7 +20,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LambdaUploadGiffyController implements RequestHandler<Map<String, Object>, ResponseEntity<ResponseMessage<Void>>> {
+public class LambdaCreateGiffyHandler implements RequestHandler<Map<String, Object>, ResponseEntity<ResponseMessage<Void>>> {
 
     public ResponseEntity<ResponseMessage<Void>> handleRequest(Map<String, Object> input, Context context) {
         Regions clientRegion = Regions.US_WEST_2;
