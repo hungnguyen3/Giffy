@@ -1,41 +1,39 @@
-package com.adventuroushachi.Giffy.Controller.Lambda;
+package com.adventuroushachi.function;
 
-import com.adventuroushachi.Giffy.Controller.ResponseMessage;
-import com.adventuroushachi.Giffy.Controller.ResponseMessageStatus;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import net.minidev.json.JSONObject;
-import org.apache.tomcat.util.http.fileupload.MultipartStream;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.google.gson.Gson;
+import org.apache.commons.fileupload.MultipartStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
-public class LambdaCreateGiffyHandler implements RequestHandler<Map<String, Object>, ResponseEntity<ResponseMessage<Void>>> {
+public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
-    public ResponseEntity<ResponseMessage<Void>> handleRequest(Map<String, Object> input, Context context) {
+    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
         Regions clientRegion = Regions.US_WEST_2;
-        // Store file in giffy-bucket/giffies/useremail/nameofile.gif
         String bucketName = "giffy-bucket";
 
         String fileObjKeyName = "";
 
-        Map<String, String> responseBody = new HashMap<>();
         ResponseMessage responseMessage;
         String contentType = "";
 
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+
         try {
-            byte[] bI = Base64.getDecoder().decode(input.get("body").toString().getBytes());
-            Map<String, String> requestHeader = (Map<String, String>) input.get("headers");
+            byte[] bI = Base64.getDecoder().decode(input.getBody().getBytes());
+            Map<String, String> requestHeader = input.getHeaders();
 
             if (requestHeader != null) {
                 contentType = requestHeader.get("Content-Type");
@@ -53,7 +51,7 @@ public class LambdaCreateGiffyHandler implements RequestHandler<Map<String, Obje
             while (nextPart) {
                 String header = multipartStream.readHeaders();
 
-                fileObjKeyName = getFileName(header, "fileName");
+                fileObjKeyName = getFileName(header);
 
                 multipartStream.readBodyData(out);
                 nextPart = multipartStream.readBoundary();
@@ -66,26 +64,37 @@ public class LambdaCreateGiffyHandler implements RequestHandler<Map<String, Obje
             metadata.setContentLength(out.toByteArray().length);
 
             s3Client.putObject(bucketName, fileObjKeyName, fileInputStream, metadata);
-            responseBody.put("Status", "File stored in S3");
-            String resBodyString = new JSONObject(responseBody).toString();
+
             responseMessage = new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Giffy uploaded", null);
 
         } catch (Exception e) {
-            JSONObject errObj = new JSONObject();
-            errObj.put("error", e.getMessage());
-            responseMessage = new ResponseMessage<>(ResponseMessageStatus.ERROR, "Giffy not uploaded", null);
+            String errorMessage = e.getMessage() != null ? e.getMessage() : "Giffy not uploaded";
+            responseMessage = new ResponseMessage<>(ResponseMessageStatus.ERROR, errorMessage, null);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseMessage);
+
+        Gson gson = new Gson();
+        String responseBody = gson.toJson(responseMessage);
+
+        response.setBody(responseBody);
+        response.setStatusCode(responseMessage.getStatus().equals(ResponseMessageStatus.SUCCESS) ? 201 : 500);
+        response.setHeaders(Collections.singletonMap("Content-Type", "application/json"));
+
+        return response;
     }
 
-    private String getFileName(String str, String field) {
+    private String getFileName(String str) {
         String result = null;
-        int index = str.indexOf(field);
+        String searchField = "Content-Disposition";
+
+        int index = str.indexOf(searchField);
 
         if (index >= 0) {
-            int first = str.indexOf("\"", index);
-            int second = str.indexOf("\"", first + 1);
-            result = str.substring(first + 1, second);
+            int nameIndex = str.indexOf("filename=", index);
+            if (nameIndex >= 0) {
+                int first = str.indexOf("\"", nameIndex);
+                int second = str.indexOf("\"", first + 1);
+                result = str.substring(first + 1, second);
+            }
         }
         return result;
     }
