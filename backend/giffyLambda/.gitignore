@@ -1,0 +1,18 @@
+# Ignore all dot files, events, and README.md
+**/.*
+events
+README.md
+
+# Ignore the 'target' folder and 'dependency-reduced-pom.xml' file inside the 'lambda' folder
+lambda/target/
+lambda/dependency-reduced-pom.xml
+
+# Ignore all dot files inside the 'lambda' folder and its subdirectories
+lambda/**/.*
+
+# Ignore all files with .ml extension (e.g., .xml and .html files)
+*.*ml
+
+# Don't ignore the .gitignore fill
+!.gitignore
+!lambda/pom.xml
