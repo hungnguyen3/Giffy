@@ -34,22 +34,21 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseMessage<UserDTO>> createUser(@RequestBody User user) {
-        if (user == null || 
-            user.getUserName() == null || 
-            user.getUserEmail() == null || 
-            user.getCognitoSub() == null || 
-            user.getProfileImgUrl() == null) 
-        {
+        if (user == null ||
+                user.getUserName() == null ||
+                user.getUserEmail() == null ||
+                user.getCognitoSub() == null ||
+                user.getProfileImgUrl() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
-        
+
         User existingUserWithSameUserEmail = userRepository.findByUserEmail(user.getUserEmail());
-        if(existingUserWithSameUserEmail != null) {
+        if (existingUserWithSameUserEmail != null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated email found!", null));
         }
 
         User existingUserWithSameCognitoSub = userRepository.findByCognitoSub(user.getCognitoSub());
-        if(existingUserWithSameCognitoSub != null) {
+        if (existingUserWithSameCognitoSub != null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Duplicated cognito identity found!", null));
         }
 
@@ -63,7 +62,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
         Optional<User> userToDelete = userRepository.findById(userId);
-        if(userToDelete.isPresent()) {
+        if (userToDelete.isPresent()) {
             userRepository.deleteById(userId);
             return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User deleted", null));
         } else {
@@ -77,7 +76,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
         Optional<User> user = userRepository.findById(userId);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User found", UserDTO.fromEntity(user.get())));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
@@ -119,16 +118,15 @@ public class UserController {
         if (userId == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
-        if (user == null || 
-            user.getUserName() == null || 
-            user.getUserEmail() == null || 
-            user.getCognitoSub() == null || 
-            user.getProfileImgUrl() == null) 
-        {
+        if (user == null ||
+                user.getUserName() == null ||
+                user.getUserEmail() == null ||
+                user.getCognitoSub() == null ||
+                user.getProfileImgUrl() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
         Optional<User> userToUpdate = userRepository.findById(userId);
-        if(userToUpdate.isPresent()) {
+        if (userToUpdate.isPresent()) {
             User existingUser = userToUpdate.get();
             existingUser.setUserName(user.getUserName());
             existingUser.setUserEmail(user.getUserEmail());

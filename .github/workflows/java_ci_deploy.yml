@@ -33,6 +33,10 @@ jobs:
             SPRING_MVC_CORS_ALLOW_CREDENTIALS: 'true'
             SERVER_PORT: ${{ secrets.SERVER_PORT }}
             GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            COGNITO_REGION: ${{ secrets.COGNITO_REGION }}
+            COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
 
         steps:
             - uses: actions/checkout@v3
@@ -65,21 +69,12 @@ jobs:
                   echo "spring.mvc.cors.allow-credentials=$SPRING_MVC_CORS_ALLOW_CREDENTIALS" >> ./application.properties
                   echo "server.port=$SERVER_PORT" >> ./application.properties
                   echo "giphy.apiKey=$GIPHY_API_KEY" >> ./application.properties
+                  echo "aws.accessKeyId=$AWS_ACCESS_KEY_ID" >> ./application.properties
+                  echo "aws.secretAccessKey=$AWS_SECRET_ACCESS_KEY" >> ./application.properties
+                  echo "cognito.region=$COGNITO_REGION" >> ./application.properties
+                  echo "cognito.userPoolId=$COGNITO_USER_POOL_ID" >> ./application.properties
+
               shell: bash
-              env:
-                  SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
-                  SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-                  SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-                  SPRING_JPA_HIBERNATE_DDL_AUTO: create
-                  SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 50MB
-                  SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 50MB
-                  SPRING_SERVLET_MULTIPART_ENABLED: 'true'
-                  SPRING_MVC_CORS_ALLOWED_ORIGINS: ${{ secrets.SPRING_MVC_CORS_ALLOWED_ORIGINS }}
-                  SPRING_MVC_CORS_ALLOWED_METHODS: 'GET,POST,DELETE,PUT'
-                  SPRING_MVC_CORS_ALLOWED_HEADERS: '*'
-                  SPRING_MVC_CORS_ALLOW_CREDENTIALS: 'true'
-                  SERVER_PORT: ${{ secrets.SERVER_PORT }}
-                  GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
             - name: Build with Maven
               run: mvn -B package -f backend/server/pom.xml
             - name: Kill Running Process
