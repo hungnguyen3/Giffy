@@ -83,7 +83,7 @@ public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequest
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("Access-Control-Allow-Origin", "https://giffy-web.adventurous-hachi.com");
-        headers.put("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
+        headers.put("Access-Control-Allow-Methods", "POST");
         headers.put("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
         headers.put("Access-Control-Allow-Credentials", "true");
 
