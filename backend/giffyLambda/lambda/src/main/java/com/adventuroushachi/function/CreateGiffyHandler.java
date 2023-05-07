@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -77,7 +78,16 @@ public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequest
 
         response.setBody(responseBody);
         response.setStatusCode(responseMessage.getStatus().equals(ResponseMessageStatus.SUCCESS) ? 201 : 500);
-        response.setHeaders(Collections.singletonMap("Content-Type", "application/json"));
+
+        // Set CORS headers
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("Access-Control-Allow-Origin", "https://giffy-web.adventurous-hachi.com");
+        headers.put("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
+        headers.put("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+        headers.put("Access-Control-Allow-Credentials", "true");
+
+        response.setHeaders(headers);
 
         return response;
     }
