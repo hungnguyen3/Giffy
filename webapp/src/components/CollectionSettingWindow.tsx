@@ -1,7 +1,6 @@
 import router from 'next/router';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateCollectionById } from '../API/collectionHooks';
 import { useAppSelector } from '../hooks';
 import {
 	addUsersToACollection,
@@ -11,14 +10,15 @@ import {
 	UserAccess,
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
-import { isUpdateCollectionByIdDTO } from '../API/types/collections-types';
 import styles from '../styles/CollectionSettingWindow.module.scss';
 import { openDeleteConfirmationWindow, selectACollectionToDelete } from '../slices/CollectionsSlice';
 import CollectionPermissionBox, { UserPermission } from './CollectionPermissionBox';
 import UserService from '../API/UserService';
-import { ErrorDTO, isErrorDTO } from '../API/types/errors-types';
-import { GetUserByUserEmailDTO } from '../API/types/users-types';
-import { addUserToACollection } from '../API/collectionUserRelationshipsHooks';
+import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
+import { UserDTO } from '../types/DTOs/UserDTOs';
+import { addUserToACollection } from '../API/CollectionUserRelationshipService';
+import { updateCollectionById } from '../API/CollectionService';
+import { isUpdateCollectionByIdDTO } from '../types/DTOs/CollectionDTOs';
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
@@ -49,14 +49,14 @@ export const CollectionSettingWindow = () => {
 	const [users, setUsers] = useState<UserPermission[]>(usersWithAccess);
 
 	const handleAddUser = async (userPermission: UserPermission) => {
-		const userInfo: GetUserByUserEmailDTO | ErrorDTO = await UserService.getUserByEmail(userPermission.userEmail);
+		const getUserByEmailRes: ResponseMessage<UserDTO> = await UserService.getUserByEmail(userPermission.userEmail);
 
-		if (isErrorDTO(userInfo)) {
-			alert('Invalid User Email');
+		if (!isResponseMessageSuccess(getUserByEmailRes)) {
+			alert(getUserByEmailRes.message);
 			return null;
 		}
 
-		const userId = userInfo.data.userId;
+		const userId = getUserByEmailRes.data!.userId;
 
 		const userProps = {
 			collectionId: userPermission.collectionId,
@@ -64,13 +64,13 @@ export const CollectionSettingWindow = () => {
 			permission: userPermission.permission,
 		};
 
-		const response = await addUserToACollection(userProps);
-		if (!isErrorDTO(response)) {
+		const addUserToACollectionResponse = await addUserToACollection(userProps);
+		if (isResponseMessageSuccess(addUserToACollectionResponse)) {
 			setUsers([...users, userPermission]);
 			dispatch(
 				addUsersToACollection({
 					collectionId: userPermission.collectionId,
-					user: userInfo.data,
+					user: getUserByEmailRes.data!,
 					permission: userPermission.permission,
 				})
 			);

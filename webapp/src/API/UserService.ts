@@ -1,14 +1,8 @@
-import { ErrorDTO } from './types/errors-types';
-import {
-	CreateUserDTO,
-	GetUserByUserEmailDTO,
-	GetCurrentUserDTO,
-	GetUserByIdDTO,
-	UpdateUserByIdDTO,
-} from './types/users-types';
 import { store } from '../store';
 import { Auth } from 'aws-amplify';
-import { RootState } from '../store';
+import { ResponseMessage } from '../types/ResponseMessage';
+import { UserDTO } from '../types/DTOs/UserDTOs';
+import { RMFailedToMakeRequest } from '../types/ResponseMessageConst';
 
 class UserService {
 	private static instance: UserService;
@@ -22,13 +16,12 @@ class UserService {
 		return UserService.instance;
 	}
 
-	async getUserById(userId: string): Promise<GetUserByIdDTO | ErrorDTO> {
+	async getUserById(userId: string): Promise<ResponseMessage<UserDTO>> {
 		const session = await Auth.currentSession();
 		const accessToken = session.getAccessToken().getJwtToken();
 
-		console.log(session.isValid());
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserById/${userId}`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/getUserById/${userId}`, {
 				cache: 'no-cache',
 				credentials: 'include',
 				headers: {
@@ -40,36 +33,15 @@ class UserService {
 
 			return response.json();
 		} catch (e) {
-			return { error: 'unknown error' } as ErrorDTO;
+			return RMFailedToMakeRequest;
 		}
 	}
 
-	async getCurrentUser(): Promise<GetCurrentUserDTO | ErrorDTO> {
-		const session = await Auth.currentSession();
-		const accessToken = session.getIdToken().getJwtToken();
-		console.log(session.isValid());
-		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getCurrentUser`, {
-				cache: 'no-cache',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${accessToken}`,
-				},
-				method: 'GET',
-			});
-
-			return response.json();
-		} catch (e) {
-			return { error: 'unknown error' } as ErrorDTO;
-		}
-	}
-
-	async getUserByEmail(email: string): Promise<GetUserByUserEmailDTO | ErrorDTO> {
+	async getCurrentUser(): Promise<ResponseMessage<UserDTO>> {
 		const session = await Auth.currentSession();
 		const accessToken = session.getIdToken().getJwtToken();
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getUserByEmail/${email}`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/getCurrentUser`, {
 				cache: 'no-cache',
 				credentials: 'include',
 				headers: {
@@ -81,23 +53,43 @@ class UserService {
 
 			return response.json();
 		} catch (e) {
-			return { error: 'unknown error' } as ErrorDTO;
+			return RMFailedToMakeRequest;
 		}
 	}
 
-	async createUser(): Promise<CreateUserDTO | ErrorDTO> {
+	async getUserByEmail(email: string): Promise<ResponseMessage<UserDTO>> {
 		const session = await Auth.currentSession();
+		const accessToken = session.getIdToken().getJwtToken();
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/getUserByEmail/${email}`, {
+				cache: 'no-cache',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${accessToken}`,
+				},
+				method: 'GET',
+			});
+
+			return response.json();
+		} catch (e) {
+			return RMFailedToMakeRequest;
+		}
+	}
+
+	async createUser(profileImgUrl: string): Promise<ResponseMessage<UserDTO>> {
+		const session = await Auth.currentSession();
+		const currentCognitoUser = await Auth.currentAuthenticatedUser();
 		const accessToken = session.getIdToken().getJwtToken();
 		const storeUserValue = store.getState().user.value;
 		const data = {
 			userName: storeUserValue?.userName,
-			userUsernam: storeUserValue?.userUsername,
 			userEmail: storeUserValue?.userEmail,
-			profileImgUrl: storeUserValue?.profileImgUrl,
+			cognitoSub: currentCognitoUser.attributes.sub,
+			profileImgUrl: profileImgUrl,
 		};
 
 		try {
-			console.log(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/createUser`);
 			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/createUser`, {
 				method: 'POST',
 				cache: 'no-cache',
@@ -111,7 +103,7 @@ class UserService {
 
 			return response.json();
 		} catch (e) {
-			return { error: 'unknown error' } as ErrorDTO;
+			return RMFailedToMakeRequest;
 		}
 	}
 
@@ -120,24 +112,27 @@ class UserService {
 		userName: string;
 		userEmail: string;
 		profileImgUrl: string;
-	}): Promise<UpdateUserByIdDTO | ErrorDTO> {
+	}): Promise<ResponseMessage<UserDTO>> {
 		const session = await Auth.currentSession();
 		const accessToken = session.getIdToken().getJwtToken();
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/updateUserById/${data.userId}`, {
-				method: 'PUT',
-				cache: 'no-cache',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${accessToken}`,
-				},
-				body: JSON.stringify(data),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/updateUserById/${data.userId}`,
+				{
+					method: 'PUT',
+					cache: 'no-cache',
+					credentials: 'include',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${accessToken}`,
+					},
+					body: JSON.stringify(data),
+				}
+			);
 
 			return response.json();
 		} catch (e) {
-			return { error: 'unknown error' } as ErrorDTO;
+			return RMFailedToMakeRequest;
 		}
 	}
 }

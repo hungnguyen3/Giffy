@@ -1,14 +1,11 @@
 import styles from '../styles/CreateNewCollection.module.scss';
-import {
-	addNewCollection,
-	closeCreateNewCollectionWindow,
-} from '../slices/CollectionsSlice';
+import { addNewCollection, closeCreateNewCollectionWindow } from '../slices/CollectionsSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useState } from 'react';
 import { RootState } from '../store';
 import { useRouter } from 'next/router';
-import { createCollection } from '../API/collectionHooks';
-import { isCreateCollectionDTO } from '../API/types/collections-types';
+import { createCollection } from '../API/CollectionService';
+import { isResponseMessageSuccess } from '../types/ResponseMessage';
 
 interface CollectionInfo {
 	collectionName: string;
@@ -33,15 +30,17 @@ const CreateNewCollection = () => {
 		} else {
 			try {
 				const createCollectionRes = await createCollection({
-					collectionName: collectionInfo.collectionName,
-					private: collectionInfo.private,
-					userId: userId,
+					data: {
+						collectionName: collectionInfo.collectionName,
+						private: collectionInfo.private,
+						userId: userId,
+					},
 				});
 
-				if (!isCreateCollectionDTO(createCollectionRes)) {
+				if (!isResponseMessageSuccess(createCollectionRes)) {
 					alert('Something went wrong trying to create a new collection');
 				} else {
-					var collection = createCollectionRes.data;
+					var collection = createCollectionRes.data!;
 
 					dispatch(
 						addNewCollection({
@@ -69,13 +68,13 @@ const CreateNewCollection = () => {
 				Collection name: &nbsp;
 				<input
 					type="text"
-					onChange={event => {
+					onChange={(event) => {
 						setCollectionInfo({
 							...collectionInfo,
 							collectionName: event.target.value,
 						});
 					}}
-					onKeyDown={event => {
+					onKeyDown={(event) => {
 						if (event.key === 'Enter') {
 							uploadHandler();
 						}
@@ -86,7 +85,7 @@ const CreateNewCollection = () => {
 				Visibility: &nbsp;
 				<select
 					value={collectionInfo.private ? 'private' : 'public'}
-					onChange={event => {
+					onChange={(event) => {
 						setCollectionInfo({
 							...collectionInfo,
 							private: event.target.value === 'private',

@@ -9,10 +9,12 @@ interface User {
 
 interface UserState {
 	value: User | null;
+	finishedAccountSetup: boolean;
 }
 
 const initialState: UserState = {
 	value: null,
+	finishedAccountSetup: false,
 };
 
 export const userSlice = createSlice({
@@ -32,9 +34,19 @@ export const userSlice = createSlice({
 		clearUser: (state) => {
 			state.value = null;
 		},
+		setFinishedAccountSetup: (
+			state,
+			action: {
+				payload: boolean;
+				type: string;
+			}
+		) => {
+			const finished: boolean = action.payload;
+			state.finishedAccountSetup = finished;
+		},
 	},
 });
 
-export const { populateUser, clearUser } = userSlice.actions;
+export const { populateUser, clearUser, setFinishedAccountSetup } = userSlice.actions;
 
 export default userSlice.reducer;

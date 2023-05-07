@@ -1,14 +1,11 @@
-import { CollectionDTO, GetPublicCollectionsDTO, isGetPublicCollectionsDTO } from '../../API/types/collections-types';
-import { GetGiffiesByCollectionIdDTO, GiffyDTO, isGetGiffiesByCollectionIdDTO } from '../../API/types/giffies-types';
 import { clearCollections, Collection, populateCollections } from '../../slices/CollectionsSlice';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
-import { Dispatch, SetStateAction } from 'react';
-import { ErrorDTO } from '../../API/types/errors-types';
-import { getPublicCollections } from '../../API/collectionHooks';
-import { getGiffiesByCollectionId } from '../../API/giffyHooks';
-import { populateUserInfo } from './onCollectionsRoutePopulation';
-import { Auth, Hub } from 'aws-amplify';
+import { getPublicCollections } from '../../API/CollectionService';
+import { CollectionDTO } from '../../types/DTOs/CollectionDTOs';
+import { isResponseMessageSuccess, ResponseMessage } from '../../types/ResponseMessage';
+import { getGiffiesByCollectionId } from '../../API/GiffyService';
+import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
 
 interface onDiscoveryRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -19,35 +16,31 @@ interface onDiscoveryRoutePopulationProps {
 const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise((resolve, reject) => {
 		getPublicCollections(10)
-			.then((response: GetPublicCollectionsDTO | ErrorDTO) => {
-				if (!isGetPublicCollectionsDTO(response)) {
+			.then((getPublicCollectionsRes: ResponseMessage<CollectionDTO[]>) => {
+				if (!isResponseMessageSuccess(getPublicCollectionsRes)) {
 					return reject();
 				}
 
-				var collections = response.data;
+				var collections = getPublicCollectionsRes.data!;
 
 				var toStoreCollections: Collection[] = [];
 
-				const promises = collections.map((collection: CollectionDTO) => {
-					return getGiffiesByCollectionId(Number(collection.collectionId)).then(
-						(response: ErrorDTO | GetGiffiesByCollectionIdDTO) => {
-							if (!isGetGiffiesByCollectionIdDTO(response)) {
-								return null;
-							}
-							var giffies: GiffyDTO[] = response.data;
-
-							toStoreCollections = [
-								...toStoreCollections,
-								{
-									collectionId: collection.collectionId,
-									collectionName: collection.collectionName,
-									private: collection.private,
-									giffies: giffies,
-									users: {},
-								},
-							];
-						}
-					);
+				const promises = collections.map(async (collection: CollectionDTO) => {
+					const getGiffiesByCollectionIdRes = await getGiffiesByCollectionId(Number(collection.collectionId));
+					if (!isResponseMessageSuccess(getGiffiesByCollectionIdRes)) {
+						return null;
+					}
+					var giffies: GiffyDTO[] = getGiffiesByCollectionIdRes.data!;
+					toStoreCollections = [
+						...toStoreCollections,
+						{
+							collectionId: collection.collectionId,
+							collectionName: collection.collectionName,
+							private: collection.private,
+							giffies: giffies,
+							users: {},
+						},
+					];
 				});
 
 				Promise.all(promises).then(() => {

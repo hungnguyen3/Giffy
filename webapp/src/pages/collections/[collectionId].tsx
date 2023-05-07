@@ -8,11 +8,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { RootState } from '../../store';
 import styles from '../../styles/Collections.module.scss';
 
-import {
-	openDeleteConfirmationWindow,
-	openUploadGiffyWindow,
-} from '../../slices/CollectionsSlice';
-import { GiffyDTO } from '../../API/types/giffies-types';
+import { openDeleteConfirmationWindow, openUploadGiffyWindow } from '../../slices/CollectionsSlice';
+import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
 
 const Collection: NextPage = () => {
 	const [cards, setCards] = useState<JSX.Element[] | null>(null);
@@ -28,9 +25,7 @@ const Collection: NextPage = () => {
 		}
 	});
 
-	const selectedGiffies = useAppSelector(
-		(state: RootState) => state.collections.selectedGiffyIds
-	);
+	const selectedGiffies = useAppSelector((state: RootState) => state.collections.selectedGiffyIds);
 
 	const user = useAppSelector((state: RootState) => state.user.value);
 

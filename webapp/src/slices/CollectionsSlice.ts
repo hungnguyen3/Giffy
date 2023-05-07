@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { GiffyDTO } from '../API/types/giffies-types';
-import { UserDTO } from '../API/types/users-types';
+import { GiffyDTO } from '../types/DTOs/GiffyDTOs';
+import { UserDTO } from '../types/DTOs/UserDTOs';
+import { Permission } from '../types/enums/Permission';
 
 export interface Collection {
 	collectionId: number;
@@ -13,7 +14,7 @@ export interface Collection {
 export interface UserAccess {
 	collectionId: number;
 	user: UserDTO;
-	permission: 'read' | 'write' | 'admin';
+	permission: Permission;
 }
 
 interface CollectionsState {
@@ -55,37 +56,37 @@ export const collectionsSlice = createSlice({
 			}
 			state.value = tempValue;
 		},
-		clearCollections: state => {
+		clearCollections: (state) => {
 			state.value = {};
 		},
 		selectACollectionToDelete: (state, action: { payload: number }) => {
 			state.selectedCollectionToDelete = action.payload;
 		},
-		unselectACollectionToDelete: state => {
+		unselectACollectionToDelete: (state) => {
 			state.selectedCollectionToDelete = null;
 		},
-		openUploadGiffyWindow: state => {
+		openUploadGiffyWindow: (state) => {
 			state.isUploadGiffyWindowOpen = true;
 		},
-		closeUploadGiffyWindow: state => {
+		closeUploadGiffyWindow: (state) => {
 			state.isUploadGiffyWindowOpen = false;
 		},
-		openCreateNewCollectionWindow: state => {
+		openCreateNewCollectionWindow: (state) => {
 			state.isCreateNewCollectionWindowOpen = true;
 		},
-		closeCreateNewCollectionWindow: state => {
+		closeCreateNewCollectionWindow: (state) => {
 			state.isCreateNewCollectionWindowOpen = false;
 		},
-		openDeleteConfirmationWindow: state => {
+		openDeleteConfirmationWindow: (state) => {
 			state.isDeleteConfirmationWindowOpen = true;
 		},
-		closeDeleteConfirmationWindow: state => {
+		closeDeleteConfirmationWindow: (state) => {
 			state.isDeleteConfirmationWindowOpen = false;
 		},
-		openCollectionSettingWindow: state => {
+		openCollectionSettingWindow: (state) => {
 			state.isCollectionSettingWindowOpen = true;
 		},
-		closeCollectionSettingWindow: state => {
+		closeCollectionSettingWindow: (state) => {
 			state.isCollectionSettingWindowOpen = false;
 		},
 		addGiffyToACollection: (
@@ -107,9 +108,7 @@ export const collectionsSlice = createSlice({
 				payload: UserAccess;
 			}
 		) => {
-			state.value[action.payload.collectionId].users[
-				action.payload.user.userEmail
-			] = action.payload;
+			state.value[action.payload.collectionId].users[action.payload.user.userEmail] = action.payload;
 		},
 		removeGiffyFromACollection: (
 			state,
@@ -124,7 +123,7 @@ export const collectionsSlice = createSlice({
 			if (action.payload.collectionId in tempValue) {
 				var giffiesClone = tempValue[action.payload.collectionId].giffies;
 				var giffiesAfterRemoval = giffiesClone.filter(
-					giffy => !action.payload.giffyIds.includes(giffy.giffyId)
+					(giffy) => !action.payload.giffyIds.includes(giffy.giffyId)
 				);
 				tempValue[action.payload.collectionId].giffies = giffiesAfterRemoval;
 				state.value = tempValue;
@@ -163,8 +162,7 @@ export const collectionsSlice = createSlice({
 		) => {
 			var tempValue = state.value;
 
-			tempValue[action.payload.collectionId].collectionName =
-				action.payload.collectionName;
+			tempValue[action.payload.collectionId].collectionName = action.payload.collectionName;
 			tempValue[action.payload.collectionId].private = action.payload.private;
 
 			state.value = tempValue;
@@ -177,7 +175,7 @@ export const collectionsSlice = createSlice({
 			const index = state.selectedGiffyIds.indexOf(action.payload);
 			if (index !== -1) state.selectedGiffyIds.splice(index, 1);
 		},
-		clearSelectedGiffy: state => {
+		clearSelectedGiffy: (state) => {
 			state.selectedGiffyIds = [];
 		},
 	},

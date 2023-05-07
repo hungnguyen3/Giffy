@@ -1,11 +1,12 @@
 import router from 'next/router';
 import React, { useState } from 'react';
 import styles from '../styles/CollectionPermissionBox.module.scss';
+import { Permission } from '../types/enums/Permission';
 
 export type UserPermission = {
 	collectionId: number;
 	userEmail: string;
-	permission: 'read' | 'write' | 'admin';
+	permission: Permission;
 };
 
 type PermissionProps = {
@@ -13,10 +14,10 @@ type PermissionProps = {
 	onAddUser: (user: UserPermission) => void;
 };
 
-const Permission: React.FC<PermissionProps> = (props: PermissionProps) => {
+const CollectionPermissionBox: React.FC<PermissionProps> = (props: PermissionProps) => {
 	const { collectionId } = router.query;
 	const [newUserEmail, setNewUserEmail] = useState('');
-	const [newPermission, setNewPermission] = useState('read');
+	const [newPermission, setNewPermission] = useState(Permission.READ);
 
 	const handleAddUser = () => {
 		if (!newUserEmail) {
@@ -30,12 +31,12 @@ const Permission: React.FC<PermissionProps> = (props: PermissionProps) => {
 		const user: UserPermission = {
 			collectionId: Number(collectionId),
 			userEmail: newUserEmail,
-			permission: newPermission as 'read' | 'write' | 'admin',
+			permission: newPermission as Permission,
 		};
 
 		props.onAddUser(user);
 		setNewUserEmail('');
-		setNewPermission('read');
+		setNewPermission(Permission.READ);
 	};
 
 	return (
@@ -48,29 +49,24 @@ const Permission: React.FC<PermissionProps> = (props: PermissionProps) => {
 					type="text"
 					placeholder="User Email"
 					value={newUserEmail}
-					onChange={e => setNewUserEmail(e.target.value)}
+					onChange={(e) => setNewUserEmail(e.target.value)}
 				/>
-				<select
-					value={newPermission}
-					onChange={e => setNewPermission(e.target.value)}
-				>
-					<option value="read">Read</option>
-					<option value="write">Write</option>
-					<option value="admin">Admin</option>
+				<select value={newPermission} onChange={(e) => setNewPermission(e.target.value as Permission)}>
+					<option value={Permission.READ}>Read</option>
+					<option value={Permission.WRITE}>Write</option>
+					<option value={Permission.ADMIN}>Admin</option>
 				</select>
 				<button onClick={handleAddUser}>Add user</button>
 			</div>
 			<br />
 			Users with permissions:
 			<ul>
-				{props.users.map(user => {
+				{props.users.map((user) => {
 					if (user.collectionId === Number(collectionId))
 						return (
 							<li key={user.userEmail}>
 								{user.userEmail} -{' '}
-								<span className={styles['permission-' + user.permission]}>
-									{user.permission}
-								</span>
+								<span className={styles['permission-' + user.permission]}>{user.permission}</span>
 							</li>
 						);
 				})}
@@ -79,4 +75,4 @@ const Permission: React.FC<PermissionProps> = (props: PermissionProps) => {
 	);
 };
 
-export default Permission;
+export default CollectionPermissionBox;

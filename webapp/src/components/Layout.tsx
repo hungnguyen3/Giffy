@@ -14,6 +14,7 @@ import { DeleteConfirmationWindow } from './DeleteConfirmationWindow';
 import { onCollectionsRoutePopulation } from './StorePopulationHelpers/onCollectionsRoutePopulation';
 import { CollectionSettingWindow } from './CollectionSettingWindow';
 import { onDiscoveryRoutePopulation } from './StorePopulationHelpers/onDiscoveryRoutePopulation';
+import AccountSetupForm from './AccountSetupForm';
 
 interface LayoutProps {
 	children: (JSX.Element | null)[] | JSX.Element;
@@ -29,7 +30,8 @@ const Layout = (props: LayoutProps) => {
 
 	const isAccountSettingOpen = useAppSelector((state: RootState) => state.accountSetting.isAccountSettingOpen);
 	const isUploadGiffyWindowOpen = useAppSelector((state: RootState) => state.collections.isUploadGiffyWindowOpen);
-	const hasAnAccount = useAppSelector((state: RootState) => (state.user.value ? true : false));
+	const hasAnAccount = useAppSelector((state: RootState) => (state.user.finishedAccountSetup ? true : false));
+
 	const isCreateNewCollectionWindowOpen = useAppSelector(
 		(state: RootState) => state.collections.isCreateNewCollectionWindowOpen
 	);
@@ -68,7 +70,7 @@ const Layout = (props: LayoutProps) => {
 			}
 		};
 
-		console.log('populating pages');
+		console.log(hasAnAccount);
 
 		handlePath();
 	}, [hasAnAccount, isOnCollectionsPage, isOnDiscoveryPage]); // rerun the entire flow
@@ -82,6 +84,16 @@ const Layout = (props: LayoutProps) => {
 			router.push(`/${path}/${minId}`);
 		}
 	}, [collections.length]);
+
+	if (!hasAnAccount) {
+		return (
+			<div>
+				<Modal disableCloseButton={true}>
+					<AccountSetupForm />
+				</Modal>
+			</div>
+		);
+	}
 
 	return (
 		<div className={layoutStyles.background}>

@@ -1,7 +1,7 @@
 import styles from '../styles/Header.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { VscAccount } from 'react-icons/vsc';
-import { BiEditAlt, BiLogIn, BiLogOut } from 'react-icons/bi';
+import { BiEditAlt, BiLogOut } from 'react-icons/bi';
 import { FiSettings } from 'react-icons/fi';
 import DropdownItem from './DropdownItem';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -74,11 +74,7 @@ const Header = () => {
 				>
 					<div className={styles.dropdownContainer} ref={dropdownBlockRef}>
 						<div className={styles.userButton}>
-							{userInfo?.profileImgUrl ? (
-								<img src={userInfo.profileImgUrl} />
-							) : (
-								<VscAccount />
-							)}
+							{userInfo?.profileImgUrl ? <img src={userInfo.profileImgUrl} /> : <VscAccount />}
 						</div>
 						{isUserMenuOpen ? (
 							<div className={styles.dropdown}>

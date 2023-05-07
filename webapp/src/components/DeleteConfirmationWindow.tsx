@@ -1,12 +1,4 @@
 import router from 'next/router';
-import { deleteCollectionsByCollectionId } from '../API/collectionHooks';
-import { deleteGiffiesByIds } from '../API/giffyHooks';
-import { isDeleteCollectionDTO } from '../API/types/collections-types';
-import { ErrorDTO } from '../API/types/errors-types';
-import {
-	DeleteGiffiesDTO,
-	isDeleteGiffiesDTO,
-} from '../API/types/giffies-types';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
 	clearSelectedGiffy,
@@ -17,16 +9,15 @@ import {
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
 import styles from '../styles/DeleteConfirmationWindow.module.scss';
+import { deleteCollectionByCollectionId } from '../API/CollectionService';
+import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
+import { deleteGiffiesByIds } from '../API/GiffyService';
 
 export const DeleteConfirmationWindow = () => {
 	const { collectionId } = router.query;
 	const dispatch = useAppDispatch();
-	const selectedGiffies = useAppSelector(
-		(state: RootState) => state.collections.selectedGiffyIds
-	);
-	const collectionToBeDeleted = useAppSelector(
-		(state: RootState) => state.collections.selectedCollectionToDelete
-	);
+	const selectedGiffies = useAppSelector((state: RootState) => state.collections.selectedGiffyIds);
+	const collectionToBeDeleted = useAppSelector((state: RootState) => state.collections.selectedCollectionToDelete);
 
 	return (
 		<div className={styles.centeredBox}>
@@ -46,20 +37,16 @@ export const DeleteConfirmationWindow = () => {
 					className={styles.deleteButton}
 					onClick={() => {
 						if (collectionToBeDeleted) {
-							deleteCollectionsByCollectionId(collectionToBeDeleted).then(
-								response => {
-									if (isDeleteCollectionDTO(response)) {
-										dispatch(
-											removeCollection({ collectionId: collectionToBeDeleted })
-										);
+							deleteCollectionByCollectionId(collectionToBeDeleted).then(
+								(deleteCollectionByCollectionIdRes: ResponseMessage<null>) => {
+									if (isResponseMessageSuccess(deleteCollectionByCollectionIdRes)) {
+										dispatch(removeCollection({ collectionId: collectionToBeDeleted }));
 										dispatch(unselectACollectionToDelete());
 										dispatch(closeDeleteConfirmationWindow());
 									} else {
 										dispatch(unselectACollectionToDelete());
 										dispatch(closeDeleteConfirmationWindow());
-										alert(
-											'something went wrong trying to delete the collection'
-										);
+										alert(deleteCollectionByCollectionIdRes.message);
 									}
 								}
 							);
@@ -70,8 +57,8 @@ export const DeleteConfirmationWindow = () => {
 						if (selectedGiffies && selectedGiffies.length > 0) {
 							deleteGiffiesByIds({
 								giffyIds: selectedGiffies,
-							}).then((response: ErrorDTO | DeleteGiffiesDTO) => {
-								if (isDeleteGiffiesDTO(response)) {
+							}).then((deleteGiffiesByIdsRes: ResponseMessage<null>) => {
+								if (isResponseMessageSuccess(deleteGiffiesByIdsRes)) {
 									dispatch(
 										removeGiffyFromACollection({
 											collectionId: Number(collectionId),
@@ -83,9 +70,7 @@ export const DeleteConfirmationWindow = () => {
 								} else {
 									dispatch(clearSelectedGiffy());
 									dispatch(closeDeleteConfirmationWindow());
-									alert(
-										'something went wrong trying to delete the selected giffies'
-									);
+									alert(deleteGiffiesByIdsRes.message);
 								}
 							});
 						}
