@@ -9,44 +9,45 @@ import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMess
 import FileUploadBox from './FileUploadBox';
 import { signOut } from './Utilities/Cognito';
 import UserService from '../API/UserService';
-
-interface UserInfo {
-	userName: string;
-	profileImgUrl: string;
-}
+import FileService from '../API/FileService';
+import { S3UploadDTO } from '../types/DTOs/S3DTOs';
 
 const AccountSetupForm = () => {
 	const dispatch = useDispatch();
-	const [userInfo, setUserInfo] = useState<UserInfo>({
-		userName: '',
-		profileImgUrl: 'https://raw.githubusercontent.com/hungnguyen3/Giffy/main/webapp/public/userProfile.png',
-	});
 
 	const [userImg, setUserImg] = useState<File | null>(null);
 
 	const uploadHandler = async () => {
 		if (userImg) {
-			// TODO: Upload img to S3
-			const createUserRes: ResponseMessage<UserDTO> = await UserService.createUser(userInfo.profileImgUrl);
+			// Upload the image to S3 using FileService
+			const uploadRes: ResponseMessage<S3UploadDTO> = await FileService.uploadFile(userImg);
 
-			if (!isResponseMessageSuccess(createUserRes)) {
-				alert('Upload unsuccessfully');
+			if (!isResponseMessageSuccess(uploadRes)) {
+				alert(uploadRes.message);
 				// TODO: error handling
 			} else {
-				var user = createUserRes.data!;
-				dispatch(
-					populateUser({
-						userId: user.userId,
-						userName: user.userName,
-						userEmail: user.userEmail,
-						profileImgUrl: user.profileImgUrl,
-					})
-				);
-				dispatch(setFinishedAccountSetup(true));
-				alert('Created a new user successfully');
+				// Create a new user using UserService
+				const createUserRes: ResponseMessage<UserDTO> = await UserService.createUser(uploadRes.data!.s3Url);
+
+				if (!isResponseMessageSuccess(createUserRes)) {
+					alert(createUserRes.message);
+					// TODO: error handling
+				} else {
+					var user = createUserRes.data!;
+					dispatch(
+						populateUser({
+							userId: user.userId,
+							userName: user.userName,
+							userEmail: user.userEmail,
+							profileImgUrl: user.profileImgUrl,
+						})
+					);
+					dispatch(setFinishedAccountSetup(true));
+					alert('Created a new user successfully');
+				}
 			}
 		} else {
-			alert('Select an img first');
+			alert('Select an image first');
 		}
 	};
 
@@ -55,7 +56,7 @@ const AccountSetupForm = () => {
 			<h1>Account Setup 🚀</h1>
 			<FileUploadBox
 				setFileHolderForParent={setUserImg}
-				displayText={'Drag and drop your profile img or click here'}
+				displayText={'Drag and drop your profile image or click here'}
 			/>
 			<div className={styles.buttonContainer}>
 				<button className={styles.createBtn} onClick={uploadHandler}>

@@ -2,7 +2,7 @@ import layoutStyles from '../styles/Layout.module.scss';
 import SidePanel from './SidePanel';
 import Header from './Header';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { RootState } from '../store';
 import AccountSettings from './AccountSettings';
 import { Collection } from '../slices/CollectionsSlice';
@@ -69,8 +69,6 @@ const Layout = (props: LayoutProps) => {
 					break;
 			}
 		};
-
-		console.log(hasAnAccount);
 
 		handlePath();
 	}, [hasAnAccount, isOnCollectionsPage, isOnDiscoveryPage]); // rerun the entire flow

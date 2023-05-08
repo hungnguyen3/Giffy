@@ -12,7 +12,6 @@
 	border-left: 0;
 	border-right: 0;
 	border-bottom: 0;
-	border-right: 10px solid;
 	border-image-slice: 1;
 	border-width: 3px;
 	border-image-source: linear-gradient(to top right, $green300, $green50);
@@ -22,8 +21,8 @@
 		flex-direction: column;
 		align-items: center;
 		overflow-x: hidden;
-		overflow-y: scroll;
-		height: 100vh;
+		overflow-y: auto;
+		height: 100%;
 
 		.collectionsContainer {
 			height: 70%;

@@ -19,13 +19,14 @@ interface onCollectionsRoutePopulationProps {
 }
 
 // Function to populate user information
-export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>) => {
+export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>, currentUser: any) => {
 	return new Promise<void>((resolve, reject) => {
 		UserService.getCurrentUser()
 			.then(async (getCurrentUserRes: ResponseMessage<UserDTO>) => {
 				if (!isResponseMessageSuccess(getCurrentUserRes)) {
 					dispatch(setFinishedAccountSetup(false));
-					try {
+
+					if (currentUser) {
 						const currentUser = await Auth.currentAuthenticatedUser();
 						dispatch(
 							populateUser({
@@ -35,7 +36,7 @@ export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 								profileImgUrl: '',
 							})
 						);
-					} catch (err) {
+					} else {
 						console.log('Not signed in');
 					}
 
@@ -136,11 +137,12 @@ export const onCollectionsRoutePopulation = (props: onCollectionsRoutePopulation
 	// clear collections every time we change route
 	dispatch(clearCollections());
 
-	// TODO!
+	// populating redux state for user
 	Auth.currentAuthenticatedUser()
 		.then((currentUser) => {
-			console.log(currentUser);
-			populateUserInfo(dispatch);
+			populateUserInfo(dispatch, currentUser);
 		})
-		.catch(() => console.log('Not signed in'));
+		.catch(() => {
+			dispatch(clearUser());
+		});
 };

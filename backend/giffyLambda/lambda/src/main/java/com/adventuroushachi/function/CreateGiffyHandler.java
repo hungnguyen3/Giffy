@@ -1,5 +1,6 @@
 package com.adventuroushachi.function;
 
+import com.adventuroushachi.function.DTO.S3UploadDTO;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -37,7 +38,11 @@ public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequest
             Map<String, String> requestHeader = input.getHeaders();
 
             if (requestHeader != null) {
-                contentType = requestHeader.get("Content-Type");
+                contentType = getHeaderIgnoreCase(requestHeader, "Content-Type");
+            }
+
+            if (contentType == null) {
+                throw new IllegalArgumentException("Content type is missing or invalid");
             }
 
             String[] boundaryArray = contentType.split("=");
@@ -66,7 +71,8 @@ public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequest
 
             s3Client.putObject(bucketName, fileObjKeyName, fileInputStream, metadata);
 
-            responseMessage = new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Giffy uploaded", null);
+            String s3Url = s3Client.getUrl(bucketName, fileObjKeyName).toString();
+            responseMessage = new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Giffy uploaded", new S3UploadDTO(s3Url, fileObjKeyName));
 
         } catch (Exception e) {
             String errorMessage = e.getMessage() != null ? e.getMessage() : "Giffy not uploaded";
@@ -81,8 +87,8 @@ public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequest
 
         // Set CORS headers
         Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
-        headers.put("Access-Control-Allow-Origin", "https://giffy-web.adventurous-hachi.com");
+        headers.put("Access-Control-Max-Age", "3600");
+        headers.put("Access-Control-Allow-Origin", "*");
         headers.put("Access-Control-Allow-Methods", "POST");
         headers.put("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
         headers.put("Access-Control-Allow-Credentials", "true");
@@ -108,4 +114,18 @@ public class CreateGiffyHandler implements RequestHandler<APIGatewayProxyRequest
         }
         return result;
     }
+
+    private String getHeaderIgnoreCase(Map<String, String> headers, String key) {
+        if (headers == null || key == null) {
+            return null;
+        }
+
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            if (key.equalsIgnoreCase(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+
+    return null;
+}
 }

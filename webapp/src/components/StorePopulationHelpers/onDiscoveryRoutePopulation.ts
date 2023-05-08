@@ -6,6 +6,9 @@ import { CollectionDTO } from '../../types/DTOs/CollectionDTOs';
 import { isResponseMessageSuccess, ResponseMessage } from '../../types/ResponseMessage';
 import { getGiffiesByCollectionId } from '../../API/GiffyService';
 import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
+import { Auth } from 'aws-amplify';
+import { populateUserInfo } from './onCollectionsRoutePopulation';
+import { clearUser } from '../../slices/UserSlice';
 
 interface onDiscoveryRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -62,5 +65,12 @@ export const onDiscoveryRoutePopulation = (props: onDiscoveryRoutePopulationProp
 	// clear collections every time we change route
 	dispatch(clearCollections());
 
-	//  TODO: on auth change, discovery page should be populated with user's collections
+	// populating redux state for user
+	Auth.currentAuthenticatedUser()
+		.then((currentUser) => {
+			populateUserInfo(dispatch, currentUser);
+		})
+		.catch(() => {
+			dispatch(clearUser());
+		});
 };
