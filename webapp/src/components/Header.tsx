@@ -74,7 +74,7 @@ const Header = () => {
 				>
 					<div className={styles.dropdownContainer} ref={dropdownBlockRef}>
 						<div className={styles.userButton}>
-							{userInfo?.profileImgUrl ? <img src={userInfo.profileImgUrl} /> : <VscAccount />}
+							{userInfo?.profileImgS3Url ? <img src={userInfo.profileImgS3Url} /> : <VscAccount />}
 						</div>
 						{isUserMenuOpen ? (
 							<div className={styles.dropdown}>

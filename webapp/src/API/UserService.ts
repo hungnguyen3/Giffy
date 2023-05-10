@@ -77,7 +77,7 @@ class UserService {
 		}
 	}
 
-	async createUser(profileImgUrl: string): Promise<ResponseMessage<UserDTO>> {
+	async createUser(profileImgS3Url: string, profileImgS3Key: string): Promise<ResponseMessage<UserDTO>> {
 		const session = await Auth.currentSession();
 		const currentCognitoUser = await Auth.currentAuthenticatedUser();
 		const accessToken = session.getIdToken().getJwtToken();
@@ -86,7 +86,8 @@ class UserService {
 			userName: storeUserValue?.userName,
 			userEmail: storeUserValue?.userEmail,
 			cognitoSub: currentCognitoUser.attributes.sub,
-			profileImgUrl: profileImgUrl,
+			profileImgS3Url: profileImgS3Url,
+			profileImgS3Key: profileImgS3Key,
 		};
 
 		try {
@@ -111,7 +112,8 @@ class UserService {
 		userId: number;
 		userName: string;
 		userEmail: string;
-		profileImgUrl: string;
+		profileImgS3Url: string;
+		profileImgS3Key: string;
 	}): Promise<ResponseMessage<UserDTO>> {
 		const session = await Auth.currentSession();
 		const accessToken = session.getIdToken().getJwtToken();

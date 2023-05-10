@@ -28,7 +28,7 @@ public class GiffyController {
 
     @PostMapping("/createGiffy")
     public ResponseEntity<ResponseMessage<GiffyDTO>> createGiffy(@RequestBody Giffy giffy) {
-        if (giffy == null || giffy.getCollectionId() == null || giffy.getS3Url() == null || giffy.getS3Key() == null) {
+        if (giffy == null || giffy.getCollectionId() == null || giffy.getGiffyS3Url() == null || giffy.getGiffyS3Key() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
 
@@ -75,8 +75,8 @@ public class GiffyController {
         if (optionalGiffy.isPresent()) {
             Giffy giffy = optionalGiffy.get();
             giffy.setCollectionId(updatedGiffyBody.getCollectionId());
-            giffy.setS3Url(updatedGiffyBody.getS3Url());
-            giffy.setS3Key(updatedGiffyBody.getS3Key());
+            giffy.setGiffyS3Url(updatedGiffyBody.getGiffyS3Url());
+            giffy.setGiffyS3Key(updatedGiffyBody.getGiffyS3Key());
             giffy.setGiffyName(updatedGiffyBody.getGiffyName());
             Giffy updatedGiffy = giffyRepository.save(giffy);
             GiffyDTO updatedGiffyDTO = GiffyDTO.fromEntity(updatedGiffy);

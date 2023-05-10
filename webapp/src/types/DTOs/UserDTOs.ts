@@ -2,7 +2,8 @@ export interface UserDTO {
 	userId: number;
 	userName: string;
 	userEmail: string;
-	profileImgUrl: string;
+	profileImgS3Url: string;
+	profileImgS3Key: string;
 }
 
 export interface User extends UserDTO {
@@ -21,7 +22,9 @@ export function isUserDTO(obj: any): obj is UserDTO {
 		typeof obj.userEmail === 'string' &&
 		obj.hasOwnProperty('cognitoSub') &&
 		typeof obj.cognitoSub === 'string' &&
-		obj.hasOwnProperty('profileImgUrl') &&
-		typeof obj.profileImgUrl === 'string'
+		obj.hasOwnProperty('profileImgS3Url') &&
+		typeof obj.profileImgS3Url === 'string' &&
+		obj.hasOwnProperty('profileImgS3Key') &&
+		typeof obj.profileImgS3Key === 'string'
 	);
 }

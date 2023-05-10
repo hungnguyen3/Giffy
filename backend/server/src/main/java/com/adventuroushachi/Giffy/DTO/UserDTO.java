@@ -3,6 +3,7 @@ package com.adventuroushachi.Giffy.DTO;
 import java.util.Objects;
 
 import com.adventuroushachi.Giffy.Model.User;
+import com.adventuroushachi.Giffy.Service.S3Service;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,14 +14,20 @@ public class UserDTO {
     private Long userId;
     private String userName;
     private String userEmail;
-    private String profileImgUrl;
+    private String profileImgS3Url;
+    private String profileImgS3Key;
 
-    public static UserDTO fromEntity(User user) {
+    public static UserDTO fromEntity(User user, S3Service s3Service) {
         UserDTO dto = new UserDTO();
         dto.setUserId(user.getUserId());
         dto.setUserName(user.getUserName());
         dto.setUserEmail(user.getUserEmail());
-        dto.setProfileImgUrl(user.getProfileImgUrl());
+
+        if (user.getProfileImgS3Key() != null) {
+            dto.setProfileImgS3Key(user.getProfileImgS3Key());
+            dto.setProfileImgS3Url(s3Service.generatePresignedUrl(user.getProfileImgS3Key()).toString());
+        }
+
         return dto;
     }
 
@@ -32,11 +39,12 @@ public class UserDTO {
         return Objects.equals(userId, that.userId) &&
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(userEmail, that.userEmail) &&
-                Objects.equals(profileImgUrl, that.profileImgUrl);
+                Objects.equals(profileImgS3Url, that.profileImgS3Url) &&
+                Objects.equals(profileImgS3Key, that.profileImgS3Key);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userName, userEmail, profileImgUrl);
+        return Objects.hash(userId, userName, userEmail, profileImgS3Url, profileImgS3Url);
     }
 }

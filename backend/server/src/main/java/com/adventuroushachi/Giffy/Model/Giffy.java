@@ -19,11 +19,11 @@ public class Giffy {
     @Column(name = "collection_id", nullable = false)
     private Long collectionId;
 
-    @Column(name = "s3_url", nullable = false)
-    private String s3Url;
+    @Column(name = "giffy_s3_url", nullable = false)
+    private String giffyS3Url;
 
-    @Column(name = "s3_key", nullable = false)
-    private String s3Key;
+    @Column(name = "giffy_s3_key", nullable = false)
+    private String giffyS3Key;
 
     @Column(name = "giffy_name")
     private String giffyName;

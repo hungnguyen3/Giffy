@@ -27,7 +27,10 @@ const AccountSetupForm = () => {
 				// TODO: error handling
 			} else {
 				// Create a new user using UserService
-				const createUserRes: ResponseMessage<UserDTO> = await UserService.createUser(uploadRes.data!.s3Url);
+				const createUserRes: ResponseMessage<UserDTO> = await UserService.createUser(
+					uploadRes.data!.s3Url,
+					uploadRes.data!.s3Key
+				);
 
 				if (!isResponseMessageSuccess(createUserRes)) {
 					alert(createUserRes.message);
@@ -39,7 +42,8 @@ const AccountSetupForm = () => {
 							userId: user.userId,
 							userName: user.userName,
 							userEmail: user.userEmail,
-							profileImgUrl: user.profileImgUrl,
+							profileImgS3Url: user.profileImgS3Url,
+							profileImgS3Key: user.profileImgS3Key,
 						})
 					);
 					dispatch(setFinishedAccountSetup(true));

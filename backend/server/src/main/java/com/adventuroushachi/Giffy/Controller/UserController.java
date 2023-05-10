@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.adventuroushachi.Giffy.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +33,17 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private S3Service s3Service;
+
     @PostMapping("/createUser")
     public ResponseEntity<ResponseMessage<UserDTO>> createUser(@RequestBody User user) {
         if (user == null ||
                 user.getUserName() == null ||
                 user.getUserEmail() == null ||
                 user.getCognitoSub() == null ||
-                user.getProfileImgUrl() == null) {
+                user.getProfileImgS3Url() == null ||
+                user.getProfileImgS3Key() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
 
@@ -53,7 +58,7 @@ public class UserController {
         }
 
         User createdUser = userRepository.save(user);
-        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User created", UserDTO.fromEntity(createdUser)));
+        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User created", UserDTO.fromEntity(createdUser, s3Service)));
     }
 
     @DeleteMapping("/deleteUserById/{userId}")
@@ -77,7 +82,7 @@ public class UserController {
         }
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User found", UserDTO.fromEntity(user.get())));
+            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User found", UserDTO.fromEntity(user.get(), s3Service)));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
         }
@@ -107,7 +112,7 @@ public class UserController {
 
         User existingUser = userRepository.findByCognitoSub(cognitoSub);
         if (existingUser != null) {
-            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Current user found", UserDTO.fromEntity(existingUser)));
+            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Current user found", UserDTO.fromEntity(existingUser, s3Service)));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found in the database", null));
         }
@@ -122,7 +127,8 @@ public class UserController {
                 user.getUserName() == null ||
                 user.getUserEmail() == null ||
                 user.getCognitoSub() == null ||
-                user.getProfileImgUrl() == null) {
+                user.getProfileImgS3Url() == null ||
+                user.getProfileImgS3Key() == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
         Optional<User> userToUpdate = userRepository.findById(userId);
@@ -131,9 +137,9 @@ public class UserController {
             existingUser.setUserName(user.getUserName());
             existingUser.setUserEmail(user.getUserEmail());
             existingUser.setCognitoSub(user.getCognitoSub());
-            existingUser.setProfileImgUrl(user.getProfileImgUrl());
+            existingUser.setProfileImgS3Url(user.getProfileImgS3Url());
             User updatedUser = userRepository.save(existingUser);
-            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User updated", UserDTO.fromEntity(updatedUser)));
+            return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "User updated", UserDTO.fromEntity(updatedUser, s3Service)));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
         }

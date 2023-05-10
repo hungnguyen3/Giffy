@@ -4,7 +4,8 @@ interface User {
 	userId: number;
 	userName: string;
 	userEmail: string;
-	profileImgUrl: string;
+	profileImgS3Url: string;
+	profileImgS3Key: string;
 }
 
 interface UserState {

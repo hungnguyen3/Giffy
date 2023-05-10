@@ -37,6 +37,8 @@ jobs:
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             COGNITO_REGION: ${{ secrets.COGNITO_REGION }}
             COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
+            S3_REGION: ${{ secrets.S3_REGION }}
+            S3_BUCKET: ${{ secrets.S3_BUCKET }}
 
         steps:
             - name: Cleanup target folder
@@ -71,6 +73,8 @@ jobs:
                   echo "aws.secretAccessKey=$AWS_SECRET_ACCESS_KEY" >> ./application.properties
                   echo "cognito.region=$COGNITO_REGION" >> ./application.properties
                   echo "cognito.userPoolId=$COGNITO_USER_POOL_ID" >> ./application.properties
+                  echo "s3.region=$S3_REGION" >> ./application.properties
+                  echo "s3.bucket=$S3_BUCKET" >> ./application.properties
 
               shell: bash
             - name: Build with Maven

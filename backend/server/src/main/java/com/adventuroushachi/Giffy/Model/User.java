@@ -31,7 +31,10 @@ public class User {
     @Column(name = "cognito_sub", nullable = false, unique = true)
     private String cognitoSub;
 
-    @Column(name = "profile_img_url", nullable = false)
-    private String profileImgUrl;
+    @Column(name = "profile_img_s3_url", nullable = false)
+    private String profileImgS3Url;
+
+    @Column(name = "profile_img_s3_key", nullable = false)
+    private String profileImgS3Key;
 
 }

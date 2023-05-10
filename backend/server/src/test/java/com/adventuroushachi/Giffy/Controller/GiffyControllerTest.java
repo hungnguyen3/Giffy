@@ -37,8 +37,8 @@ public class GiffyControllerTest {
         giffy = new Giffy();
         giffy.setGiffyId(1L);
         giffy.setCollectionId(1L);
-        giffy.setS3Url("https://example.com/s3url");
-        giffy.setS3Key("s3Key");
+        giffy.setGiffyS3Url("https://example.com/s3url");
+        giffy.setGiffyS3Key("s3Key");
         giffy.setGiffyName("Giffy Name");
 
         giffyDTO = GiffyDTO.fromEntity(giffy);

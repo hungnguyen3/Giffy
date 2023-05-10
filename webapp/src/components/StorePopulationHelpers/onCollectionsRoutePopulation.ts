@@ -33,7 +33,8 @@ export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>, current
 								userId: 0,
 								userName: currentUser.attributes.name,
 								userEmail: currentUser.attributes.email,
-								profileImgUrl: '',
+								profileImgS3Url: '',
+								profileImgS3Key: '',
 							})
 						);
 					} else {
@@ -49,10 +50,17 @@ export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>, current
 					userId: user.userId,
 					userName: user.userName,
 					userEmail: user.userEmail,
-					profileImgUrl: user.profileImgUrl,
+					profileImgS3Url: user.profileImgS3Url,
+					profileImgS3Key: user.profileImgS3Key,
 				};
 
-				if (userInfo.profileImgUrl && userInfo.userId && userInfo.userName && userInfo.userEmail) {
+				if (
+					userInfo.profileImgS3Url &&
+					userInfo.profileImgS3Key &&
+					userInfo.userId &&
+					userInfo.userName &&
+					userInfo.userEmail
+				) {
 					dispatch(populateUser(userInfo));
 					dispatch(setFinishedAccountSetup(true));
 				}
@@ -90,7 +98,8 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 								userId: user.userId,
 								userName: user.userName,
 								userEmail: user.userEmail,
-								profileImgUrl: user.profileImgUrl,
+								profileImgS3Url: user.profileImgS3Url,
+								profileImgS3Key: user.profileImgS3Key,
 							},
 							// TODO: CHANGE THIS
 							permission: Permission.READ,

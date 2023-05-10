@@ -1,4 +1,4 @@
-package com.adventuroushachi.Giffy;
+package com.adventuroushachi.Giffy.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

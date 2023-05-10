@@ -47,7 +47,8 @@ const AccountSettings = () => {
 			userId: user?.userId as number,
 			userName: userName,
 			userEmail: user?.userEmail as string,
-			profileImgUrl: imgURL ? imgURL : (user?.profileImgUrl as string),
+			profileImgS3Url: imgURL ? imgURL : (user?.profileImgS3Url as string),
+			profileImgS3Key: user?.profileImgS3Key as string,
 		});
 
 		// update user at the frontend
@@ -60,7 +61,8 @@ const AccountSettings = () => {
 					userId: updatedUser.userId,
 					userName: updatedUser.userName,
 					userEmail: updatedUser.userEmail,
-					profileImgUrl: updatedUser.profileImgUrl!,
+					profileImgS3Url: updatedUser.profileImgS3Url,
+					profileImgS3Key: updatedUser.profileImgS3Key,
 				})
 			);
 		}
@@ -85,7 +87,7 @@ const AccountSettings = () => {
 							className={styles.profileImgUploadInput}
 						/>
 						<img
-							src={previewImageUrl === null ? user?.profileImgUrl : previewImageUrl}
+							src={previewImageUrl === null ? user?.profileImgS3Url : previewImageUrl}
 							className={styles.profileImg}
 							alt={'Preview'}
 						/>

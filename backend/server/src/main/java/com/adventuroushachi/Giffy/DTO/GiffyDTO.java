@@ -23,8 +23,8 @@ public class GiffyDTO {
         return new GiffyDTO(
                 giffy.getGiffyId(),
                 giffy.getCollectionId(),
-                giffy.getS3Url(),
-                giffy.getS3Key(),
+                giffy.getGiffyS3Url(),
+                giffy.getGiffyS3Key(),
                 giffy.getGiffyName()
         );
     }
