@@ -1,17 +1,17 @@
-import UserService from '../../API/UserService';
 import { clearUser, populateUser, setFinishedAccountSetup } from '../../slices/UserSlice';
 import { clearCollections, Collection, populateCollections, UserAccess } from '../../slices/CollectionsSlice';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
 import { isResponseMessageSuccess, ResponseMessage } from '../../types/ResponseMessage';
 import { UserDTO } from '../../types/DTOs/UserDTOs';
-import { getCurrentUserCollections } from '../../API/CollectionService';
-import { CollectionDTO, isGetCurrentUserCollectionsDTO } from '../../types/DTOs/CollectionDTOs';
+import { CollectionDTO } from '../../types/DTOs/CollectionDTOs';
 import { getUsersByCollectionId } from '../../API/CollectionUserRelationshipService';
 import { Permission } from '../../types/enums/Permission';
-import { getGiffiesByCollectionId } from '../../API/GiffyService';
 import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
 import { Auth } from 'aws-amplify';
+import UserService from '../../API/UserService';
+import GiffyService from '../../API/GiffyService';
+import CollectionService from '../../API/CollectionService';
 
 interface onCollectionsRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -76,16 +76,16 @@ export const populateUserInfo = (dispatch: ThunkDispatch<any, any, any>, current
 // Function to populate collections
 const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise((resolve, reject) => {
-		getCurrentUserCollections()
+		CollectionService.getCurrentUserCollections()
 			.then((getCurrentUserCollectionsRes: ResponseMessage<CollectionDTO[]>) => {
-				if (!isGetCurrentUserCollectionsDTO(getCurrentUserCollectionsRes)) {
+				if (!isResponseMessageSuccess(getCurrentUserCollectionsRes)) {
 					return reject();
 				}
 
 				var collections = getCurrentUserCollectionsRes.data;
 				var toStoreCollections: Collection[] = [];
 
-				collections.map(async (collection: CollectionDTO) => {
+				collections!.map(async (collection: CollectionDTO) => {
 					var getUsersByCollectionIdRes: ResponseMessage<UserDTO[]> = await getUsersByCollectionId(
 						collection.collectionId
 					);
@@ -107,7 +107,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 						return acc;
 					}, {});
 
-					getGiffiesByCollectionId(Number(collection.collectionId)).then(
+					GiffyService.getGiffiesByCollectionId(Number(collection.collectionId)).then(
 						(getGiffiesByCollectionIdRes: ResponseMessage<GiffyDTO[]>) => {
 							if (!isResponseMessageSuccess(getGiffiesByCollectionIdRes)) {
 								return null;
@@ -119,7 +119,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 								{
 									collectionId: collection.collectionId,
 									collectionName: collection.collectionName,
-									private: collection.private,
+									isPrivate: collection.isPrivate,
 									giffies: giffies,
 									users: usersObject,
 								},
@@ -130,7 +130,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 					);
 				});
 
-				const collectionIds = collections.map((collection: CollectionDTO) => collection.collectionId);
+				const collectionIds = collections!.map((collection: CollectionDTO) => collection.collectionId);
 				resolve(collectionIds.length > 0 ? Math.min(...collectionIds) : 0);
 			})
 			.catch(() => {

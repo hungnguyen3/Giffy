@@ -43,7 +43,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testCreateUser() throws MalformedURLException {
+    public void testCreateUser() {
         User user = new User();
         user.setUserName("Test User");
         user.setUserEmail("user_email");

@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../hooks';
 import { populateUser, setFinishedAccountSetup } from '../slices/UserSlice';
-import { RootState } from '../store';
 import styles from '../styles/Auth.module.scss';
 import { UserDTO } from '../types/DTOs/UserDTOs';
 import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';

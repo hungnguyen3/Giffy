@@ -1,14 +1,14 @@
 import { clearCollections, Collection, populateCollections } from '../../slices/CollectionsSlice';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { NextRouter } from 'next/router';
-import { getPublicCollections } from '../../API/CollectionService';
 import { CollectionDTO } from '../../types/DTOs/CollectionDTOs';
 import { isResponseMessageSuccess, ResponseMessage } from '../../types/ResponseMessage';
-import { getGiffiesByCollectionId } from '../../API/GiffyService';
 import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
 import { Auth } from 'aws-amplify';
 import { populateUserInfo } from './onCollectionsRoutePopulation';
 import { clearUser } from '../../slices/UserSlice';
+import GiffyService from '../../API/GiffyService';
+import CollectionService from '../../API/CollectionService';
 
 interface onDiscoveryRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -18,7 +18,7 @@ interface onDiscoveryRoutePopulationProps {
 // Function to populate collections
 const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 	return new Promise((resolve, reject) => {
-		getPublicCollections(10)
+		CollectionService.getPublicCollections(10)
 			.then((getPublicCollectionsRes: ResponseMessage<CollectionDTO[]>) => {
 				if (!isResponseMessageSuccess(getPublicCollectionsRes)) {
 					return reject();
@@ -29,7 +29,9 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 				var toStoreCollections: Collection[] = [];
 
 				const promises = collections.map(async (collection: CollectionDTO) => {
-					const getGiffiesByCollectionIdRes = await getGiffiesByCollectionId(Number(collection.collectionId));
+					const getGiffiesByCollectionIdRes = await GiffyService.getGiffiesByCollectionId(
+						Number(collection.collectionId)
+					);
 					if (!isResponseMessageSuccess(getGiffiesByCollectionIdRes)) {
 						return null;
 					}
@@ -39,7 +41,7 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 						{
 							collectionId: collection.collectionId,
 							collectionName: collection.collectionName,
-							private: collection.private,
+							isPrivate: collection.isPrivate,
 							giffies: giffies,
 							users: {},
 						},

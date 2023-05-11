@@ -1,44 +1,38 @@
 import styles from '../styles/CreateNewCollection.module.scss';
 import { addNewCollection, closeCreateNewCollectionWindow } from '../slices/CollectionsSlice';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppDispatch } from '../hooks';
 import { useState } from 'react';
-import { RootState } from '../store';
 import { useRouter } from 'next/router';
-import { createCollection } from '../API/CollectionService';
-import { isResponseMessageSuccess } from '../types/ResponseMessage';
+import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
+import CollectionService from '../API/CollectionService';
+import { CollectionDTO } from '../types/DTOs/CollectionDTOs';
 
 interface CollectionInfo {
 	collectionName: string;
-	private: boolean;
+	isPrivate: boolean;
 	// TODO: add list of shared users, auto clear(?) if private is true
 }
 
 const CreateNewCollection = () => {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
-	const userId = useAppSelector((state: RootState) => state.user.value?.userId);
 	const [collectionInfo, setCollectionInfo] = useState<CollectionInfo>({
 		collectionName: '',
-		private: false,
+		isPrivate: false,
 	});
 
 	const uploadHandler = async () => {
 		if (collectionInfo.collectionName == '') {
 			alert('Please fill in collection name');
-		} else if (!userId) {
-			alert("Something went wrong while loading user's info");
 		} else {
 			try {
-				const createCollectionRes = await createCollection({
-					data: {
-						collectionName: collectionInfo.collectionName,
-						private: collectionInfo.private,
-						userId: userId,
-					},
+				const createCollectionRes: ResponseMessage<CollectionDTO> = await CollectionService.createCollection({
+					collectionName: collectionInfo.collectionName,
+					isPrivate: collectionInfo.isPrivate,
 				});
 
 				if (!isResponseMessageSuccess(createCollectionRes)) {
-					alert('Something went wrong trying to create a new collection');
+					alert(createCollectionRes.message);
 				} else {
 					var collection = createCollectionRes.data!;
 
@@ -46,13 +40,13 @@ const CreateNewCollection = () => {
 						addNewCollection({
 							collectionId: collection.collectionId,
 							collectionName: collection.collectionName,
-							private: collection.private,
+							isPrivate: collection.isPrivate,
 							giffies: [],
 							users: {},
 						})
 					);
 					dispatch(closeCreateNewCollectionWindow());
-					alert('Successful created');
+					alert(createCollectionRes.message);
 					router.push(`/collections/${collection.collectionId}`);
 				}
 			} catch (err) {
@@ -84,11 +78,11 @@ const CreateNewCollection = () => {
 			<div className={styles.visibility}>
 				Visibility: &nbsp;
 				<select
-					value={collectionInfo.private ? 'private' : 'public'}
+					value={collectionInfo.isPrivate ? 'private' : 'public'}
 					onChange={(event) => {
 						setCollectionInfo({
 							...collectionInfo,
-							private: event.target.value === 'private',
+							isPrivate: event.target.value === 'private',
 						});
 					}}
 				>

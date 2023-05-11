@@ -6,7 +6,7 @@ import { Permission } from '../types/enums/Permission';
 export interface Collection {
 	collectionId: number;
 	collectionName: string;
-	private: boolean;
+	isPrivate: boolean;
 	giffies: GiffyDTO[];
 	users: { [userEmail: string]: UserAccess };
 }
@@ -156,14 +156,14 @@ export const collectionsSlice = createSlice({
 				payload: {
 					collectionId: number;
 					collectionName: string;
-					private: boolean;
+					isPrivate: boolean;
 				};
 			}
 		) => {
 			var tempValue = state.value;
 
 			tempValue[action.payload.collectionId].collectionName = action.payload.collectionName;
-			tempValue[action.payload.collectionId].private = action.payload.private;
+			tempValue[action.payload.collectionId].isPrivate = action.payload.isPrivate;
 
 			state.value = tempValue;
 		},

@@ -2,9 +2,15 @@ import styles from '../styles/UploadGiffy.module.scss';
 import { useAppDispatch } from '../hooks';
 import { useState } from 'react';
 import FileUploadBox from './FileUploadBox';
+import FileService from '../API/FileService';
+import { S3UploadDTO } from '../types/DTOs/S3DTOs';
+import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
+import GiffyService from '../API/GiffyService';
+import { GiffyDTO } from '../types/DTOs/GiffyDTOs';
+import { addGiffyToACollection } from '../slices/CollectionsSlice';
 
 interface GiffyInfo {
-	collectionId: number | null;
+	collectionId: number;
 	giffyName: string;
 }
 
@@ -14,14 +20,51 @@ interface UploadGiffyProps {
 
 const UploadGiffy = (props: UploadGiffyProps) => {
 	const dispatch = useAppDispatch();
-	const [giffy, setGiffy] = useState<File | null>(null);
+	const [giffyFile, setGiffyFile] = useState<File | null>(null);
 	const [giffyInfo, setGiffyInfo] = useState<GiffyInfo>({
 		collectionId: props.currentCollectionId,
 		giffyName: '',
 	});
 
 	const uploadHandler = async () => {
-		// TODO: upload image to AWS
+		if (giffyFile) {
+			// Upload the gif to S3 using FileService
+			const uploadRes: ResponseMessage<S3UploadDTO> = await FileService.uploadFile(giffyFile);
+
+			if (!isResponseMessageSuccess(uploadRes)) {
+				alert(uploadRes.message);
+				// TODO: error handling
+			} else {
+				const data = {
+					collectionId: giffyInfo.collectionId,
+					giffyS3Url: uploadRes.data!.s3Url,
+					giffyS3Key: uploadRes.data!.s3Key,
+					giffyName: giffyInfo.giffyName,
+				};
+
+				// Create a new giffy using GiffyService
+				const createGiffyRes: ResponseMessage<GiffyDTO> = await GiffyService.createGiffy(data);
+
+				if (!isResponseMessageSuccess(createGiffyRes)) {
+					alert(createGiffyRes.message);
+					// TODO: error handling
+				} else {
+					var giffy = createGiffyRes.data!;
+					dispatch(
+						addGiffyToACollection({
+							giffyId: giffy.giffyId,
+							collectionId: giffy.collectionId,
+							giffyName: giffy.giffyName,
+							giffyS3Url: giffy.giffyS3Url,
+							giffyS3Key: giffy.giffyS3Key,
+						})
+					);
+					alert('Created a new giffy successfully');
+				}
+			}
+		} else {
+			alert('Select a gif first');
+		}
 	};
 
 	return (
@@ -43,7 +86,7 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 					}}
 				></input>
 			</div>
-			<FileUploadBox setFileHolderForParent={setGiffy} displayText={'Drag and drop an img/gif or click here'} />
+			<FileUploadBox setFileHolderForParent={setGiffyFile} displayText={'Drag and drop a gif or click here'} />
 			<div className={styles.buttonContainer}>
 				<button className={styles.createBtn} onClick={uploadHandler}>
 					Upload

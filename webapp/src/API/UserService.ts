@@ -17,10 +17,10 @@ class UserService {
 	}
 
 	async getUserById(userId: string): Promise<ResponseMessage<UserDTO>> {
-		const session = await Auth.currentSession();
-		const accessToken = session.getAccessToken().getJwtToken();
-
 		try {
+			const session = await Auth.currentSession();
+			const accessToken = session.getAccessToken().getJwtToken();
+
 			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/getUserById/${userId}`, {
 				cache: 'no-cache',
 				credentials: 'include',
@@ -38,9 +38,10 @@ class UserService {
 	}
 
 	async getCurrentUser(): Promise<ResponseMessage<UserDTO>> {
-		const session = await Auth.currentSession();
-		const accessToken = session.getIdToken().getJwtToken();
 		try {
+			const session = await Auth.currentSession();
+			const accessToken = session.getIdToken().getJwtToken();
+
 			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/getCurrentUser`, {
 				cache: 'no-cache',
 				credentials: 'include',
@@ -58,9 +59,10 @@ class UserService {
 	}
 
 	async getUserByEmail(email: string): Promise<ResponseMessage<UserDTO>> {
-		const session = await Auth.currentSession();
-		const accessToken = session.getIdToken().getJwtToken();
 		try {
+			const session = await Auth.currentSession();
+			const accessToken = session.getIdToken().getJwtToken();
+
 			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/getUserByEmail/${email}`, {
 				cache: 'no-cache',
 				credentials: 'include',
@@ -78,19 +80,19 @@ class UserService {
 	}
 
 	async createUser(profileImgS3Url: string, profileImgS3Key: string): Promise<ResponseMessage<UserDTO>> {
-		const session = await Auth.currentSession();
-		const currentCognitoUser = await Auth.currentAuthenticatedUser();
-		const accessToken = session.getIdToken().getJwtToken();
-		const storeUserValue = store.getState().user.value;
-		const data = {
-			userName: storeUserValue?.userName,
-			userEmail: storeUserValue?.userEmail,
-			cognitoSub: currentCognitoUser.attributes.sub,
-			profileImgS3Url: profileImgS3Url,
-			profileImgS3Key: profileImgS3Key,
-		};
-
 		try {
+			const session = await Auth.currentSession();
+			const currentCognitoUser = await Auth.currentAuthenticatedUser();
+			const accessToken = session.getIdToken().getJwtToken();
+			const storeUserValue = store.getState().user.value;
+			const data = {
+				userName: storeUserValue?.userName,
+				userEmail: storeUserValue?.userEmail,
+				cognitoSub: currentCognitoUser.attributes.sub,
+				profileImgS3Url: profileImgS3Url,
+				profileImgS3Key: profileImgS3Key,
+			};
+
 			const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/createUser`, {
 				method: 'POST',
 				cache: 'no-cache',
@@ -115,9 +117,10 @@ class UserService {
 		profileImgS3Url: string;
 		profileImgS3Key: string;
 	}): Promise<ResponseMessage<UserDTO>> {
-		const session = await Auth.currentSession();
-		const accessToken = session.getIdToken().getJwtToken();
 		try {
+			const session = await Auth.currentSession();
+			const accessToken = session.getIdToken().getJwtToken();
+
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/updateUserById/${data.userId}`,
 				{

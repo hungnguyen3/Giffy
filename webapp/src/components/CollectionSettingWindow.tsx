@@ -17,8 +17,7 @@ import UserService from '../API/UserService';
 import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
 import { UserDTO } from '../types/DTOs/UserDTOs';
 import { addUserToACollection } from '../API/CollectionUserRelationshipService';
-import { updateCollectionById } from '../API/CollectionService';
-import { isUpdateCollectionByIdDTO } from '../types/DTOs/CollectionDTOs';
+import CollectionService from '../API/CollectionService';
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
@@ -30,12 +29,12 @@ export const CollectionSettingWindow = () => {
 	const [updateCollectionPayload, setUpdateCollectionPayload] = useState<{
 		collectionId: number;
 		collectionName: string;
-		private: boolean;
+		isPrivate: boolean;
 		// TODO: list of users here
 	}>({
 		collectionId: Number(collectionId),
 		collectionName: collection.collectionName,
-		private: collection.private,
+		isPrivate: collection.isPrivate,
 	});
 
 	const usersWithAccess = Object.keys(collectionUsers).map((userEmail) => {
@@ -81,13 +80,13 @@ export const CollectionSettingWindow = () => {
 
 	const handleSubmit = async () => {
 		// send API request with updateCollectionPayload
-		const updateCollectionByIdRes = await updateCollectionById({
+		const updateCollectionByIdRes = await CollectionService.updateCollectionById({
 			collectionId: updateCollectionPayload.collectionId,
 			collectionName: updateCollectionPayload.collectionName,
-			private: updateCollectionPayload.private,
+			isPrivate: updateCollectionPayload.isPrivate,
 		});
 
-		if (isUpdateCollectionByIdDTO(updateCollectionByIdRes)) {
+		if (isResponseMessageSuccess(updateCollectionByIdRes)) {
 			// update collection in redux store
 			dispatch(updateCollection(updateCollectionPayload));
 		} else {
@@ -125,11 +124,11 @@ export const CollectionSettingWindow = () => {
 					<div className={styles.visibility}>
 						Visibility: &nbsp;
 						<select
-							value={updateCollectionPayload.private ? 'private' : 'public'}
+							value={updateCollectionPayload.isPrivate ? 'private' : 'public'}
 							onChange={(event) => {
 								setUpdateCollectionPayload({
 									...updateCollectionPayload,
-									private: event.target.value === 'private',
+									isPrivate: event.target.value === 'private',
 								});
 							}}
 						>

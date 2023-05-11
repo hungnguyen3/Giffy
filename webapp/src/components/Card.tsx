@@ -10,7 +10,6 @@ import styles from '../styles/Card.module.scss';
 interface CardProps {
 	img: string;
 	name: string;
-	likeCount: number;
 	giffyId: number;
 }
 
@@ -61,7 +60,6 @@ const Card = (props: CardProps) => {
 
 			<div className={styles.cardTitle}>
 				<p>{props.name}</p>
-				{/* <p>{props.likeCount}</p> */}
 			</div>
 
 			<div className={styles.cardCheckbox}>

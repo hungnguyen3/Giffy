@@ -9,9 +9,9 @@ import {
 } from '../slices/CollectionsSlice';
 import { RootState } from '../store';
 import styles from '../styles/DeleteConfirmationWindow.module.scss';
-import { deleteCollectionByCollectionId } from '../API/CollectionService';
 import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
-import { deleteGiffiesByIds } from '../API/GiffyService';
+import CollectionService from '../API/CollectionService';
+import GiffyService from '../API/GiffyService';
 
 export const DeleteConfirmationWindow = () => {
 	const { collectionId } = router.query;
@@ -37,7 +37,7 @@ export const DeleteConfirmationWindow = () => {
 					className={styles.deleteButton}
 					onClick={() => {
 						if (collectionToBeDeleted) {
-							deleteCollectionByCollectionId(collectionToBeDeleted).then(
+							CollectionService.deleteCollectionByCollectionId(collectionToBeDeleted).then(
 								(deleteCollectionByCollectionIdRes: ResponseMessage<null>) => {
 									if (isResponseMessageSuccess(deleteCollectionByCollectionIdRes)) {
 										dispatch(removeCollection({ collectionId: collectionToBeDeleted }));
@@ -55,7 +55,7 @@ export const DeleteConfirmationWindow = () => {
 						}
 
 						if (selectedGiffies && selectedGiffies.length > 0) {
-							deleteGiffiesByIds({
+							GiffyService.deleteGiffiesByIds({
 								giffyIds: selectedGiffies,
 							}).then((deleteGiffiesByIdsRes: ResponseMessage<null>) => {
 								if (isResponseMessageSuccess(deleteGiffiesByIdsRes)) {

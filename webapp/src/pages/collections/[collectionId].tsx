@@ -8,7 +8,10 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { RootState } from '../../store';
 import styles from '../../styles/Collections.module.scss';
 
-import { openDeleteConfirmationWindow, openUploadGiffyWindow } from '../../slices/CollectionsSlice';
+import {
+	openDeleteConfirmationWindow,
+	openUploadGiffyWindow,
+} from '../../slices/CollectionsSlice';
 import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
 
 const Collection: NextPage = () => {
@@ -25,7 +28,9 @@ const Collection: NextPage = () => {
 		}
 	});
 
-	const selectedGiffies = useAppSelector((state: RootState) => state.collections.selectedGiffyIds);
+	const selectedGiffies = useAppSelector(
+		(state: RootState) => state.collections.selectedGiffyIds
+	);
 
 	const user = useAppSelector((state: RootState) => state.user.value);
 
@@ -39,9 +44,8 @@ const Collection: NextPage = () => {
 						return (
 							<div key={giffy.giffyId}>
 								<Card
-									img={giffy.firebaseUrl}
+									img={giffy.giffyS3Url}
 									name={giffy.giffyName}
-									likeCount={giffy.likes}
 									giffyId={giffy.giffyId}
 								></Card>
 							</div>

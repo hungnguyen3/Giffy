@@ -29,9 +29,8 @@ const Collection: NextPage = () => {
 						return (
 							<div key={giffy.giffyId}>
 								<Card
-									img={giffy.firebaseUrl}
+									img={giffy.giffyS3Url}
 									name={giffy.giffyName}
-									likeCount={giffy.likes}
 									giffyId={giffy.giffyId}
 								></Card>
 							</div>
