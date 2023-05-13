@@ -5,13 +5,15 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 interface FileUploadBoxProps {
 	setFileHolderForParent: Dispatch<SetStateAction<File | null>>;
 	displayText: string | null;
+	acceptedFileTypes: string;
 }
 
 const FileUploadBox = (props: FileUploadBoxProps) => {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [selectedImgURL, setSelectedImgURL] = useState<string | null>(null);
 
-	const imageMimeType = /image\/*/i; ///image\/(png|jpg|jpeg)/i;
+	// Create a new RegExp from the acceptedFileTypes prop
+	const acceptedFileTypesRegExp = new RegExp(`(${props.acceptedFileTypes.replace(/,/g, '|')})`, 'i');
 
 	useEffect(() => {
 		let fileReader: FileReader,
@@ -21,7 +23,7 @@ const FileUploadBox = (props: FileUploadBoxProps) => {
 		if (selectedFile) {
 			// put the selectedFile into the holder of the parent
 			fileReader = new FileReader();
-			fileReader.onload = e => {
+			fileReader.onload = (e) => {
 				if (e.target) {
 					const { result } = e.target;
 					if (result && !isCancel) {
@@ -47,11 +49,7 @@ const FileUploadBox = (props: FileUploadBoxProps) => {
 				// TODO: style
 				<div className={styles.fileUploadContent}>
 					<div className={styles.imgPreviewWrapper}>
-						<img
-							src={selectedImgURL}
-							alt="preview"
-							className={styles.previewImg}
-						></img>
+						<img src={selectedImgURL} alt="preview" className={styles.previewImg}></img>
 					</div>
 
 					<div className={styles.imageTitleWrap}>
@@ -79,26 +77,22 @@ const FileUploadBox = (props: FileUploadBoxProps) => {
 							type="file"
 							//multiple // TODO: make it ok to do multiple uploads
 							className={styles.fileUploadInput}
-							onChange={event => {
+							onChange={(event) => {
 								if (event.target.files) {
 									const file = event.target.files[0];
 
-									if (!file.type.match(imageMimeType)) {
-										alert('Image type not valid.');
+									if (!file.type.match(acceptedFileTypesRegExp)) {
+										alert('File type not valid.');
 										return;
 									}
 
 									setSelectedFile(file);
 								} else setSelectedFile(null);
 							}}
-							accept="image/*"
+							accept={props.acceptedFileTypes}
 						/>
 						<div className={styles.dragText}>
-							<h3>
-								{props.displayText
-									? props.displayText
-									: 'Drag and drop a file or click here'}
-							</h3>
+							<h3>{props.displayText ? props.displayText : 'Drag and drop a file or click here'}</h3>
 						</div>
 					</div>
 				)}

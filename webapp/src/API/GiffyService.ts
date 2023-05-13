@@ -21,7 +21,7 @@ class GiffyService {
 			const accessToken = session.getIdToken().getJwtToken();
 
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/api/giffies/getGiffiesByCollectionId/${collectionId}`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/api/giffies/byCollectionId/${collectionId}`,
 				{
 					cache: 'no-cache',
 					credentials: 'include',

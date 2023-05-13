@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessage;
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessageStatus;
 import com.adventuroushachi.Giffy.DTO.ExternGiffyDTO;
 import com.adventuroushachi.Giffy.Model.Rating;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +35,7 @@ public class GiphyController {
     private RestTemplate restTemplate;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-  
+
     @GetMapping("/trending")
     public ResponseEntity<ResponseMessage<List<ExternGiffyDTO>>> trending() {
         String url = "https://api.giphy.com/v1/gifs/trending";
@@ -47,46 +49,50 @@ public class GiphyController {
         } catch (Exception e) {
             System.err.println("Error happened at Giphy API: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Error happened while retrieving data from Giphy", null));
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Error happened while retrieving data from Giphy", null));
         }
 
         List<ExternGiffyDTO> gifs = new ArrayList<>();
         try {
             JsonNode response = objectMapper.readTree(jsonResponse);
-            List<JsonNode> data = Arrays.asList(objectMapper.readValue(response.get("data").traverse(), JsonNode[].class));
+            List<JsonNode> data = Arrays
+                    .asList(objectMapper.readValue(response.get("data").traverse(), JsonNode[].class));
             gifs = data.stream()
                     .map(jsonNode -> new ExternGiffyDTO(
                             jsonNode.get("id").asText(),
                             jsonNode.get("images").get("original").get("url").asText(),
                             Rating.fromValue(jsonNode.get("rating").asText()),
-                            jsonNode.get("title").asText()
-                    ))
+                            jsonNode.get("title").asText()))
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid rating value in Giphy API response", null));
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Invalid rating value in Giphy API response", null));
         } catch (IOException e) {
             System.err.println("Error while processing Giphy API response: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Error while processing Giphy API response", null));
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Error while processing Giphy API response", null));
         } catch (Exception e) {
             System.err.println("Uncaught Exception, need more investigation: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Please report this uncaught error, more investigation is needed", null));
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Please report this uncaught error, more investigation is needed", null));
         }
 
         ResponseMessage<List<ExternGiffyDTO>> responseMessage = new ResponseMessage<>(
                 ResponseMessageStatus.SUCCESS,
                 "Trending GIFs retrieved successfully",
-                gifs
-        );
+                gifs);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseMessage<List<ExternGiffyDTO>>> search(@RequestParam("q") String query, @RequestParam(value = "rating", required = false) String rating) {
+    public ResponseEntity<ResponseMessage<List<ExternGiffyDTO>>> search(@RequestParam("q") String query,
+            @RequestParam(value = "rating", required = false) String rating) {
         String url = "https://api.giphy.com/v1/gifs/search";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
@@ -103,47 +109,50 @@ public class GiphyController {
 
             builder.queryParam("rating", rating);
         }
-        
+
         String jsonResponse = null;
         try {
             jsonResponse = this.restTemplate.getForObject(builder.toUriString(), String.class);
         } catch (Exception e) {
             System.err.println("Error happened at Giphy API: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Error happened while retrieving data from Giphy", null));
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Error happened while retrieving data from Giphy", null));
         }
 
         List<ExternGiffyDTO> gifs = new ArrayList<>();
         try {
             JsonNode response = objectMapper.readTree(jsonResponse);
-            List<JsonNode> data = Arrays.asList(objectMapper.readValue(response.get("data").traverse(), JsonNode[].class));
+            List<JsonNode> data = Arrays
+                    .asList(objectMapper.readValue(response.get("data").traverse(), JsonNode[].class));
             gifs = data.stream()
                     .map(jsonNode -> new ExternGiffyDTO(
                             jsonNode.get("id").asText(),
                             jsonNode.get("images").get("original").get("url").asText(),
                             Rating.fromValue(jsonNode.get("rating").asText()),
-                            jsonNode.get("title").asText()
-                    ))
+                            jsonNode.get("title").asText()))
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid rating value in Giphy API response", null));
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Invalid rating value in Giphy API response", null));
         } catch (IOException e) {
             System.err.println("Error while processing Giphy API response: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Error while processing Giphy API response", null));
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Error while processing Giphy API response", null));
         } catch (Exception e) {
             System.err.println("Uncaught Exception, need more investigation: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Please report this uncaught error, more investigation is needed", null));
-        } 
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR,
+                            "Please report this uncaught error, more investigation is needed", null));
+        }
 
         ResponseMessage<List<ExternGiffyDTO>> responseMessage = new ResponseMessage<>(
                 ResponseMessageStatus.SUCCESS,
                 "GIFs retrieved successfully",
-                gifs
-        );
+                gifs);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }

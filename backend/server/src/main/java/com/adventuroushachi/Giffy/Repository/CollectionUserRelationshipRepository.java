@@ -9,9 +9,13 @@ import com.adventuroushachi.Giffy.Model.CollectionUserRelationship;
 import com.adventuroushachi.Giffy.Model.CollectionUserId;
 import com.adventuroushachi.Giffy.Model.User;
 
-public interface CollectionUserRelationshipRepository extends JpaRepository<CollectionUserRelationship, CollectionUserId> {
+public interface CollectionUserRelationshipRepository
+        extends JpaRepository<CollectionUserRelationship, CollectionUserId> {
 
     List<CollectionUserRelationship> findByIdUserId(Long userId);
+
+    List<CollectionUserRelationship> findByIdCollectionId(Long collectionId);
+
     CollectionUserRelationship findByCollectionAndUser(Collection collection, User user);
 
 }

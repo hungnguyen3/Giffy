@@ -86,7 +86,11 @@ const UploadGiffy = (props: UploadGiffyProps) => {
 					}}
 				></input>
 			</div>
-			<FileUploadBox setFileHolderForParent={setGiffyFile} displayText={'Drag and drop a gif or click here'} />
+			<FileUploadBox
+				setFileHolderForParent={setGiffyFile}
+				displayText={'Drag and drop a gif or click here'}
+				acceptedFileTypes="image/gif"
+			/>
 			<div className={styles.buttonContainer}>
 				<button className={styles.createBtn} onClick={uploadHandler}>
 					Upload

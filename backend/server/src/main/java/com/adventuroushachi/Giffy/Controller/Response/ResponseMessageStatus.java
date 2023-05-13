@@ -1,4 +1,4 @@
-package com.adventuroushachi.Giffy.Controller;
+package com.adventuroushachi.Giffy.Controller.Response;
 
 public enum ResponseMessageStatus {
     SUCCESS("success"),

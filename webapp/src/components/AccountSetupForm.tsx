@@ -59,6 +59,7 @@ const AccountSetupForm = () => {
 			<FileUploadBox
 				setFileHolderForParent={setUserImg}
 				displayText={'Drag and drop your profile image or click here'}
+				acceptedFileTypes="image/jpeg,image/png,image/gif"
 			/>
 			<div className={styles.buttonContainer}>
 				<button className={styles.createBtn} onClick={uploadHandler}>

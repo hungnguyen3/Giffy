@@ -5,13 +5,13 @@ import { NextRouter } from 'next/router';
 import { isResponseMessageSuccess, ResponseMessage } from '../../types/ResponseMessage';
 import { UserDTO } from '../../types/DTOs/UserDTOs';
 import { CollectionDTO } from '../../types/DTOs/CollectionDTOs';
-import { getUsersByCollectionId } from '../../API/CollectionUserRelationshipService';
 import { Permission } from '../../types/enums/Permission';
 import { GiffyDTO } from '../../types/DTOs/GiffyDTOs';
 import { Auth } from 'aws-amplify';
 import UserService from '../../API/UserService';
 import GiffyService from '../../API/GiffyService';
 import CollectionService from '../../API/CollectionService';
+import CollectionUserRelationshipService from '../../API/CollectionUserRelationshipService';
 
 interface onCollectionsRoutePopulationProps {
 	dispatch: ThunkDispatch<any, any, any>;
@@ -85,10 +85,10 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 				var collections = getCurrentUserCollectionsRes.data;
 				var toStoreCollections: Collection[] = [];
 
+				console.log(collections);
 				collections!.map(async (collection: CollectionDTO) => {
-					var getUsersByCollectionIdRes: ResponseMessage<UserDTO[]> = await getUsersByCollectionId(
-						collection.collectionId
-					);
+					var getUsersByCollectionIdRes: ResponseMessage<UserDTO[]> =
+						await CollectionUserRelationshipService.getUsersByCollectionId(collection.collectionId);
 					if (!isResponseMessageSuccess(getUsersByCollectionIdRes)) return null;
 
 					const usersObject = getUsersByCollectionIdRes.data!.reduce((acc, user: UserDTO) => {
@@ -107,12 +107,16 @@ const populateCollectionsInfo = (dispatch: ThunkDispatch<any, any, any>) => {
 						return acc;
 					}, {});
 
+					console.log(usersObject);
+
 					GiffyService.getGiffiesByCollectionId(Number(collection.collectionId)).then(
 						(getGiffiesByCollectionIdRes: ResponseMessage<GiffyDTO[]>) => {
 							if (!isResponseMessageSuccess(getGiffiesByCollectionIdRes)) {
 								return null;
 							}
 							var giffies: GiffyDTO[] = getGiffiesByCollectionIdRes.data!;
+
+							console.log(giffies);
 
 							toStoreCollections = [
 								...toStoreCollections,
@@ -148,8 +152,9 @@ export const onCollectionsRoutePopulation = (props: onCollectionsRoutePopulation
 
 	// populating redux state for user
 	Auth.currentAuthenticatedUser()
-		.then((currentUser) => {
-			populateUserInfo(dispatch, currentUser);
+		.then(async (currentUser) => {
+			await populateUserInfo(dispatch, currentUser);
+			await populateCollectionsInfo(dispatch);
 		})
 		.catch(() => {
 			dispatch(clearUser());

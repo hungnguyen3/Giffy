@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessage;
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessageStatus;
 import com.adventuroushachi.Giffy.DTO.ExternGiffyDTO;
 import com.adventuroushachi.Giffy.Model.Rating;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,22 +40,22 @@ public class GiphyControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayNode arrayNode = objectMapper.createArrayNode();
         ObjectNode gif1 = objectMapper.createObjectNode()
-            .put("id", "1")
-            .put("rating", "g")
-            .put("title", "GIF 1")
-            .set("images", objectMapper.createObjectNode()
-                .set("original", objectMapper.createObjectNode()
-                    .put("url", "https://example.com/1.gif")));
+                .put("id", "1")
+                .put("rating", "g")
+                .put("title", "GIF 1")
+                .set("images", objectMapper.createObjectNode()
+                        .set("original", objectMapper.createObjectNode()
+                                .put("url", "https://example.com/1.gif")));
         ObjectNode gif2 = objectMapper.createObjectNode()
-            .put("id", "2")
-            .put("rating", "pg")
-            .put("title", "GIF 2")
-            .set("images", objectMapper.createObjectNode()
-                .set("original", objectMapper.createObjectNode()
-                    .put("url", "https://example.com/2.gif")));
+                .put("id", "2")
+                .put("rating", "pg")
+                .put("title", "GIF 2")
+                .set("images", objectMapper.createObjectNode()
+                        .set("original", objectMapper.createObjectNode()
+                                .put("url", "https://example.com/2.gif")));
         arrayNode.add(gif1);
         arrayNode.add(gif2);
-        ObjectNode jsonNode = objectMapper.createObjectNode().set("data", arrayNode);            
+        ObjectNode jsonNode = objectMapper.createObjectNode().set("data", arrayNode);
 
         sampleJsonResponse = jsonNode.toString();
     }

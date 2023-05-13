@@ -1,8 +1,11 @@
 package com.adventuroushachi.Giffy.Controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +15,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessage;
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessageStatus;
 import com.adventuroushachi.Giffy.DTO.GiffyDTO;
 import com.adventuroushachi.Giffy.Model.Giffy;
 import com.adventuroushachi.Giffy.Repository.GiffyRepository;
+import com.adventuroushachi.Giffy.Service.S3Service;
 
 @ExtendWith(MockitoExtension.class)
 public class GiffyControllerTest {
@@ -29,11 +36,14 @@ public class GiffyControllerTest {
     @Mock
     private GiffyRepository giffyRepository;
 
+    @Mock
+    private S3Service s3Service;
+
     private Giffy giffy;
     private GiffyDTO giffyDTO;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws MalformedURLException {
         giffy = new Giffy();
         giffy.setGiffyId(1L);
         giffy.setCollectionId(1L);
@@ -41,7 +51,11 @@ public class GiffyControllerTest {
         giffy.setGiffyS3Key("s3Key");
         giffy.setGiffyName("Giffy Name");
 
-        giffyDTO = GiffyDTO.fromEntity(giffy);
+        // Use lenient to avoid UnnecessaryStubbingException
+        Mockito.lenient().when(s3Service.generatePresignedUrl(anyString()))
+                .thenReturn(new URL("http://example.com/test.jpg"));
+
+        giffyDTO = GiffyDTO.fromEntity(giffy, s3Service);
     }
 
     @Test
@@ -157,4 +171,4 @@ public class GiffyControllerTest {
         assertEquals("Giffy updated", response.getBody().getMessage());
         assertEquals(giffyDTO, response.getBody().getData());
     }
-}  
+}

@@ -1,4 +1,4 @@
-package com.adventuroushachi.Giffy.Controller;
+package com.adventuroushachi.Giffy.Controller.Response;
 
 public class ResponseMessage<T> {
     private final String status;
@@ -23,4 +23,3 @@ public class ResponseMessage<T> {
         return data;
     }
 }
-

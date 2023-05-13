@@ -2,14 +2,11 @@ package com.adventuroushachi.Giffy.Controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import com.adventuroushachi.Giffy.Service.S3Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,9 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessage;
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessageStatus;
 import com.adventuroushachi.Giffy.DTO.UserDTO;
 import com.adventuroushachi.Giffy.Model.User;
 import com.adventuroushachi.Giffy.Repository.UserRepository;
+import com.adventuroushachi.Giffy.Service.S3Service;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
@@ -39,7 +39,8 @@ public class UserControllerTest {
     @BeforeEach
     public void setUp() throws MalformedURLException {
         // Use lenient to avoid UnnecessaryStubbingException
-        Mockito.lenient().when(s3Service.generatePresignedUrl(anyString())).thenReturn(new URL("http://example.com/test.jpg"));
+        Mockito.lenient().when(s3Service.generatePresignedUrl(anyString()))
+                .thenReturn(new URL("http://example.com/test.jpg"));
     }
 
     @Test
@@ -286,4 +287,3 @@ public class UserControllerTest {
     }
 
 }
-

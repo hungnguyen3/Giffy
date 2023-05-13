@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessage;
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessageStatus;
 import com.adventuroushachi.Giffy.Model.Collection;
 import com.adventuroushachi.Giffy.Model.CollectionUserInteraction;
 import com.adventuroushachi.Giffy.Model.CollectionUserRelationship;
@@ -36,29 +38,36 @@ public class CollectionUserInteractionController {
     private CollectionUserRelationshipRepository collectionUserRelationshipRepository;
 
     @PutMapping("/toggleLike/{userId}/{collectionId}")
-    public ResponseEntity<ResponseMessage<String>> toggleLike(@PathVariable("userId") Long userId, @PathVariable("collectionId") Long collectionId) {
+    public ResponseEntity<ResponseMessage<String>> toggleLike(@PathVariable("userId") Long userId,
+            @PathVariable("collectionId") Long collectionId) {
         if (userId == null || collectionId == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
+            return ResponseEntity.badRequest()
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
 
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
         }
         User user = optionalUser.get();
 
         Optional<Collection> optionalCollection = collectionRepository.findById(collectionId);
         if (optionalCollection.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
         }
         Collection collection = optionalCollection.get();
 
-        CollectionUserInteraction interaction = collectionUserInteractionRepository.findByCollectionAndUser(collection, user);
-        CollectionUserRelationship relationship = collectionUserRelationshipRepository.findByCollectionAndUser(collection, user);
+        CollectionUserInteraction interaction = collectionUserInteractionRepository.findByCollectionAndUser(collection,
+                user);
+        CollectionUserRelationship relationship = collectionUserRelationshipRepository
+                .findByCollectionAndUser(collection, user);
 
         if (interaction == null) {
             if (collection.getIsPrivate() && relationship == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User does not have access to this collection", null));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage<>(
+                        ResponseMessageStatus.ERROR, "User does not have access to this collection", null));
             } else {
                 interaction = new CollectionUserInteraction(collection, user);
                 interaction.setCollection(collection);

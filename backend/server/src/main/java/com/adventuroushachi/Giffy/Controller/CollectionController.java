@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessage;
+import com.adventuroushachi.Giffy.Controller.Response.ResponseMessageStatus;
 import com.adventuroushachi.Giffy.DTO.CollectionDTO;
 import com.adventuroushachi.Giffy.Model.Collection;
 import com.adventuroushachi.Giffy.Model.CollectionUserRelationship;
@@ -39,53 +41,66 @@ public class CollectionController {
     private CollectionUserRelationshipRepository collectionUserRelationshipRepository;
 
     @PostMapping("/createCollectionByUser/{userId}")
-    public ResponseEntity<ResponseMessage<CollectionDTO>> createCollectionByUser(@PathVariable Long userId, @RequestBody Collection collection) {
-        if (userId == null || collection == null || collection.getCollectionName() == null || collection.getIsPrivate() == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
+    public ResponseEntity<ResponseMessage<CollectionDTO>> createCollectionByUser(@PathVariable Long userId,
+            @RequestBody Collection collection) {
+        if (userId == null || collection == null || collection.getCollectionName() == null
+                || collection.getIsPrivate() == null) {
+            return ResponseEntity.badRequest()
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
 
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "User not found", null));
         }
         User user = optionalUser.get();
 
         Collection savedCollection = collectionRepository.save(collection);
 
-        CollectionUserRelationship relationship = new CollectionUserRelationship(savedCollection, user, Permission.ADMIN);
+        CollectionUserRelationship relationship = new CollectionUserRelationship(savedCollection, user,
+                Permission.ADMIN);
         collectionUserRelationshipRepository.save(relationship);
 
         CollectionDTO collectionDTO = CollectionDTO.fromEntity(savedCollection);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection created", collectionDTO));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection created", collectionDTO));
     }
 
     @GetMapping("/getCollectionById/{id}")
     public ResponseEntity<ResponseMessage<CollectionDTO>> getCollectionById(@PathVariable Long id) {
         if (id == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid collection ID", null));
+            return ResponseEntity.badRequest()
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid collection ID", null));
         }
 
         Optional<Collection> optionalCollection = collectionRepository.findById(id);
         if (optionalCollection.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
         }
 
         Collection collection = optionalCollection.get();
         CollectionDTO collectionDTO = CollectionDTO.fromEntity(collection);
 
-        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection found", collectionDTO));
+        return ResponseEntity.ok()
+                .body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection found", collectionDTO));
     }
 
     @PutMapping("/updateCollectionById/{id}")
-    public ResponseEntity<ResponseMessage<CollectionDTO>> updateCollectionById(@PathVariable Long id, @RequestBody Collection updatedCollectionBody) {
-        if (id == null || updatedCollectionBody == null || updatedCollectionBody.getCollectionName() == null || updatedCollectionBody.getIsPrivate() == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
+    public ResponseEntity<ResponseMessage<CollectionDTO>> updateCollectionById(@PathVariable Long id,
+            @RequestBody Collection updatedCollectionBody) {
+        if (id == null || updatedCollectionBody == null || updatedCollectionBody.getCollectionName() == null
+                || updatedCollectionBody.getIsPrivate() == null) {
+            return ResponseEntity.badRequest()
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid request body", null));
         }
 
         Optional<Collection> optionalCollection = collectionRepository.findById(id);
         if (optionalCollection.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
         }
 
         Collection collection = optionalCollection.get();
@@ -93,25 +108,29 @@ public class CollectionController {
         collection.setCollectionName(updatedCollectionBody.getCollectionName());
         collection.setIsPrivate(updatedCollectionBody.getIsPrivate());
         Collection savedCollection = collectionRepository.save(collection);
-        
+
         CollectionDTO collectionDTO = CollectionDTO.fromEntity(savedCollection);
 
-        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection updated", collectionDTO));
+        return ResponseEntity.ok()
+                .body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection updated", collectionDTO));
     }
 
     @DeleteMapping("/deleteCollectionById/{id}")
     public ResponseEntity<ResponseMessage<Void>> deleteCollectionById(@PathVariable Long id) {
         if (id == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid collection ID", null));
+            return ResponseEntity.badRequest()
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid collection ID", null));
         }
 
         Optional<Collection> optionalCollection = collectionRepository.findById(id);
         if (optionalCollection.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Collection not found", null));
         }
 
         collectionRepository.deleteById(id);
-        return ResponseEntity.ok().body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection deleted", null));
+        return ResponseEntity.ok()
+                .body(new ResponseMessage<>(ResponseMessageStatus.SUCCESS, "Collection deleted", null));
     }
 
     @GetMapping("/getPublicCollections")
@@ -123,8 +142,7 @@ public class CollectionController {
         ResponseMessage<List<CollectionDTO>> responseMessage = new ResponseMessage<>(
                 ResponseMessageStatus.SUCCESS,
                 "Public collections found",
-                collectionDTOs
-        );
+                collectionDTOs);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
@@ -132,7 +150,8 @@ public class CollectionController {
     @GetMapping("/getCollectionsByUserId/{userId}")
     public ResponseEntity<ResponseMessage<List<CollectionDTO>>> getCollectionsByUserId(@PathVariable Long userId) {
         if (userId == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
+            return ResponseEntity.badRequest()
+                    .body(new ResponseMessage<>(ResponseMessageStatus.ERROR, "Invalid user ID", null));
         }
 
         List<CollectionUserRelationship> relationships = collectionUserRelationshipRepository.findByIdUserId(userId);
@@ -146,8 +165,7 @@ public class CollectionController {
         ResponseMessage<List<CollectionDTO>> responseMessage = new ResponseMessage<>(
                 ResponseMessageStatus.SUCCESS,
                 "Collections retrieved successfully",
-                collectionDTOs
-        );
+                collectionDTOs);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }

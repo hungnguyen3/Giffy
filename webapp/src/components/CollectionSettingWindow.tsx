@@ -16,8 +16,8 @@ import CollectionPermissionBox, { UserPermission } from './CollectionPermissionB
 import UserService from '../API/UserService';
 import { isResponseMessageSuccess, ResponseMessage } from '../types/ResponseMessage';
 import { UserDTO } from '../types/DTOs/UserDTOs';
-import { addUserToACollection } from '../API/CollectionUserRelationshipService';
 import CollectionService from '../API/CollectionService';
+import CollectionUserRelationshipService from '../API/CollectionUserRelationshipService';
 
 export const CollectionSettingWindow = () => {
 	const { collectionId } = router.query;
@@ -63,7 +63,7 @@ export const CollectionSettingWindow = () => {
 			permission: userPermission.permission,
 		};
 
-		const addUserToACollectionResponse = await addUserToACollection(userProps);
+		const addUserToACollectionResponse = await CollectionUserRelationshipService.addUserToACollection(userProps);
 		if (isResponseMessageSuccess(addUserToACollectionResponse)) {
 			setUsers([...users, userPermission]);
 			dispatch(
