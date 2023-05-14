@@ -55,7 +55,6 @@ const Layout = (props: LayoutProps) => {
 					});
 					break;
 				case 'auth':
-					// TO DO: add auth route population
 					onCollectionsRoutePopulation({
 						dispatch: dispatch,
 						router: router,
@@ -83,7 +82,7 @@ const Layout = (props: LayoutProps) => {
 		}
 	}, [collections.length]);
 
-	if (!hasAnAccount) {
+	if (!hasAnAccount && !isOnDiscoveryPage) {
 		return (
 			<div>
 				<Modal disableCloseButton={true}>
@@ -126,14 +125,6 @@ const Layout = (props: LayoutProps) => {
 					<CollectionSettingWindow />
 				</Modal>
 			)}
-		</div>
-	);
-};
-
-const Loading = () => {
-	return (
-		<div className={layoutStyles.centeredBox} style={{ width: '100vw', height: '100vh' }}>
-			<h3>Loading...🚀🚀</h3>
 		</div>
 	);
 };

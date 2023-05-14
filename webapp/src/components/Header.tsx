@@ -79,7 +79,7 @@ const Header = () => {
 						{isUserMenuOpen ? (
 							<div className={styles.dropdown}>
 								<ul>
-									{userInfo ? (
+									{!userInfo ? (
 										<li className={styles.login}>
 											<DropdownItem icon={BiLogOut} text={'Log in'} />
 										</li>
